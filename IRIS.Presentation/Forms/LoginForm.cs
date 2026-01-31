@@ -1,8 +1,8 @@
 using IRIS.Domain.Entities;
 using IRIS.Infrastructure.Data;
 using IRIS.Infrastructure.Security;
-using IRIS.Presentation.Forms;
 using Microsoft.EntityFrameworkCore;
+using IRIS.Presentation.Forms;
 
 namespace IRIS.Presentation
 {
@@ -52,7 +52,7 @@ namespace IRIS.Presentation
                 // Successful login
                 UserSession.CurrentUser = user;
                 this.Hide();
-                Dashboard mainApp = new Dashboard();
+                Inventory mainApp = new Inventory();
                 mainApp.ShowDialog();
                 this.Close();
 
