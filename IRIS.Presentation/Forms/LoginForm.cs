@@ -1,6 +1,7 @@
 using IRIS.Domain.Entities;
 using IRIS.Infrastructure.Data;
 using IRIS.Infrastructure.Security;
+using IRIS.Presentation.Forms;
 using Microsoft.EntityFrameworkCore;
 
 namespace IRIS.Presentation
@@ -49,8 +50,12 @@ namespace IRIS.Presentation
                 }
 
                 // Successful login
-                MessageBox.Show($"Login successful!\nWelcome: {user.Username}\nRole: {user.Role.ToString()}", 
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                UserSession.CurrentUser = user;
+                this.Hide();
+                Dashboard mainApp = new Dashboard();
+                mainApp.ShowDialog();
+                this.Close();
+
             }
             catch (Exception ex)
             {

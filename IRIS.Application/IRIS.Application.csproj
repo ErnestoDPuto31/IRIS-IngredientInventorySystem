@@ -14,4 +14,8 @@
     <ProjectReference Include="..\IRIS.Infrastructure\IRIS.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>
