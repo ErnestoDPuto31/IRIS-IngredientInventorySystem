@@ -1,6 +1,7 @@
 ﻿using IRIS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Request = IRIS.Domain.Entities.Request;
+using IRIS.Domain.Enums;
 
 namespace IRIS.Infrastructure.Data
 {
@@ -18,7 +19,12 @@ namespace IRIS.Infrastructure.Data
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<User>()
+                .Property(u => u.Role)
+                .HasConversion<string>(
+                    v => v.ToString(),
+                    v => (UserRole)Enum.Parse(typeof(UserRole), v)
+                );
         }
     }
 }
