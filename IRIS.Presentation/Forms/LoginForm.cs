@@ -64,5 +64,34 @@ namespace IRIS.Presentation
 
             }
         }
+
+        private void panelCard_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void LoginForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ExitBtn_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private async void MinimizeBtn_Click_1(object sender, EventArgs e)
+        {
+            for (double i = 1; i >= 0.8; i -= 0.05)
+            {
+                this.Opacity = i;
+                await Task.Delay(10);
+            }
+
+            this.WindowState = FormWindowState.Minimized;
+            this.Opacity = 1;
+        }
+
+
     }
 }
