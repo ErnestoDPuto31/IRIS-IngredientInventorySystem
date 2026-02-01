@@ -107,7 +107,7 @@
             btnDeleteIngredient.Image = Properties.Resources.icons8_trash_48;
             btnDeleteIngredient.ImageOffset = new Point(0, 0);
             btnDeleteIngredient.ImageRotate = 0F;
-            btnDeleteIngredient.ImageSize = new Size(30, 30);
+            btnDeleteIngredient.ImageSize = new Size(25, 25);
             btnDeleteIngredient.Location = new Point(243, 20);
             btnDeleteIngredient.Name = "btnDeleteIngredient";
             btnDeleteIngredient.PressedState.Image = Properties.Resources.icons8_trash_48;
@@ -123,12 +123,12 @@
             lblMinThreshold.AutoSize = true;
             lblMinThreshold.Font = new Font("Poppins", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblMinThreshold.ForeColor = SystemColors.ControlDarkDark;
-            lblMinThreshold.Location = new Point(233, 168);
+            lblMinThreshold.Location = new Point(129, 153);
             lblMinThreshold.Name = "lblMinThreshold";
             lblMinThreshold.Size = new Size(43, 23);
             lblMinThreshold.TabIndex = 8;
             lblMinThreshold.Text = "500g";
-            lblMinThreshold.TextAlign = ContentAlignment.MiddleCenter;
+            lblMinThreshold.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lblCurrentStock
             // 
@@ -136,19 +136,19 @@
             lblCurrentStock.AutoSize = true;
             lblCurrentStock.Font = new Font("Poppins", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblCurrentStock.ForeColor = SystemColors.ControlDarkDark;
-            lblCurrentStock.Location = new Point(223, 147);
+            lblCurrentStock.Location = new Point(129, 132);
             lblCurrentStock.Name = "lblCurrentStock";
             lblCurrentStock.Size = new Size(53, 23);
             lblCurrentStock.TabIndex = 7;
             lblCurrentStock.Text = "2,000g";
-            lblCurrentStock.TextAlign = ContentAlignment.MiddleCenter;
+            lblCurrentStock.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Poppins", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = SystemColors.ControlDarkDark;
-            label2.Location = new Point(22, 168);
+            label2.Location = new Point(22, 153);
             label2.Name = "label2";
             label2.Size = new Size(101, 23);
             label2.TabIndex = 6;
@@ -159,7 +159,7 @@
             label1.AutoSize = true;
             label1.Font = new Font("Poppins", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ControlDarkDark;
-            label1.Location = new Point(22, 147);
+            label1.Location = new Point(22, 132);
             label1.Name = "label1";
             label1.Size = new Size(101, 23);
             label1.TabIndex = 5;
@@ -169,7 +169,7 @@
             // 
             guna2ProgressBar1.BorderRadius = 10;
             guna2ProgressBar1.CustomizableEdges = customizableEdges2;
-            guna2ProgressBar1.Location = new Point(22, 197);
+            guna2ProgressBar1.Location = new Point(22, 179);
             guna2ProgressBar1.Name = "guna2ProgressBar1";
             guna2ProgressBar1.ShadowDecoration.CustomizableEdges = customizableEdges3;
             guna2ProgressBar1.Size = new Size(254, 14);
@@ -185,8 +185,8 @@
             btnEditIngredient.Image = Properties.Resources.icons8_pencil_52;
             btnEditIngredient.ImageOffset = new Point(0, 0);
             btnEditIngredient.ImageRotate = 0F;
-            btnEditIngredient.ImageSize = new Size(24, 24);
-            btnEditIngredient.Location = new Point(204, 20);
+            btnEditIngredient.ImageSize = new Size(20, 20);
+            btnEditIngredient.Location = new Point(205, 20);
             btnEditIngredient.Name = "btnEditIngredient";
             btnEditIngredient.PressedState.Image = Properties.Resources.icons8_pencil_hover_52;
             btnEditIngredient.PressedState.ImageSize = new Size(24, 24);
@@ -209,7 +209,7 @@
             txtStatus.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtStatus.ForeColor = Color.Black;
             txtStatus.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtStatus.Location = new Point(36, 94);
+            txtStatus.Location = new Point(205, 86);
             txtStatus.Margin = new Padding(3, 5, 3, 5);
             txtStatus.Name = "txtStatus";
             txtStatus.PlaceholderForeColor = Color.Black;
@@ -217,9 +217,9 @@
             txtStatus.ReadOnly = true;
             txtStatus.SelectedText = "";
             txtStatus.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            txtStatus.Size = new Size(60, 26);
+            txtStatus.Size = new Size(50, 26);
             txtStatus.TabIndex = 2;
-            txtStatus.TextAlign = HorizontalAlignment.Center;
+            txtStatus.TextOffset = new Point(2, 0);
             // 
             // txtCategoryLabel
             // 
@@ -236,7 +236,7 @@
             txtCategoryLabel.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtCategoryLabel.ForeColor = Color.White;
             txtCategoryLabel.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtCategoryLabel.Location = new Point(36, 67);
+            txtCategoryLabel.Location = new Point(22, 86);
             txtCategoryLabel.Margin = new Padding(3, 5, 3, 5);
             txtCategoryLabel.Name = "txtCategoryLabel";
             txtCategoryLabel.PlaceholderForeColor = Color.Black;
@@ -246,15 +246,14 @@
             txtCategoryLabel.ShadowDecoration.CustomizableEdges = customizableEdges8;
             txtCategoryLabel.Size = new Size(177, 26);
             txtCategoryLabel.TabIndex = 1;
-            txtCategoryLabel.TextAlign = HorizontalAlignment.Center;
             // 
             // lblIngredientName
             // 
             lblIngredientName.AutoSize = true;
-            lblIngredientName.Font = new Font("Poppins", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblIngredientName.Location = new Point(22, 36);
+            lblIngredientName.Font = new Font("Poppins", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblIngredientName.Location = new Point(22, 43);
             lblIngredientName.Name = "lblIngredientName";
-            lblIngredientName.Size = new Size(108, 40);
+            lblIngredientName.Size = new Size(131, 50);
             lblIngredientName.TabIndex = 0;
             lblIngredientName.Text = "Carrots";
             // 

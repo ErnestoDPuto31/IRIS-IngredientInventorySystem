@@ -12,6 +12,8 @@ namespace IRIS.Presentation
         public LoginForm()
         {
             InitializeComponent();
+
+            this.AcceptButton = btnLogin;
             var options = new DbContextOptionsBuilder<IrisDbContext>()
             .UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;
                         Database=IRIS_DB;
@@ -51,10 +53,17 @@ namespace IRIS.Presentation
 
                 // Successful login
                 UserSession.CurrentUser = user;
+
                 this.Hide();
-                Inventory mainApp = new Inventory();
-                mainApp.ShowDialog();
-                this.Close();
+
+                using (MainForm mainApp = new MainForm())
+                {
+                    mainApp.ShowDialog();
+                }
+
+                txtPassword.Clear();
+                lblError.Visible = false;
+                this.Show();
 
             }
             catch (Exception ex)

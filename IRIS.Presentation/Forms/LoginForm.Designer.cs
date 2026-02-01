@@ -32,6 +32,7 @@ namespace IRIS.Presentation
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             guna2BorderlessForm1 = new Guna2BorderlessForm(components);
             guna2Panel2 = new Guna2Panel();
+            lblError = new Label();
             btnLogin = new Guna2GradientButton();
             label1 = new Label();
             label6 = new Label();
@@ -42,7 +43,6 @@ namespace IRIS.Presentation
             label2 = new Label();
             label3 = new Label();
             guna2ImageButton1 = new Guna2ImageButton();
-            lblError = new Label();
             guna2Panel2.SuspendLayout();
             SuspendLayout();
             // 
@@ -82,6 +82,18 @@ namespace IRIS.Presentation
             guna2Panel2.ShadowDecoration.Shadow = new Padding(0, 0, 0, 10);
             guna2Panel2.Size = new Size(491, 630);
             guna2Panel2.TabIndex = 1;
+            // 
+            // lblError
+            // 
+            lblError.AutoSize = true;
+            lblError.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblError.ForeColor = Color.Red;
+            lblError.Location = new Point(25, 516);
+            lblError.Name = "lblError";
+            lblError.Size = new Size(32, 26);
+            lblError.TabIndex = 9;
+            lblError.Text = "aa";
+            lblError.Visible = false;
             // 
             // btnLogin
             // 
@@ -157,7 +169,7 @@ namespace IRIS.Presentation
             txtPassword.SelectedText = "";
             txtPassword.ShadowDecoration.CustomizableEdges = customizableEdges4;
             txtPassword.Size = new Size(444, 46);
-            txtPassword.TabIndex = 2;
+            txtPassword.TabIndex = 1;
             txtPassword.UseSystemPasswordChar = true;
             // 
             // label5
@@ -198,7 +210,7 @@ namespace IRIS.Presentation
             txtUsername.SelectedText = "";
             txtUsername.ShadowDecoration.CustomizableEdges = customizableEdges6;
             txtUsername.Size = new Size(444, 45);
-            txtUsername.TabIndex = 1;
+            txtUsername.TabIndex = 0;
             // 
             // label4
             // 
@@ -253,18 +265,6 @@ namespace IRIS.Presentation
             guna2ImageButton1.Size = new Size(112, 115);
             guna2ImageButton1.TabIndex = 1;
             guna2ImageButton1.UseTransparentBackground = true;
-            // 
-            // lblError
-            // 
-            lblError.AutoSize = true;
-            lblError.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblError.ForeColor = Color.Red;
-            lblError.Location = new Point(25, 516);
-            lblError.Name = "lblError";
-            lblError.Size = new Size(32, 26);
-            lblError.TabIndex = 9;
-            lblError.Text = "aa";
-            lblError.Visible = false;
             // 
             // LoginForm
             // 

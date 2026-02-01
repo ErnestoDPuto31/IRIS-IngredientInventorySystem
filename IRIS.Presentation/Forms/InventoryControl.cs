@@ -10,13 +10,17 @@ using System.Windows.Forms;
 
 namespace IRIS.Presentation.Forms
 {
-    public partial class Inventory : Form
+    public partial class InventoryControl : UserControl
     {
-        public Inventory()
+        public InventoryControl()
         {
             InitializeComponent();
+
+            this.DoubleBuffered = true;
             cmbCategory.Text = "Select Category";
             cmbSortIngredients.Text = "Sort By";
+
+
         }
 
         private void btnAddIngredient_Click(object sender, EventArgs e)
@@ -30,6 +34,12 @@ namespace IRIS.Presentation.Forms
                     pnlIngredients.Controls.Add(card);
                 }
             }
+        }
+
+        private void Inventory_Load(object sender, EventArgs e)
+        {
+            pnlMainContent.Dock = DockStyle.Fill;
+            pnlMainContent.SendToBack();
         }
     }
 }

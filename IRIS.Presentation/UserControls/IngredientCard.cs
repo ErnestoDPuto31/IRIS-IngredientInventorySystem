@@ -19,10 +19,12 @@ namespace IRIS.Presentation.UserControls
             lblIngredientName.Text = IngredientData.Name;
             txtCategoryLabel.Text = IngredientData.Category;
 
-            lblCurrentStock.Text = IngredientData.CurrentStock.ToString();
-            lblMinThreshold.Text = IngredientData.MinimumStock.ToString();
+            string unit = string.IsNullOrEmpty(IngredientData.Unit) ? "g" : IngredientData.Unit;
 
-            lblUpdatedAt.Text = IngredientData.UpdatedAt.ToString("g");
+            lblCurrentStock.Text = $"{IngredientData.CurrentStock} {unit}";
+            lblMinThreshold.Text = $"{IngredientData.MinimumStock} {unit}";
+
+            lblUpdatedAt.Text = $"Updated At {DateTime.Now.ToString("g")}";
 
             UpdateVisuals();
         }
@@ -112,7 +114,7 @@ namespace IRIS.Presentation.UserControls
                     backColor = Color.FromArgb(240, 240, 240);
                     break;
             }
-            txtCategoryLabel.Text = category.ToLower();
+            txtCategoryLabel.Text = category;
             txtCategoryLabel.ForeColor = textColor;
             txtCategoryLabel.FillColor = backColor;
 
