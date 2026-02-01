@@ -42,6 +42,7 @@ namespace IRIS.Presentation
             label2 = new Label();
             label3 = new Label();
             guna2ImageButton1 = new Guna2ImageButton();
+            lblError = new Label();
             guna2Panel2.SuspendLayout();
             SuspendLayout();
             // 
@@ -59,6 +60,7 @@ namespace IRIS.Presentation
             guna2Panel2.BorderColor = Color.FromArgb(137, 65, 208);
             guna2Panel2.BorderRadius = 30;
             guna2Panel2.BorderThickness = 2;
+            guna2Panel2.Controls.Add(lblError);
             guna2Panel2.Controls.Add(btnLogin);
             guna2Panel2.Controls.Add(label1);
             guna2Panel2.Controls.Add(label6);
@@ -97,7 +99,7 @@ namespace IRIS.Presentation
             btnLogin.ForeColor = Color.White;
             btnLogin.HoverState.FillColor = Color.FromArgb(155, 85, 225);
             btnLogin.HoverState.FillColor2 = Color.FromArgb(95, 25, 155);
-            btnLogin.Location = new Point(25, 541);
+            btnLogin.Location = new Point(25, 558);
             btnLogin.Name = "btnLogin";
             btnLogin.PressedColor = Color.FromArgb(60, 5, 110);
             btnLogin.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -252,6 +254,18 @@ namespace IRIS.Presentation
             guna2ImageButton1.TabIndex = 1;
             guna2ImageButton1.UseTransparentBackground = true;
             // 
+            // lblError
+            // 
+            lblError.AutoSize = true;
+            lblError.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblError.ForeColor = Color.Red;
+            lblError.Location = new Point(25, 516);
+            lblError.Name = "lblError";
+            lblError.Size = new Size(32, 26);
+            lblError.TabIndex = 9;
+            lblError.Text = "aa";
+            lblError.Visible = false;
+            // 
             // LoginForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -286,5 +300,6 @@ namespace IRIS.Presentation
         private Guna2TextBox txtPassword;
         private Label label5;
         private Guna2GradientButton btnLogin;
+        private Label lblError;
     }
 }

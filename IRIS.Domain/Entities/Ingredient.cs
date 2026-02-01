@@ -10,5 +10,6 @@ namespace IRIS.Domain.Entities
         [Required, MaxLength(20)] public string? Unit { get; set; }
         [Required] public decimal CurrentStock { get; set; }
         [Required] public decimal MinimumStock { get; set; }
+        [Required] public DateTime UpdatedAt { get; set; } 
     }
 }

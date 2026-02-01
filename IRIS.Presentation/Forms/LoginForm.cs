@@ -36,16 +36,16 @@ namespace IRIS.Presentation
                 // Validate user existence and active status
                 if (user == null)
                 {
-                    MessageBox.Show("Invalid username or account inactive!",
-                        "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    lblError.Visible = true;
+                    lblError.Text = "User does not exist or is inactive.";
                     return;
                 }
 
                 // Validate password
                 if (user.PasswordHash is null || !PasswordHasher.VerifyPassword(password, user.PasswordHash))
                 {
-                    MessageBox.Show("Invalid password!",
-                        "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    lblError.Visible = true;
+                    lblError.Text = "Incorrect password.";
                     return;
                 }
 
