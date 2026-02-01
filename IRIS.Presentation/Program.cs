@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using IRIS.Infrastructure.Data;
+using System;
+using System.Windows.Forms;
 
 namespace IRIS.Presentation
 {
@@ -11,31 +13,37 @@ namespace IRIS.Presentation
         [STAThread]
         static void Main()
         {
+            ApplicationConfiguration.Initialize();
+
             // Setup DI
             var services = new ServiceCollection();
             services.AddDbContext<IrisDbContext>(options =>
                 options.UseSqlServer(
                     System.Configuration.ConfigurationManager
-                        .ConnectionStrings["IrisConnection"].ConnectionString));
+                        .ConnectionStrings["IrisConnection"].ConnectionString,
+                    sqlOptions => sqlOptions.EnableRetryOnFailure() // handles transient SQL errors
+                )
+                .ConfigureWarnings(warnings =>
+                    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning) // ignore pending model changes
+                )
+            );
 
             Services = services.BuildServiceProvider();
 
-            // Seed database
-            using (var scope = Services.CreateScope())
+            // Seed database safely (won't crash if DB not ready)
+            try
             {
+                using var scope = Services.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<IrisDbContext>();
                 SeedData.Initialize(context);
             }
-
-            // Initialize WinForms
-            ApplicationConfiguration.Initialize();
-
-            // Pass DbContext to LoginForm via constructor
-            using (var scope = Services.CreateScope())
+            catch (Exception ex)
             {
-                var context = scope.ServiceProvider.GetRequiredService<IrisDbContext>();
-                System.Windows.Forms.Application.Run(new LoginForm());
+                Console.WriteLine($"Database seeding skipped: {ex.Message}");
             }
+
+            // Run the UI
+            Application.Run(new LoginForm());
         }
     }
 }
