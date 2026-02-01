@@ -49,6 +49,7 @@
             Name = "Inventory";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Inventory";
+            Load += Inventory_Load;
             ResumeLayout(false);
         }
 

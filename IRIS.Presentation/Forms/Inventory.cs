@@ -14,5 +14,10 @@ namespace IRIS.Presentation.Forms
         {
             InitializeComponent();
         }
+
+        private void Inventory_Load(object sender, EventArgs e)
+        {
+            //test
+        }
     }
 }
