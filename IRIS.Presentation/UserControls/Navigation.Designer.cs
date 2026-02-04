@@ -100,7 +100,7 @@ namespace IRIS.Presentation.UserControls
             btnHamburger.Location = new Point(0, 0);
             btnHamburger.Name = "btnHamburger";
             btnHamburger.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btnHamburger.Size = new Size(60, 50);
+            btnHamburger.Size = new Size(75, 50);
             btnHamburger.TabIndex = 0;
             btnHamburger.Click += btnHamburger_Click;
             // 
@@ -109,10 +109,10 @@ namespace IRIS.Presentation.UserControls
             pnlLogout.Controls.Add(btnLogout);
             pnlLogout.CustomizableEdges = customizableEdges5;
             pnlLogout.Dock = DockStyle.Bottom;
-            pnlLogout.Location = new Point(0, 670);
+            pnlLogout.Location = new Point(0, 850);
             pnlLogout.Name = "pnlLogout";
             pnlLogout.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            pnlLogout.Size = new Size(60, 50);
+            pnlLogout.Size = new Size(75, 50);
             pnlLogout.TabIndex = 8;
             // 
             // btnLogout
@@ -127,11 +127,12 @@ namespace IRIS.Presentation.UserControls
             btnLogout.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogout.ForeColor = Color.White;
             btnLogout.Image = Properties.Resources.icons8_logout_48;
+            btnLogout.ImageAlign = HorizontalAlignment.Left;
             btnLogout.ImageSize = new Size(30, 30);
             btnLogout.Location = new Point(0, 0);
             btnLogout.Name = "btnLogout";
             btnLogout.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            btnLogout.Size = new Size(60, 50);
+            btnLogout.Size = new Size(75, 50);
             btnLogout.TabIndex = 0;
             btnLogout.Click += btnLogout_Click;
             // 
@@ -140,10 +141,10 @@ namespace IRIS.Presentation.UserControls
             pnlRestock.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlRestock.Controls.Add(btnRestock);
             pnlRestock.CustomizableEdges = customizableEdges9;
-            pnlRestock.Location = new Point(3, 350);
+            pnlRestock.Location = new Point(3, 390);
             pnlRestock.Name = "pnlRestock";
             pnlRestock.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            pnlRestock.Size = new Size(54, 50);
+            pnlRestock.Size = new Size(69, 50);
             pnlRestock.TabIndex = 7;
             // 
             // btnRestock
@@ -162,7 +163,7 @@ namespace IRIS.Presentation.UserControls
             btnRestock.Location = new Point(0, 0);
             btnRestock.Name = "btnRestock";
             btnRestock.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            btnRestock.Size = new Size(54, 50);
+            btnRestock.Size = new Size(69, 50);
             btnRestock.TabIndex = 0;
             btnRestock.Click += btnRestock_Click;
             // 
@@ -171,10 +172,10 @@ namespace IRIS.Presentation.UserControls
             pnlReports.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlReports.Controls.Add(btnReports);
             pnlReports.CustomizableEdges = customizableEdges13;
-            pnlReports.Location = new Point(3, 295);
+            pnlReports.Location = new Point(3, 335);
             pnlReports.Name = "pnlReports";
             pnlReports.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            pnlReports.Size = new Size(57, 50);
+            pnlReports.Size = new Size(72, 50);
             pnlReports.TabIndex = 6;
             // 
             // btnReports
@@ -193,7 +194,7 @@ namespace IRIS.Presentation.UserControls
             btnReports.Location = new Point(0, 0);
             btnReports.Name = "btnReports";
             btnReports.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            btnReports.Size = new Size(57, 50);
+            btnReports.Size = new Size(72, 50);
             btnReports.TabIndex = 0;
             btnReports.Click += btnReports_Click;
             // 
@@ -202,10 +203,10 @@ namespace IRIS.Presentation.UserControls
             pnlHistory.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlHistory.Controls.Add(btnHistory);
             pnlHistory.CustomizableEdges = customizableEdges17;
-            pnlHistory.Location = new Point(3, 239);
+            pnlHistory.Location = new Point(3, 279);
             pnlHistory.Name = "pnlHistory";
             pnlHistory.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            pnlHistory.Size = new Size(57, 50);
+            pnlHistory.Size = new Size(72, 50);
             pnlHistory.TabIndex = 5;
             // 
             // btnHistory
@@ -224,7 +225,7 @@ namespace IRIS.Presentation.UserControls
             btnHistory.Location = new Point(0, 0);
             btnHistory.Name = "btnHistory";
             btnHistory.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            btnHistory.Size = new Size(57, 50);
+            btnHistory.Size = new Size(72, 50);
             btnHistory.TabIndex = 0;
             btnHistory.Click += btnHistory_Click;
             // 
@@ -233,10 +234,10 @@ namespace IRIS.Presentation.UserControls
             pnlRequests.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlRequests.Controls.Add(btnRequests);
             pnlRequests.CustomizableEdges = customizableEdges21;
-            pnlRequests.Location = new Point(3, 183);
+            pnlRequests.Location = new Point(3, 223);
             pnlRequests.Name = "pnlRequests";
             pnlRequests.ShadowDecoration.CustomizableEdges = customizableEdges22;
-            pnlRequests.Size = new Size(57, 50);
+            pnlRequests.Size = new Size(72, 50);
             pnlRequests.TabIndex = 4;
             // 
             // btnRequests
@@ -255,7 +256,7 @@ namespace IRIS.Presentation.UserControls
             btnRequests.Location = new Point(0, 0);
             btnRequests.Name = "btnRequests";
             btnRequests.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            btnRequests.Size = new Size(57, 50);
+            btnRequests.Size = new Size(72, 50);
             btnRequests.TabIndex = 0;
             btnRequests.Click += btnRequests_Click;
             // 
@@ -264,10 +265,10 @@ namespace IRIS.Presentation.UserControls
             pnlInventory.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlInventory.Controls.Add(btnInventory);
             pnlInventory.CustomizableEdges = customizableEdges25;
-            pnlInventory.Location = new Point(3, 127);
+            pnlInventory.Location = new Point(3, 167);
             pnlInventory.Name = "pnlInventory";
             pnlInventory.ShadowDecoration.CustomizableEdges = customizableEdges26;
-            pnlInventory.Size = new Size(57, 50);
+            pnlInventory.Size = new Size(72, 50);
             pnlInventory.TabIndex = 3;
             // 
             // btnInventory
@@ -286,7 +287,7 @@ namespace IRIS.Presentation.UserControls
             btnInventory.Location = new Point(0, 0);
             btnInventory.Name = "btnInventory";
             btnInventory.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            btnInventory.Size = new Size(57, 50);
+            btnInventory.Size = new Size(72, 50);
             btnInventory.TabIndex = 0;
             btnInventory.Click += btnInventory_Click;
             // 
@@ -295,10 +296,10 @@ namespace IRIS.Presentation.UserControls
             pnlDashboard.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlDashboard.Controls.Add(btnDashboard);
             pnlDashboard.CustomizableEdges = customizableEdges29;
-            pnlDashboard.Location = new Point(3, 71);
+            pnlDashboard.Location = new Point(3, 111);
             pnlDashboard.Name = "pnlDashboard";
             pnlDashboard.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            pnlDashboard.Size = new Size(57, 50);
+            pnlDashboard.Size = new Size(72, 50);
             pnlDashboard.TabIndex = 2;
             // 
             // btnDashboard
@@ -317,7 +318,7 @@ namespace IRIS.Presentation.UserControls
             btnDashboard.Location = new Point(0, 0);
             btnDashboard.Name = "btnDashboard";
             btnDashboard.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            btnDashboard.Size = new Size(57, 50);
+            btnDashboard.Size = new Size(72, 50);
             btnDashboard.TabIndex = 0;
             btnDashboard.Click += btnDashboard_Click;
             // 
@@ -335,7 +336,7 @@ namespace IRIS.Presentation.UserControls
             Controls.Add(pnlDashboard);
             Controls.Add(btnHamburger);
             Name = "NavigationPanel";
-            Size = new Size(60, 720);
+            Size = new Size(75, 900);
             pnlLogout.ResumeLayout(false);
             pnlRestock.ResumeLayout(false);
             pnlReports.ResumeLayout(false);

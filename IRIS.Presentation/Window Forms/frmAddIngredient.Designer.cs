@@ -74,21 +74,21 @@
             // lblIngredientTitle
             // 
             lblIngredientTitle.AutoSize = true;
-            lblIngredientTitle.Font = new Font("Poppins", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblIngredientTitle.Font = new Font("Poppins", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblIngredientTitle.Location = new Point(25, 27);
             lblIngredientTitle.Name = "lblIngredientTitle";
-            lblIngredientTitle.Size = new Size(250, 40);
+            lblIngredientTitle.Size = new Size(323, 53);
             lblIngredientTitle.TabIndex = 0;
             lblIngredientTitle.Text = "Add New Ingredient";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Poppins", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ControlDarkDark;
-            label1.Location = new Point(25, 67);
+            label1.Location = new Point(25, 68);
             label1.Name = "label1";
-            label1.Size = new Size(307, 26);
+            label1.Size = new Size(372, 31);
             label1.TabIndex = 1;
             label1.Text = "Enter the details of thew new Ingredient";
             // 
@@ -100,7 +100,7 @@
             btnExitForm.ImageOffset = new Point(0, 0);
             btnExitForm.ImageRotate = 0F;
             btnExitForm.ImageSize = new Size(24, 24);
-            btnExitForm.Location = new Point(468, 12);
+            btnExitForm.Location = new Point(559, 27);
             btnExitForm.Name = "btnExitForm";
             btnExitForm.ShadowDecoration.CustomizableEdges = customizableEdges15;
             btnExitForm.Size = new Size(29, 26);
@@ -109,11 +109,11 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
             label2.ForeColor = SystemColors.ActiveCaptionText;
-            label2.Location = new Point(25, 107);
+            label2.Location = new Point(55, 118);
             label2.Name = "label2";
-            label2.Size = new Size(139, 26);
+            label2.Size = new Size(169, 31);
             label2.TabIndex = 3;
             label2.Text = "Ingredient Name";
             // 
@@ -128,25 +128,25 @@
             txtIngredientName.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
             txtIngredientName.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtIngredientName.FocusedState.BorderColor = Color.FromArgb(77, 10, 133);
-            txtIngredientName.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtIngredientName.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtIngredientName.HoverState.BorderColor = Color.FromArgb(77, 10, 133);
-            txtIngredientName.Location = new Point(25, 138);
-            txtIngredientName.Margin = new Padding(3, 5, 3, 5);
+            txtIngredientName.Location = new Point(55, 157);
+            txtIngredientName.Margin = new Padding(4, 8, 4, 8);
             txtIngredientName.Name = "txtIngredientName";
             txtIngredientName.PlaceholderText = "e.g. Chicken Breast";
             txtIngredientName.SelectedText = "";
             txtIngredientName.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            txtIngredientName.Size = new Size(452, 41);
+            txtIngredientName.Size = new Size(490, 39);
             txtIngredientName.TabIndex = 4;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
             label3.ForeColor = SystemColors.ActiveCaptionText;
-            label3.Location = new Point(25, 198);
+            label3.Location = new Point(55, 222);
             label3.Name = "label3";
-            label3.Size = new Size(83, 26);
+            label3.Size = new Size(100, 31);
             label3.TabIndex = 5;
             label3.Text = "Category";
             // 
@@ -160,7 +160,7 @@
             cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCategory.FocusedColor = Color.FromArgb(77, 10, 133);
             cmbCategory.FocusedState.BorderColor = Color.FromArgb(77, 10, 133);
-            cmbCategory.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cmbCategory.Font = new Font("Poppins", 10.8F);
             cmbCategory.ForeColor = Color.FromArgb(68, 88, 112);
             cmbCategory.HoverState.BorderColor = Color.FromArgb(77, 10, 133);
             cmbCategory.ItemHeight = 30;
@@ -169,20 +169,20 @@
             cmbCategory.ItemsAppearance.ForeColor = Color.Black;
             cmbCategory.ItemsAppearance.SelectedBackColor = Color.FromArgb(77, 10, 133);
             cmbCategory.ItemsAppearance.SelectedForeColor = Color.White;
-            cmbCategory.Location = new Point(25, 227);
+            cmbCategory.Location = new Point(55, 256);
             cmbCategory.Name = "cmbCategory";
             cmbCategory.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            cmbCategory.Size = new Size(452, 36);
+            cmbCategory.Size = new Size(490, 36);
             cmbCategory.TabIndex = 6;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
             label4.ForeColor = SystemColors.ActiveCaptionText;
-            label4.Location = new Point(25, 288);
+            label4.Location = new Point(55, 327);
             label4.Name = "label4";
-            label4.Size = new Size(116, 26);
+            label4.Size = new Size(141, 31);
             label4.TabIndex = 7;
             label4.Text = "Current Stock";
             // 
@@ -195,12 +195,12 @@
             numCurrentStock.FocusedState.BorderColor = Color.FromArgb(137, 65, 208);
             numCurrentStock.FocusedState.UpDownButtonFillColor = Color.FromArgb(155, 86, 226);
             numCurrentStock.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            numCurrentStock.Location = new Point(25, 318);
+            numCurrentStock.Location = new Point(51, 362);
             numCurrentStock.Margin = new Padding(3, 4, 3, 4);
             numCurrentStock.Maximum = new decimal(new int[] { 5000000, 0, 0, 0 });
             numCurrentStock.Name = "numCurrentStock";
             numCurrentStock.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            numCurrentStock.Size = new Size(203, 39);
+            numCurrentStock.Size = new Size(226, 39);
             numCurrentStock.TabIndex = 8;
             numCurrentStock.TextOffset = new Point(5, 0);
             numCurrentStock.ThousandsSeparator = true;
@@ -216,12 +216,12 @@
             numMinimumThreshold.FocusedState.BorderColor = Color.FromArgb(137, 65, 208);
             numMinimumThreshold.FocusedState.UpDownButtonFillColor = Color.FromArgb(155, 86, 226);
             numMinimumThreshold.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            numMinimumThreshold.Location = new Point(274, 318);
+            numMinimumThreshold.Location = new Point(318, 362);
             numMinimumThreshold.Margin = new Padding(3, 4, 3, 4);
             numMinimumThreshold.Maximum = new decimal(new int[] { 5000000, 0, 0, 0 });
             numMinimumThreshold.Name = "numMinimumThreshold";
             numMinimumThreshold.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            numMinimumThreshold.Size = new Size(203, 39);
+            numMinimumThreshold.Size = new Size(227, 39);
             numMinimumThreshold.TabIndex = 10;
             numMinimumThreshold.TextOffset = new Point(5, 0);
             numMinimumThreshold.UpDownButtonFillColor = Color.Gray;
@@ -230,11 +230,11 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
             label5.ForeColor = SystemColors.ActiveCaptionText;
-            label5.Location = new Point(274, 288);
+            label5.Location = new Point(318, 327);
             label5.Name = "label5";
-            label5.Size = new Size(165, 26);
+            label5.Size = new Size(199, 31);
             label5.TabIndex = 9;
             label5.Text = "Minimum Threshold";
             // 
@@ -248,7 +248,7 @@
             cmbUnit.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbUnit.FocusedColor = Color.FromArgb(77, 10, 133);
             cmbUnit.FocusedState.BorderColor = Color.FromArgb(77, 10, 133);
-            cmbUnit.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cmbUnit.Font = new Font("Poppins", 10.8F);
             cmbUnit.ForeColor = Color.FromArgb(68, 88, 112);
             cmbUnit.HoverState.BorderColor = Color.FromArgb(77, 10, 133);
             cmbUnit.ItemHeight = 30;
@@ -257,20 +257,20 @@
             cmbUnit.ItemsAppearance.ForeColor = Color.Black;
             cmbUnit.ItemsAppearance.SelectedBackColor = Color.FromArgb(77, 10, 133);
             cmbUnit.ItemsAppearance.SelectedForeColor = Color.White;
-            cmbUnit.Location = new Point(25, 405);
+            cmbUnit.Location = new Point(51, 469);
             cmbUnit.Name = "cmbUnit";
             cmbUnit.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            cmbUnit.Size = new Size(452, 36);
+            cmbUnit.Size = new Size(490, 36);
             cmbUnit.TabIndex = 12;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
             label6.ForeColor = SystemColors.ActiveCaptionText;
-            label6.Location = new Point(25, 376);
+            label6.Location = new Point(51, 435);
             label6.Name = "label6";
-            label6.Size = new Size(43, 26);
+            label6.Size = new Size(51, 31);
             label6.TabIndex = 11;
             label6.Text = "Unit";
             // 
@@ -286,15 +286,15 @@
             btnAddIngredient.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnAddIngredient.FillColor = Color.FromArgb(77, 10, 133);
             btnAddIngredient.FillColor2 = Color.FromArgb(137, 65, 208);
-            btnAddIngredient.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAddIngredient.Font = new Font("Poppins", 10.2F, FontStyle.Bold);
             btnAddIngredient.ForeColor = Color.White;
             btnAddIngredient.HoverState.FillColor = Color.FromArgb(95, 20, 161);
             btnAddIngredient.HoverState.FillColor2 = Color.FromArgb(155, 86, 226);
-            btnAddIngredient.Location = new Point(292, 475);
+            btnAddIngredient.Location = new Point(349, 591);
             btnAddIngredient.Name = "btnAddIngredient";
             btnAddIngredient.PressedColor = Color.FromArgb(111, 49, 171);
             btnAddIngredient.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            btnAddIngredient.Size = new Size(185, 47);
+            btnAddIngredient.Size = new Size(220, 60);
             btnAddIngredient.TabIndex = 13;
             btnAddIngredient.Text = "Add Ingredient";
             btnAddIngredient.Click += btnAddIngredient_Click;
@@ -313,15 +313,15 @@
             btnCancel.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnCancel.FillColor = Color.White;
             btnCancel.FillColor2 = Color.White;
-            btnCancel.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.Font = new Font("Poppins", 10.2F, FontStyle.Bold);
             btnCancel.ForeColor = Color.Black;
             btnCancel.HoverState.FillColor = Color.Gray;
             btnCancel.HoverState.FillColor2 = Color.Silver;
-            btnCancel.Location = new Point(171, 475);
+            btnCancel.Location = new Point(179, 591);
             btnCancel.Name = "btnCancel";
             btnCancel.PressedColor = Color.Gray;
             btnCancel.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btnCancel.Size = new Size(115, 47);
+            btnCancel.Size = new Size(150, 60);
             btnCancel.TabIndex = 14;
             btnCancel.Text = "Cancel";
             // 
@@ -329,7 +329,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(512, 554);
+            ClientSize = new Size(616, 707);
             Controls.Add(btnCancel);
             Controls.Add(btnAddIngredient);
             Controls.Add(cmbUnit);
