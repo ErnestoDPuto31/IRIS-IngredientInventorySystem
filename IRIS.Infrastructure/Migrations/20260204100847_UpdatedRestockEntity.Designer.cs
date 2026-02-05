@@ -4,6 +4,7 @@ using IRIS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    partial class IrisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260204100847_UpdatedRestockEntity")]
+    partial class UpdatedRestockEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,7 +207,7 @@ namespace IRIS.Infrastructure.Migrations
                     b.Property<decimal>("CurrentStock")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("IngredientId")
+                    b.Property<int?>("IngredientId")
                         .HasColumnType("int");
 
                     b.Property<string>("IngredientName")
@@ -222,8 +225,6 @@ namespace IRIS.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("RestockId");
-
-                    b.HasIndex("IngredientId");
 
                     b.ToTable("Restocks");
                 });
@@ -289,17 +290,6 @@ namespace IRIS.Infrastructure.Migrations
                     b.Navigation("ingredient");
 
                     b.Navigation("request");
-                });
-
-            modelBuilder.Entity("IRIS.Domain.Entities.Restock", b =>
-                {
-                    b.HasOne("IRIS.Domain.Entities.Ingredient", "Ingredient")
-                        .WithMany()
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ingredient");
                 });
 
             modelBuilder.Entity("IRIS.Domain.Entities.Request", b =>

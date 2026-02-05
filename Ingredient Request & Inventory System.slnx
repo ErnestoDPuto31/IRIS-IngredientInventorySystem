@@ -3,4 +3,5 @@
   <Project Path="IRIS.Domain/IRIS.Domain.csproj" Id="5fa8c26c-f327-4677-b17a-bb5112c4073e" />
   <Project Path="IRIS.Infrastructure/IRIS.Infrastructure.csproj" Id="98f02b45-f953-453a-b1a9-c6a57c3aed0c" />
   <Project Path="IRIS.Presentation/IRIS.Presentation.csproj" Id="30de6178-a3d9-4da6-8a3f-dca2a5d2da4f" />
+  <Project Path="IRIS.Services/IRIS.Services.csproj" Id="13fba4ae-bd0d-4680-9b72-7c5c2f56449d" />
 </Solution>

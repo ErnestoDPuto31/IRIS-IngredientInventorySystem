@@ -4,6 +4,7 @@ using IRIS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    partial class IrisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260202134039_AddUpdatedAtToIngredients")]
+    partial class AddUpdatedAtToIngredients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,46 +191,6 @@ namespace IRIS.Infrastructure.Migrations
                     b.ToTable("RequestItems");
                 });
 
-            modelBuilder.Entity("IRIS.Domain.Entities.Restock", b =>
-                {
-                    b.Property<int>("RestockId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RestockId"));
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal>("CurrentStock")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IngredientName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal>("MinimumThreshold")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("SuggestedRestockQuantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("RestockId");
-
-                    b.HasIndex("IngredientId");
-
-                    b.ToTable("Restocks");
-                });
-
             modelBuilder.Entity("IRIS.Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -289,17 +252,6 @@ namespace IRIS.Infrastructure.Migrations
                     b.Navigation("ingredient");
 
                     b.Navigation("request");
-                });
-
-            modelBuilder.Entity("IRIS.Domain.Entities.Restock", b =>
-                {
-                    b.HasOne("IRIS.Domain.Entities.Ingredient", "Ingredient")
-                        .WithMany()
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ingredient");
                 });
 
             modelBuilder.Entity("IRIS.Domain.Entities.Request", b =>
