@@ -5,6 +5,7 @@ namespace IRIS.Domain.Entities
     public class Request
     {
         [Key] public int RequestId { get; set; }
+
         [Required, MaxLength(100)] public string? Subject { get; set; }
         [Required, MaxLength(100)] public string? FacultyName { get; set; }
         [Required] public int StudentCount { get; set; }
