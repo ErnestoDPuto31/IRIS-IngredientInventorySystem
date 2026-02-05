@@ -44,7 +44,7 @@ namespace IRIS.Presentation
             }
 
             // Run the UI
-            Application.Run(new Restock());
+            Application.Run(new MainForm());
         }
     }
 }

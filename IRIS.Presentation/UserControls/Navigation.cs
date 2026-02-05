@@ -1,6 +1,8 @@
 ﻿using Guna.UI2.WinForms;
 using IRIS.Domain.Entities;
 using IRIS.Presentation.Forms;
+using IRIS.Presentation.UserControls.Components;
+using IRIS.Presentation.UserControls.PagesUC;
 using System.Data;
 using System.Windows;
 using Timer = System.Windows.Forms.Timer;
@@ -144,7 +146,13 @@ namespace IRIS.Presentation.UserControls
                 if (_isExpanded) btnHamburger_Click(null, null);
             }
         }
-        private void btnRestock_Click(object sender, EventArgs e) { }
+        private void btnRestock_Click(object sender, EventArgs e) {
+            if (this.ParentForm is MainForm main)
+            {
+                main.LoadPage(new RestockPage());
+                if (_isExpanded) btnHamburger_Click(null, null);
+            }
+        }
         private void btnRequests_Click(object sender, EventArgs e) { }
         private void btnReports_Click(object sender, EventArgs e) { }
         private void btnHistory_Click(object sender, EventArgs e) { }

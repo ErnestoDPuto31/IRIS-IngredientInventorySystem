@@ -1,6 +1,6 @@
-﻿namespace IRIS.Presentation.UserControls
+﻿namespace IRIS.Presentation.UserControls.Components
 {
-    partial class StatusCard
+    partial class IrisSearchBar
     {
         /// <summary> 
         /// Required designer variable.

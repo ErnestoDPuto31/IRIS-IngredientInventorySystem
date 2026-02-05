@@ -1,19 +1,32 @@
 ﻿using IRIS.Domain.Entities;
 using System.Collections.Generic;
+using System;
 
 namespace IRIS.Services.Interfaces
 {
     public interface IRestockService
     {
-        // Get all items currently in the restock table
-        List<Restock> SearchRestockList(string searchTerm);
-        List<Restock> GetRestockList();
+        // Get all items (existing)
+        IEnumerable<Restock> GetRestockList();
 
-        // Logic to scan Ingredients and update the Restock table
+        // --- NEW: Clean Architecture Filters ---
+
+        // 1. Used by the Grid to filter by Category ("All", "Spices", etc.) and Status ("Low", "Empty", "Well")
+        IEnumerable<Restock> GetFilteredRestockList(string category, string status);
+
+        // 2. Used by the Status Cards to get the count directly (e.g. returns 5 for "Low")
+        int GetCountByStatus(string statusType);
+
+        // ---------------------------------------
+
+        IEnumerable<Restock> SearchRestockList(string searchTerm);
+
         void RefreshRestockData();
 
-        // Logic to handle the actual restock action
-        void ProcessRestock(int restockId, decimal quantityReceived);
+        void ProcessRestock(int id, decimal amount);
 
+        IEnumerable<string> GetCategories();
+
+        event Action OnInventoryUpdated;
     }
 }
