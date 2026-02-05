@@ -1,4 +1,5 @@
 ﻿using IRIS.Domain.Entities;
+using IRIS.Presentation.Window_Forms;
 
 namespace IRIS.Presentation.UserControls
 {
@@ -8,7 +9,11 @@ namespace IRIS.Presentation.UserControls
         public IngredientCard(Ingredient data)
         {
             InitializeComponent();
+
+            this.Dock = DockStyle.None;
             this.IngredientData = data;
+            this.DoubleBuffered = true;
+            this.Margin = new Padding(35);
             SetupCard();
         }
 
@@ -31,7 +36,9 @@ namespace IRIS.Presentation.UserControls
 
         private void UpdateVisuals()
         {
-            double maxRange = (double)IngredientData.MinimumStock * 2;
+            double maxRange = (double)IngredientData.MinimumStock * 2.5; 
+            if (maxRange <= 0) maxRange = 100;
+
             int percentage = (int)((double)IngredientData.CurrentStock / maxRange * 100);
             guna2ProgressBar1.Value = Math.Clamp(percentage, 5, 100);
 
@@ -40,23 +47,27 @@ namespace IRIS.Presentation.UserControls
 
             if (IngredientData.CurrentStock <= 0)
             {
-                statusText = "empty";
-                statusColor = Color.FromArgb(192, 57, 43); // Red
+                statusText = "Empty";
+                statusColor = Color.FromArgb(192, 57, 43); 
             }
             else if (IngredientData.CurrentStock <= IngredientData.MinimumStock)
             {
-                statusText = "low";
-                statusColor = Color.FromArgb(230, 126, 34); // Orange
+                statusText = "Low";
+                statusColor = Color.FromArgb(231, 76, 60);
             }
             else
             {
-                statusText = "full";
-                statusColor = Color.FromArgb(39, 174, 96); // Green
+                statusText = "Full";
+                statusColor = Color.FromArgb(46, 204, 113);
             }
 
             txtStatus.Text = statusText;
-            txtStatus.ForeColor = statusColor;
-            txtStatus.BorderColor = statusColor;
+            txtStatus.FillColor = statusColor;      
+            txtStatus.ForeColor = Color.White;      
+            txtStatus.BorderThickness = 0;        
+
+            guna2ProgressBar1.ProgressColor = statusColor;
+            guna2ProgressBar1.ProgressColor2 = statusColor;
 
             ApplyCategoryColor(IngredientData.Category);
         }
@@ -66,8 +77,7 @@ namespace IRIS.Presentation.UserControls
             Color textColor;
             Color backColor;
 
-            // Use ToLower to avoid case-sensitivity issues
-            switch (category?.ToLower().Trim())
+            switch (category.ToLower().Trim())
             {
                 case "produce":
                     textColor = Color.FromArgb(39, 174, 96);   // Emerald Green
@@ -122,13 +132,20 @@ namespace IRIS.Presentation.UserControls
 
         private void btnEditIngredient_Click(object sender, EventArgs e)
         {
-            // Logic to trigger the Add/Edit window with existing data
+            using (var form = new frmAddIngredient(this.IngredientData))
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    this.IngredientData = form.NewIngredient;
+                    SetupCard();
+                }
+            }
         }
 
         private void btnDeleteIngredient_Click(object sender, EventArgs e)
         {
-            // Logic to remove from UI (Next step: add database deletion)
             this.Parent.Controls.Remove(this);
+            this.Dispose();
         }
     }
 }

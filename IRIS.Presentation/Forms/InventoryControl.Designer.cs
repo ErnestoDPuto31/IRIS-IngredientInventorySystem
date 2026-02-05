@@ -58,9 +58,7 @@
             pnlIngredients = new Guna.UI2.WinForms.Guna2Panel();
             scrlIngredients = new Guna.UI2.WinForms.Guna2VScrollBar();
             pnlMainContent = new Guna.UI2.WinForms.Guna2Panel();
-            materialButton1 = new MaterialSkin.Controls.MaterialButton();
             guna2GroupBox1.SuspendLayout();
-            pnlIngredients.SuspendLayout();
             pnlMainContent.SuspendLayout();
             SuspendLayout();
             // 
@@ -78,10 +76,10 @@
             guna2GroupBox1.CustomizableEdges = customizableEdges9;
             guna2GroupBox1.Font = new Font("Segoe UI", 9F);
             guna2GroupBox1.ForeColor = Color.Black;
-            guna2GroupBox1.Location = new Point(102, 152);
+            guna2GroupBox1.Location = new Point(127, 152);
             guna2GroupBox1.Name = "guna2GroupBox1";
             guna2GroupBox1.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            guna2GroupBox1.Size = new Size(1111, 86);
+            guna2GroupBox1.Size = new Size(1392, 86);
             guna2GroupBox1.TabIndex = 0;
             // 
             // guna2ImageButton2
@@ -92,7 +90,7 @@
             guna2ImageButton2.ImageOffset = new Point(0, 0);
             guna2ImageButton2.ImageRotate = 0F;
             guna2ImageButton2.ImageSize = new Size(24, 24);
-            guna2ImageButton2.Location = new Point(827, 21);
+            guna2ImageButton2.Location = new Point(1061, 21);
             guna2ImageButton2.Name = "guna2ImageButton2";
             guna2ImageButton2.PressedState.ImageSize = new Size(24, 24);
             guna2ImageButton2.ShadowDecoration.CustomizableEdges = customizableEdges1;
@@ -109,7 +107,7 @@
             cmbSortIngredients.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSortIngredients.FocusedColor = Color.FromArgb(95, 20, 161);
             cmbSortIngredients.FocusedState.BorderColor = Color.FromArgb(95, 20, 161);
-            cmbSortIngredients.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cmbSortIngredients.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbSortIngredients.ForeColor = Color.Black;
             cmbSortIngredients.HoverState.BorderColor = Color.FromArgb(95, 20, 161);
             cmbSortIngredients.ItemHeight = 36;
@@ -118,11 +116,11 @@
             cmbSortIngredients.ItemsAppearance.ForeColor = Color.Black;
             cmbSortIngredients.ItemsAppearance.SelectedBackColor = Color.FromArgb(95, 20, 161);
             cmbSortIngredients.ItemsAppearance.SelectedForeColor = Color.White;
-            cmbSortIngredients.Location = new Point(859, 21);
+            cmbSortIngredients.Location = new Point(1093, 21);
             cmbSortIngredients.MaxDropDownItems = 15;
             cmbSortIngredients.Name = "cmbSortIngredients";
             cmbSortIngredients.ShadowDecoration.CustomizableEdges = customizableEdges3;
-            cmbSortIngredients.Size = new Size(213, 42);
+            cmbSortIngredients.Size = new Size(261, 42);
             cmbSortIngredients.TabIndex = 3;
             // 
             // guna2ImageButton1
@@ -133,7 +131,7 @@
             guna2ImageButton1.ImageOffset = new Point(0, 0);
             guna2ImageButton1.ImageRotate = 0F;
             guna2ImageButton1.ImageSize = new Size(24, 24);
-            guna2ImageButton1.Location = new Point(548, 21);
+            guna2ImageButton1.Location = new Point(737, 21);
             guna2ImageButton1.Name = "guna2ImageButton1";
             guna2ImageButton1.PressedState.ImageSize = new Size(24, 24);
             guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -150,7 +148,7 @@
             cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCategory.FocusedColor = Color.FromArgb(95, 20, 161);
             cmbCategory.FocusedState.BorderColor = Color.FromArgb(95, 20, 161);
-            cmbCategory.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cmbCategory.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbCategory.ForeColor = Color.Black;
             cmbCategory.HoverState.BorderColor = Color.FromArgb(95, 20, 161);
             cmbCategory.ItemHeight = 36;
@@ -159,11 +157,11 @@
             cmbCategory.ItemsAppearance.ForeColor = Color.Black;
             cmbCategory.ItemsAppearance.SelectedBackColor = Color.FromArgb(95, 20, 161);
             cmbCategory.ItemsAppearance.SelectedForeColor = Color.White;
-            cmbCategory.Location = new Point(580, 21);
+            cmbCategory.Location = new Point(769, 21);
             cmbCategory.MaxDropDownItems = 15;
             cmbCategory.Name = "cmbCategory";
             cmbCategory.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            cmbCategory.Size = new Size(231, 42);
+            cmbCategory.Size = new Size(276, 42);
             cmbCategory.TabIndex = 1;
             // 
             // txtSearchIngredient
@@ -189,7 +187,7 @@
             txtSearchIngredient.PlaceholderText = "Search Ingredients...";
             txtSearchIngredient.SelectedText = "";
             txtSearchIngredient.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            txtSearchIngredient.Size = new Size(465, 42);
+            txtSearchIngredient.Size = new Size(534, 42);
             txtSearchIngredient.TabIndex = 0;
             // 
             // guna2BorderlessForm1
@@ -200,7 +198,6 @@
             // 
             // btnAddIngredient
             // 
-            btnAddIngredient.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btnAddIngredient.BorderRadius = 10;
             btnAddIngredient.CustomizableEdges = customizableEdges13;
             btnAddIngredient.DisabledState.BorderColor = Color.DarkGray;
@@ -210,19 +207,18 @@
             btnAddIngredient.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnAddIngredient.FillColor = Color.FromArgb(77, 10, 133);
             btnAddIngredient.FillColor2 = Color.FromArgb(137, 65, 208);
-            btnAddIngredient.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAddIngredient.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAddIngredient.ForeColor = Color.White;
             btnAddIngredient.HoverState.FillColor = Color.FromArgb(95, 20, 161);
             btnAddIngredient.HoverState.FillColor2 = Color.FromArgb(155, 86, 226);
             btnAddIngredient.Image = Properties.Resources.icons8_add_100;
             btnAddIngredient.ImageAlign = HorizontalAlignment.Left;
             btnAddIngredient.ImageOffset = new Point(3, 0);
-            btnAddIngredient.ImageSize = new Size(15, 15);
-            btnAddIngredient.Location = new Point(1029, 66);
+            btnAddIngredient.Location = new Point(1312, 47);
             btnAddIngredient.Name = "btnAddIngredient";
             btnAddIngredient.PressedColor = Color.FromArgb(111, 49, 171);
             btnAddIngredient.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            btnAddIngredient.Size = new Size(184, 51);
+            btnAddIngredient.Size = new Size(207, 69);
             btnAddIngredient.TabIndex = 1;
             btnAddIngredient.Text = " Add Ingredient";
             btnAddIngredient.TextAlign = HorizontalAlignment.Left;
@@ -231,33 +227,32 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(102, 29);
+            label1.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(127, 33);
             label1.Name = "label1";
-            label1.Size = new Size(533, 42);
+            label1.Size = new Size(559, 70);
             label1.TabIndex = 2;
             label1.Text = "INVENTORY MANAGEMENT";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Font = new Font("Poppins", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = SystemColors.ControlDarkDark;
-            label2.Location = new Point(102, 81);
+            label2.Location = new Point(132, 86);
             label2.Name = "label2";
-            label2.Size = new Size(430, 25);
+            label2.Size = new Size(569, 40);
             label2.TabIndex = 3;
             label2.Text = "Manage Ingredient Stock Levels and Categories";
             // 
             // pnlIngredients
             // 
             pnlIngredients.AutoScroll = true;
-            pnlIngredients.Controls.Add(materialButton1);
             pnlIngredients.CustomizableEdges = customizableEdges11;
-            pnlIngredients.Location = new Point(102, 264);
+            pnlIngredients.Location = new Point(127, 264);
             pnlIngredients.Name = "pnlIngredients";
             pnlIngredients.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            pnlIngredients.Size = new Size(1111, 389);
+            pnlIngredients.Size = new Size(1392, 558);
             pnlIngredients.TabIndex = 4;
             // 
             // scrlIngredients
@@ -265,10 +260,10 @@
             scrlIngredients.BindingContainer = pnlIngredients;
             scrlIngredients.InUpdate = false;
             scrlIngredients.LargeChange = 10;
-            scrlIngredients.Location = new Point(1192, 264);
+            scrlIngredients.Location = new Point(1498, 264);
             scrlIngredients.Name = "scrlIngredients";
             scrlIngredients.ScrollbarSize = 21;
-            scrlIngredients.Size = new Size(21, 389);
+            scrlIngredients.Size = new Size(21, 558);
             scrlIngredients.TabIndex = 0;
             scrlIngredients.ThumbColor = Color.FromArgb(137, 65, 208);
             scrlIngredients.ThumbSize = 5F;
@@ -288,28 +283,8 @@
             pnlMainContent.ShadowDecoration.CustomizableEdges = customizableEdges16;
             pnlMainContent.ShadowDecoration.Enabled = true;
             pnlMainContent.ShadowDecoration.Shadow = new Padding(10);
-            pnlMainContent.Size = new Size(1280, 720);
+            pnlMainContent.Size = new Size(1600, 900);
             pnlMainContent.TabIndex = 5;
-            // 
-            // materialButton1
-            // 
-            materialButton1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            materialButton1.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            materialButton1.Depth = 0;
-            materialButton1.HighEmphasis = true;
-            materialButton1.Icon = null;
-            materialButton1.Location = new Point(293, 76);
-            materialButton1.Margin = new Padding(4, 6, 4, 6);
-            materialButton1.MouseState = MaterialSkin.MouseState.HOVER;
-            materialButton1.Name = "materialButton1";
-            materialButton1.NoAccentTextColor = Color.Empty;
-            materialButton1.Size = new Size(158, 36);
-            materialButton1.TabIndex = 0;
-            materialButton1.Text = "materialButton1";
-            materialButton1.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            materialButton1.UseAccentColor = false;
-            materialButton1.UseVisualStyleBackColor = true;
-            materialButton1.Click += materialButton1_Click;
             // 
             // InventoryControl
             // 
@@ -318,11 +293,9 @@
             BackColor = Color.FromArgb(254, 253, 253);
             Controls.Add(pnlMainContent);
             Name = "InventoryControl";
-            Size = new Size(1280, 720);
+            Size = new Size(1600, 900);
             Load += Inventory_Load;
             guna2GroupBox1.ResumeLayout(false);
-            pnlIngredients.ResumeLayout(false);
-            pnlIngredients.PerformLayout();
             pnlMainContent.ResumeLayout(false);
             pnlMainContent.PerformLayout();
             ResumeLayout(false);
@@ -343,6 +316,5 @@
         private Guna.UI2.WinForms.Guna2VScrollBar scrlIngredients;
         private Guna.UI2.WinForms.Guna2Panel pnlIngredients;
         private Guna.UI2.WinForms.Guna2Panel pnlMainContent;
-        private MaterialSkin.Controls.MaterialButton materialButton1;
     }
 }

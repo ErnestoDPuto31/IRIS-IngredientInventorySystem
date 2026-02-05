@@ -2,6 +2,7 @@
 using IRIS.Domain.Entities;
 using IRIS.Presentation.Forms;
 using System.Data;
+using System.Windows;
 using Timer = System.Windows.Forms.Timer;
 
 namespace IRIS.Presentation.UserControls
@@ -11,7 +12,6 @@ namespace IRIS.Presentation.UserControls
         private const int COLLAPSED_WIDTH = 60;
         private const int EXPANDED_WIDTH = 220;
         private const int ANIM_INTERVAL = 10;
-        private const int MAX_DIM_ALPHA = 130; // 0-255: How dark the background gets
 
         private bool _isExpanded = false;
         private Timer _animTimer;
@@ -62,14 +62,7 @@ namespace IRIS.Presentation.UserControls
 
             btnHamburger.Image = _isExpanded ? Properties.Resources.arrowleft : Properties.Resources.hamburger;
 
-            // Sync the Dimmer state
-            Control dimmer = this.Parent?.Controls.Find("pnlDimmer", false).FirstOrDefault();
-            if (_isExpanded && dimmer != null)
-            {
-                dimmer.Visible = true;
-                dimmer.BringToFront();
-                this.BringToFront(); // Ensure sidebar stays on top of the dim layer
-            }
+      
 
             if (_isExpanded) ApplyExpandedState();
             else ApplyCollapsedState();
@@ -87,15 +80,6 @@ namespace IRIS.Presentation.UserControls
                 int newWidth = (Width < _targetWidth) ? Width + step : Width - step;
                 if (Math.Abs(newWidth - _targetWidth) < step) newWidth = _targetWidth;
                 this.Width = newWidth;
-
-                Control dimmer = this.Parent?.Controls.Find("pnlDimmer", false).FirstOrDefault();
-                if (dimmer != null)
-                {
-                    float ratio = (float)(this.Width - COLLAPSED_WIDTH) / (EXPANDED_WIDTH - COLLAPSED_WIDTH);
-                    int alpha = (int)(ratio * MAX_DIM_ALPHA);
-
-                    dimmer.BackColor = Color.FromArgb(alpha, 0, 0, 0);
-                }
             }
             else
             {
@@ -114,7 +98,7 @@ namespace IRIS.Presentation.UserControls
             foreach (var btn in GetAllNavButtons())
             {
                 btn.Text = string.Empty;
-                btn.ImageAlign = HorizontalAlignment.Center;
+                btn.ImageAlign = System.Windows.Forms.HorizontalAlignment.Center;
                 btn.Padding = new Padding(0);
             }
             this.ResumeLayout();
@@ -126,10 +110,10 @@ namespace IRIS.Presentation.UserControls
             foreach (var btn in GetAllNavButtons())
             {
                 string btnText = btn.Name.Replace("btn", "");
-                btn.ImageAlign = HorizontalAlignment.Left;
-                btn.TextAlign = HorizontalAlignment.Left;
+                btn.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+                btn.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
                 btn.Padding = new Padding(15, 0, 0, 0);
-                btn.TextOffset = new Point(15, 0);
+                btn.TextOffset = new System.Drawing.Point(15, 0);
                 btn.Text = btnText;
             }
             this.ResumeLayout();
@@ -166,7 +150,7 @@ namespace IRIS.Presentation.UserControls
         private void btnHistory_Click(object sender, EventArgs e) { }
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to log out?", "Logout",
+            DialogResult result = System.Windows.Forms.MessageBox.Show("Are you sure you want to log out?", "Logout",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)

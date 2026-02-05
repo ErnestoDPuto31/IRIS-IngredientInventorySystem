@@ -79,22 +79,21 @@
             guna2Panel1.Controls.Add(txtCategoryLabel);
             guna2Panel1.Controls.Add(lblIngredientName);
             guna2Panel1.CustomizableEdges = customizableEdges9;
-            guna2Panel1.Dock = DockStyle.Fill;
             guna2Panel1.Location = new Point(0, 0);
             guna2Panel1.Name = "guna2Panel1";
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            guna2Panel1.Size = new Size(300, 260);
+            guna2Panel1.Size = new Size(320, 280);
             guna2Panel1.TabIndex = 0;
             // 
             // lblUpdatedAt
             // 
             lblUpdatedAt.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblUpdatedAt.AutoSize = true;
-            lblUpdatedAt.Font = new Font("Poppins", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblUpdatedAt.ForeColor = SystemColors.ControlDarkDark;
-            lblUpdatedAt.Location = new Point(22, 214);
+            lblUpdatedAt.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblUpdatedAt.ForeColor = SystemColors.ControlDark;
+            lblUpdatedAt.Location = new Point(22, 235);
             lblUpdatedAt.Name = "lblUpdatedAt";
-            lblUpdatedAt.Size = new Size(159, 23);
+            lblUpdatedAt.Size = new Size(184, 26);
             lblUpdatedAt.TabIndex = 10;
             lblUpdatedAt.Text = "Updated At 01-20-2026";
             lblUpdatedAt.TextAlign = ContentAlignment.MiddleCenter;
@@ -108,7 +107,7 @@
             btnDeleteIngredient.ImageOffset = new Point(0, 0);
             btnDeleteIngredient.ImageRotate = 0F;
             btnDeleteIngredient.ImageSize = new Size(25, 25);
-            btnDeleteIngredient.Location = new Point(243, 20);
+            btnDeleteIngredient.Location = new Point(262, 22);
             btnDeleteIngredient.Name = "btnDeleteIngredient";
             btnDeleteIngredient.PressedState.Image = Properties.Resources.icons8_trash_48;
             btnDeleteIngredient.PressedState.ImageSize = new Size(30, 30);
@@ -121,11 +120,11 @@
             // 
             lblMinThreshold.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblMinThreshold.AutoSize = true;
-            lblMinThreshold.Font = new Font("Poppins", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblMinThreshold.Font = new Font("Poppins", 9F, FontStyle.Bold);
             lblMinThreshold.ForeColor = SystemColors.ControlDarkDark;
-            lblMinThreshold.Location = new Point(129, 153);
+            lblMinThreshold.Location = new Point(151, 168);
             lblMinThreshold.Name = "lblMinThreshold";
-            lblMinThreshold.Size = new Size(43, 23);
+            lblMinThreshold.Size = new Size(52, 26);
             lblMinThreshold.TabIndex = 8;
             lblMinThreshold.Text = "500g";
             lblMinThreshold.TextAlign = ContentAlignment.MiddleLeft;
@@ -134,11 +133,11 @@
             // 
             lblCurrentStock.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblCurrentStock.AutoSize = true;
-            lblCurrentStock.Font = new Font("Poppins", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblCurrentStock.Font = new Font("Poppins", 9F, FontStyle.Bold);
             lblCurrentStock.ForeColor = SystemColors.ControlDarkDark;
-            lblCurrentStock.Location = new Point(129, 132);
+            lblCurrentStock.Location = new Point(151, 142);
             lblCurrentStock.Name = "lblCurrentStock";
-            lblCurrentStock.Size = new Size(53, 23);
+            lblCurrentStock.Size = new Size(65, 26);
             lblCurrentStock.TabIndex = 7;
             lblCurrentStock.Text = "2,000g";
             lblCurrentStock.TextAlign = ContentAlignment.MiddleLeft;
@@ -146,22 +145,22 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Poppins", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Font = new Font("Poppins", 9F, FontStyle.Bold);
             label2.ForeColor = SystemColors.ControlDarkDark;
-            label2.Location = new Point(22, 153);
+            label2.Location = new Point(22, 168);
             label2.Name = "label2";
-            label2.Size = new Size(101, 23);
+            label2.Size = new Size(123, 26);
             label2.TabIndex = 6;
             label2.Text = "Min Threshold:";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Poppins", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Poppins", 9F, FontStyle.Bold);
             label1.ForeColor = SystemColors.ControlDarkDark;
-            label1.Location = new Point(22, 132);
+            label1.Location = new Point(22, 142);
             label1.Name = "label1";
-            label1.Size = new Size(101, 23);
+            label1.Size = new Size(120, 26);
             label1.TabIndex = 5;
             label1.Text = "Current Stock:";
             // 
@@ -169,10 +168,10 @@
             // 
             guna2ProgressBar1.BorderRadius = 10;
             guna2ProgressBar1.CustomizableEdges = customizableEdges2;
-            guna2ProgressBar1.Location = new Point(22, 179);
+            guna2ProgressBar1.Location = new Point(22, 209);
             guna2ProgressBar1.Name = "guna2ProgressBar1";
             guna2ProgressBar1.ShadowDecoration.CustomizableEdges = customizableEdges3;
-            guna2ProgressBar1.Size = new Size(254, 14);
+            guna2ProgressBar1.Size = new Size(273, 10);
             guna2ProgressBar1.TabIndex = 4;
             guna2ProgressBar1.Text = "guna2ProgressBar1";
             guna2ProgressBar1.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
@@ -186,7 +185,7 @@
             btnEditIngredient.ImageOffset = new Point(0, 0);
             btnEditIngredient.ImageRotate = 0F;
             btnEditIngredient.ImageSize = new Size(20, 20);
-            btnEditIngredient.Location = new Point(205, 20);
+            btnEditIngredient.Location = new Point(222, 22);
             btnEditIngredient.Name = "btnEditIngredient";
             btnEditIngredient.PressedState.Image = Properties.Resources.icons8_pencil_hover_52;
             btnEditIngredient.PressedState.ImageSize = new Size(24, 24);
@@ -207,7 +206,7 @@
             txtStatus.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtStatus.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             txtStatus.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtStatus.ForeColor = Color.Black;
+            txtStatus.ForeColor = Color.LawnGreen;
             txtStatus.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             txtStatus.Location = new Point(205, 86);
             txtStatus.Margin = new Padding(3, 5, 3, 5);
@@ -217,7 +216,7 @@
             txtStatus.ReadOnly = true;
             txtStatus.SelectedText = "";
             txtStatus.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            txtStatus.Size = new Size(50, 26);
+            txtStatus.Size = new Size(90, 26);
             txtStatus.TabIndex = 2;
             txtStatus.TextOffset = new Point(2, 0);
             // 
@@ -251,7 +250,7 @@
             // 
             lblIngredientName.AutoSize = true;
             lblIngredientName.Font = new Font("Poppins", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblIngredientName.Location = new Point(22, 43);
+            lblIngredientName.Location = new Point(11, 46);
             lblIngredientName.Name = "lblIngredientName";
             lblIngredientName.Size = new Size(131, 50);
             lblIngredientName.TabIndex = 0;
@@ -263,7 +262,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(guna2Panel1);
             Name = "IngredientCard";
-            Size = new Size(300, 260);
+            Size = new Size(320, 280);
             guna2Panel1.ResumeLayout(false);
             guna2Panel1.PerformLayout();
             ResumeLayout(false);
