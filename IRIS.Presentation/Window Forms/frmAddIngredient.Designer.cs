@@ -74,21 +74,21 @@
             // lblIngredientTitle
             // 
             lblIngredientTitle.AutoSize = true;
-            lblIngredientTitle.Font = new Font("Poppins", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblIngredientTitle.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblIngredientTitle.Location = new Point(25, 27);
             lblIngredientTitle.Name = "lblIngredientTitle";
-            lblIngredientTitle.Size = new Size(323, 53);
+            lblIngredientTitle.Size = new Size(297, 36);
             lblIngredientTitle.TabIndex = 0;
             lblIngredientTitle.Text = "Add New Ingredient";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Poppins", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ControlDarkDark;
             label1.Location = new Point(25, 68);
             label1.Name = "label1";
-            label1.Size = new Size(372, 31);
+            label1.Size = new Size(325, 22);
             label1.TabIndex = 1;
             label1.Text = "Enter the details of thew new Ingredient";
             // 
@@ -109,11 +109,11 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
+            label2.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Bold);
             label2.ForeColor = SystemColors.ActiveCaptionText;
             label2.Location = new Point(55, 118);
             label2.Name = "label2";
-            label2.Size = new Size(169, 31);
+            label2.Size = new Size(156, 22);
             label2.TabIndex = 3;
             label2.Text = "Ingredient Name";
             // 
@@ -128,7 +128,7 @@
             txtIngredientName.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
             txtIngredientName.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtIngredientName.FocusedState.BorderColor = Color.FromArgb(77, 10, 133);
-            txtIngredientName.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtIngredientName.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtIngredientName.HoverState.BorderColor = Color.FromArgb(77, 10, 133);
             txtIngredientName.Location = new Point(55, 157);
             txtIngredientName.Margin = new Padding(4, 8, 4, 8);
@@ -142,11 +142,11 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
+            label3.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Bold);
             label3.ForeColor = SystemColors.ActiveCaptionText;
             label3.Location = new Point(55, 222);
             label3.Name = "label3";
-            label3.Size = new Size(100, 31);
+            label3.Size = new Size(91, 22);
             label3.TabIndex = 5;
             label3.Text = "Category";
             // 
@@ -160,7 +160,7 @@
             cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCategory.FocusedColor = Color.FromArgb(77, 10, 133);
             cmbCategory.FocusedState.BorderColor = Color.FromArgb(77, 10, 133);
-            cmbCategory.Font = new Font("Poppins", 10.8F);
+            cmbCategory.Font = new Font("Microsoft Sans Serif", 10.8F);
             cmbCategory.ForeColor = Color.FromArgb(68, 88, 112);
             cmbCategory.HoverState.BorderColor = Color.FromArgb(77, 10, 133);
             cmbCategory.ItemHeight = 30;
@@ -178,11 +178,11 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
+            label4.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Bold);
             label4.ForeColor = SystemColors.ActiveCaptionText;
             label4.Location = new Point(55, 327);
             label4.Name = "label4";
-            label4.Size = new Size(141, 31);
+            label4.Size = new Size(133, 22);
             label4.TabIndex = 7;
             label4.Text = "Current Stock";
             // 
@@ -194,7 +194,7 @@
             numCurrentStock.CustomizableEdges = customizableEdges9;
             numCurrentStock.FocusedState.BorderColor = Color.FromArgb(137, 65, 208);
             numCurrentStock.FocusedState.UpDownButtonFillColor = Color.FromArgb(155, 86, 226);
-            numCurrentStock.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            numCurrentStock.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             numCurrentStock.Location = new Point(51, 362);
             numCurrentStock.Margin = new Padding(3, 4, 3, 4);
             numCurrentStock.Maximum = new decimal(new int[] { 5000000, 0, 0, 0 });
@@ -215,7 +215,7 @@
             numMinimumThreshold.CustomizableEdges = customizableEdges7;
             numMinimumThreshold.FocusedState.BorderColor = Color.FromArgb(137, 65, 208);
             numMinimumThreshold.FocusedState.UpDownButtonFillColor = Color.FromArgb(155, 86, 226);
-            numMinimumThreshold.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            numMinimumThreshold.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             numMinimumThreshold.Location = new Point(318, 362);
             numMinimumThreshold.Margin = new Padding(3, 4, 3, 4);
             numMinimumThreshold.Maximum = new decimal(new int[] { 5000000, 0, 0, 0 });
@@ -230,11 +230,11 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
+            label5.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Bold);
             label5.ForeColor = SystemColors.ActiveCaptionText;
             label5.Location = new Point(318, 327);
             label5.Name = "label5";
-            label5.Size = new Size(199, 31);
+            label5.Size = new Size(183, 22);
             label5.TabIndex = 9;
             label5.Text = "Minimum Threshold";
             // 
@@ -248,7 +248,7 @@
             cmbUnit.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbUnit.FocusedColor = Color.FromArgb(77, 10, 133);
             cmbUnit.FocusedState.BorderColor = Color.FromArgb(77, 10, 133);
-            cmbUnit.Font = new Font("Poppins", 10.8F);
+            cmbUnit.Font = new Font("Microsoft Sans Serif", 10.8F);
             cmbUnit.ForeColor = Color.FromArgb(68, 88, 112);
             cmbUnit.HoverState.BorderColor = Color.FromArgb(77, 10, 133);
             cmbUnit.ItemHeight = 30;
@@ -266,11 +266,11 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Font = new Font("Poppins", 10.8F, FontStyle.Bold);
+            label6.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Bold);
             label6.ForeColor = SystemColors.ActiveCaptionText;
             label6.Location = new Point(51, 435);
             label6.Name = "label6";
-            label6.Size = new Size(51, 31);
+            label6.Size = new Size(46, 22);
             label6.TabIndex = 11;
             label6.Text = "Unit";
             // 
@@ -286,7 +286,7 @@
             btnAddIngredient.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnAddIngredient.FillColor = Color.FromArgb(77, 10, 133);
             btnAddIngredient.FillColor2 = Color.FromArgb(137, 65, 208);
-            btnAddIngredient.Font = new Font("Poppins", 10.2F, FontStyle.Bold);
+            btnAddIngredient.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold);
             btnAddIngredient.ForeColor = Color.White;
             btnAddIngredient.HoverState.FillColor = Color.FromArgb(95, 20, 161);
             btnAddIngredient.HoverState.FillColor2 = Color.FromArgb(155, 86, 226);
@@ -313,7 +313,7 @@
             btnCancel.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnCancel.FillColor = Color.White;
             btnCancel.FillColor2 = Color.White;
-            btnCancel.Font = new Font("Poppins", 10.2F, FontStyle.Bold);
+            btnCancel.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold);
             btnCancel.ForeColor = Color.Black;
             btnCancel.HoverState.FillColor = Color.Gray;
             btnCancel.HoverState.FillColor2 = Color.Silver;
@@ -329,7 +329,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(616, 707);
+            ClientSize = new Size(600, 700);
             Controls.Add(btnCancel);
             Controls.Add(btnAddIngredient);
             Controls.Add(cmbUnit);

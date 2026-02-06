@@ -89,11 +89,11 @@
             // 
             lblUpdatedAt.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblUpdatedAt.AutoSize = true;
-            lblUpdatedAt.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblUpdatedAt.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblUpdatedAt.ForeColor = SystemColors.ControlDark;
             lblUpdatedAt.Location = new Point(22, 235);
             lblUpdatedAt.Name = "lblUpdatedAt";
-            lblUpdatedAt.Size = new Size(184, 26);
+            lblUpdatedAt.Size = new Size(158, 18);
             lblUpdatedAt.TabIndex = 10;
             lblUpdatedAt.Text = "Updated At 01-20-2026";
             lblUpdatedAt.TextAlign = ContentAlignment.MiddleCenter;
@@ -120,11 +120,11 @@
             // 
             lblMinThreshold.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblMinThreshold.AutoSize = true;
-            lblMinThreshold.Font = new Font("Poppins", 9F, FontStyle.Bold);
+            lblMinThreshold.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             lblMinThreshold.ForeColor = SystemColors.ControlDarkDark;
             lblMinThreshold.Location = new Point(151, 168);
             lblMinThreshold.Name = "lblMinThreshold";
-            lblMinThreshold.Size = new Size(52, 26);
+            lblMinThreshold.Size = new Size(44, 18);
             lblMinThreshold.TabIndex = 8;
             lblMinThreshold.Text = "500g";
             lblMinThreshold.TextAlign = ContentAlignment.MiddleLeft;
@@ -133,11 +133,11 @@
             // 
             lblCurrentStock.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblCurrentStock.AutoSize = true;
-            lblCurrentStock.Font = new Font("Poppins", 9F, FontStyle.Bold);
+            lblCurrentStock.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             lblCurrentStock.ForeColor = SystemColors.ControlDarkDark;
             lblCurrentStock.Location = new Point(151, 142);
             lblCurrentStock.Name = "lblCurrentStock";
-            lblCurrentStock.Size = new Size(65, 26);
+            lblCurrentStock.Size = new Size(58, 18);
             lblCurrentStock.TabIndex = 7;
             lblCurrentStock.Text = "2,000g";
             lblCurrentStock.TextAlign = ContentAlignment.MiddleLeft;
@@ -145,28 +145,28 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Poppins", 9F, FontStyle.Bold);
+            label2.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             label2.ForeColor = SystemColors.ControlDarkDark;
             label2.Location = new Point(22, 168);
             label2.Name = "label2";
-            label2.Size = new Size(123, 26);
+            label2.Size = new Size(120, 18);
             label2.TabIndex = 6;
             label2.Text = "Min Threshold:";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Poppins", 9F, FontStyle.Bold);
+            label1.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
             label1.ForeColor = SystemColors.ControlDarkDark;
             label1.Location = new Point(22, 142);
             label1.Name = "label1";
-            label1.Size = new Size(120, 26);
+            label1.Size = new Size(118, 18);
             label1.TabIndex = 5;
             label1.Text = "Current Stock:";
             // 
             // guna2ProgressBar1
             // 
-            guna2ProgressBar1.BorderRadius = 10;
+            guna2ProgressBar1.BorderRadius = 5;
             guna2ProgressBar1.CustomizableEdges = customizableEdges2;
             guna2ProgressBar1.Location = new Point(22, 209);
             guna2ProgressBar1.Name = "guna2ProgressBar1";
@@ -205,7 +205,7 @@
             txtStatus.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
             txtStatus.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtStatus.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtStatus.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtStatus.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtStatus.ForeColor = Color.LawnGreen;
             txtStatus.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             txtStatus.Location = new Point(205, 86);
@@ -232,7 +232,7 @@
             txtCategoryLabel.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtCategoryLabel.FillColor = Color.FromArgb(230, 126, 34);
             txtCategoryLabel.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtCategoryLabel.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtCategoryLabel.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtCategoryLabel.ForeColor = Color.White;
             txtCategoryLabel.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             txtCategoryLabel.Location = new Point(22, 86);
@@ -249,10 +249,10 @@
             // lblIngredientName
             // 
             lblIngredientName.AutoSize = true;
-            lblIngredientName.Font = new Font("Poppins", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblIngredientName.Font = new Font("Microsoft Sans Serif", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblIngredientName.Location = new Point(11, 46);
             lblIngredientName.Name = "lblIngredientName";
-            lblIngredientName.Size = new Size(131, 50);
+            lblIngredientName.Size = new Size(113, 32);
             lblIngredientName.TabIndex = 0;
             lblIngredientName.Text = "Carrots";
             // 

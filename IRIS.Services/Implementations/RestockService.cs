@@ -28,16 +28,13 @@ namespace IRIS.Services.Implementations
 
         public IEnumerable<Restock> GetFilteredRestockList(string category, string status)
         {
-            // 1. Start with all Ingredients (Use AsNoTracking for speed since this is read-only)
             var query = _context.Ingredients.AsQueryable();
 
-            // 2. Filter by Category
             if (!string.IsNullOrEmpty(category) && category != "All")
             {
                 query = query.Where(i => i.Category == category);
             }
 
-            // 3. Filter by Status
             switch (status)
             {
                 case "Low":
@@ -51,27 +48,22 @@ namespace IRIS.Services.Implementations
                     break;
             }
 
-            // 4. Execute Query & Map to Restock Objects
-            // We map to 'Restock' so the UI Grid receives the same data type it expects.
+
             return query.Select(i => new Restock
             {
-                // We map Ingredient data to the Restock view model
                 IngredientId = i.IngredientId,
                 IngredientName = i.Name ?? "Unknown",
                 Category = i.Category ?? "Uncategorized",
                 CurrentStock = i.CurrentStock,
                 MinimumThreshold = i.MinimumStock,
                 SuggestedRestockQuantity = (i.MinimumStock - i.CurrentStock) > 0 ? (i.MinimumStock - i.CurrentStock) : 0,
-
-                // Determine status for the UI
                 Status = i.CurrentStock <= 0 ? StockStatus.Empty :
-                         (i.CurrentStock <= i.MinimumStock ? StockStatus.LowStock : StockStatus.LowStock) // Defaulting to LowStock enum if WellStocked doesn't exist in your Enum yet
+                         (i.CurrentStock <= i.MinimumStock ? StockStatus.LowStock : StockStatus.LowStock) 
             }).ToList();
         }
 
         public int GetCountByStatus(string statusType)
         {
-            // Direct DB Count - Very Fast
             switch (statusType)
             {
                 case "Empty":
@@ -100,7 +92,6 @@ namespace IRIS.Services.Implementations
 
         public void RefreshRestockData()
         {
-            // 1. Find all items that are low or empty
             var lowStockIngredients = _context.Ingredients
                 .Where(i => i.CurrentStock <= i.MinimumStock)
                 .ToList();
@@ -134,7 +125,6 @@ namespace IRIS.Services.Implementations
                 }
             }
 
-            // 2. Remove items that are no longer low stock (Fixed/Resolved)
             var resolvedRestocks = _context.Restocks
                 .AsEnumerable()
                 .Where(r => !_context.Ingredients.Any(i => i.IngredientId == r.IngredientId && i.CurrentStock <= i.MinimumStock))

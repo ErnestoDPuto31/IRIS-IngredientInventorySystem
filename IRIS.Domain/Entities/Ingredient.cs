@@ -11,5 +11,5 @@ namespace IRIS.Domain.Entities
         [Required] public decimal CurrentStock { get; set; }
         [Required] public decimal MinimumStock { get; set; }
         [Required] public DateTime UpdatedAt { get; set; } 
-    }
+    }   
 }
