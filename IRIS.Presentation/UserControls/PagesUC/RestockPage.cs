@@ -16,7 +16,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
         public RestockPage()
         {
             InitializeComponent();
-
             LowStockItems.TypeOfCard = CardType.LowStockItems;
             EmptyItems.TypeOfCard = CardType.EmptyItems;
             WellStockedItems.TypeOfCard = CardType.WellStockedItems;
@@ -44,14 +43,15 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
         public void DisplayRestockList(List<Restock> data)
         {
-            restockTable1.SetData(data);
+            //  restockTable1.SetData(data);
+            restockTableuc1.SetData(data);
         }
 
         public void UpdateCategoryButtonText(string text)
         {
             btnFilterCategory.Text = text;
         }
-
+        
         public void BuildCategoryMenu(IEnumerable<string> categories)
         {
             ContextMenuStrip menu = new ContextMenuStrip();
@@ -103,5 +103,18 @@ namespace IRIS.Presentation.UserControls.PagesUC
         {
 
         }
+
+        private void btnFilterCategory_MouseHover(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnRefresh_MouseHover(object sender, EventArgs e)
+        {
+
+
+        }
+
+        
     }
 }

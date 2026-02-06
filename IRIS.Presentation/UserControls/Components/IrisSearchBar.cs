@@ -4,70 +4,122 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-// NAMESPACE MUST MATCH YOUR DESIGNER FILE EXACTLY
 namespace IRIS.Presentation.UserControls.Components
 {
-    // ADDED 'partial' KEYWORD HERE
     public partial class IrisSearchBar : UserControl
     {
-        private TextBox txtSearch;
-        private Color borderColor = Color.FromArgb(230, 230, 230);
-        private Color focusBorderColor = Color.FromArgb(100, 100, 100);
-        private Color fillColor = Color.White;
-        private bool isFocused = false;
+        // -------------------------------------------------------------------------
+        // UI & CONTROLS
+        // -------------------------------------------------------------------------
 
-        // Custom Events
+        private TextBox txtSearch;
+        private Color borderColor = Color.FromArgb(75, 0, 130);
+        private bool isFocused = false;
+        private const string Placeholder = "Quick search by item name...";
+
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
         public new event EventHandler TextChanged;
 
         public IrisSearchBar()
         {
-            // This call is required when using a Designer file
-            InitializeComponent();
-
-            // 1. Setup Container
             this.DoubleBuffered = true;
-            this.BackColor = Color.Transparent;
+            this.Size = new Size(300, 35);
             this.Padding = new Padding(10, 5, 10, 5);
-            this.Size = new Size(300, 33);
-            this.Cursor = Cursors.IBeam;
+            this.BackColor = Color.Transparent;
 
-            // 2. Setup TextBox
-            txtSearch = new TextBox();
-            txtSearch.BorderStyle = BorderStyle.None;
-            txtSearch.BackColor = this.fillColor;
-            txtSearch.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
-            txtSearch.ForeColor = Color.DimGray;
-            txtSearch.Text = "Quick search by item name...";
+            txtSearch = new TextBox
+            {
+                BorderStyle = BorderStyle.None,
+                Font = new Font("Segoe UI", 10F),
+                ForeColor = Color.DimGray,
+                Text = Placeholder,
+                Width = this.Width - 60,
+                Location = new Point(40, 8)
+            };
 
-            // Positioning 
-            txtSearch.Location = new Point(40, (this.Height - txtSearch.Height) / 2);
-            txtSearch.Width = this.Width - 50;
-
-            // Events
+            // Event Wiring
             txtSearch.Enter += TxtSearch_Enter;
             txtSearch.Leave += TxtSearch_Leave;
             txtSearch.TextChanged += TxtSearch_TextChanged;
-            txtSearch.KeyDown += (s, e) => OnKeyDown(e);
 
             this.Controls.Add(txtSearch);
         }
 
-        // --- PROPERTIES ---
-        [Category("Custom Properties")]
-        public override string Text
+        protected override void OnPaint(PaintEventArgs e)
         {
-            get { return txtSearch.Text == "Quick search by item name..." ? "" : txtSearch.Text; }
-            set
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
+
+            using (GraphicsPath path = GetRoundedPath(rect, Height))
+            using (Pen pen = new Pen(borderColor, isFocused ? 2f : 1f))
             {
-                txtSearch.Text = value;
-                if (string.IsNullOrEmpty(value)) TxtSearch_Leave(null, null);
+                e.Graphics.FillPath(Brushes.White, path);
+                e.Graphics.DrawPath(pen, path);
+            }
+
+            // Draw Magnifying Glass
+            using (Pen iconPen = new Pen(borderColor, 2))
+            {
+                e.Graphics.DrawEllipse(iconPen, 15, 10, 12, 12);
+                e.Graphics.DrawLine(iconPen, 25, 20, 30, 25);
             }
         }
 
-        // --- EVENTS ---
+        private GraphicsPath GetRoundedPath(Rectangle rect, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            int d = Math.Min(radius, rect.Height);
+            path.AddArc(rect.X, rect.Y, d, d, 180, 90);
+            path.AddArc(rect.Right - d, rect.Y, d, d, 270, 90);
+            path.AddArc(rect.Right - d, rect.Bottom - d, d, d, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
+            path.CloseFigure();
+            return path;
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (txtSearch != null)
+            {
+                txtSearch.Width = this.Width - 60;
+                txtSearch.Location = new Point(40, (this.Height - txtSearch.Height) / 2);
+            }
+        }
+
+        // -------------------------------------------------------------------------
+        // BACKEND: LOGIC & EVENT HANDLING
+        // -------------------------------------------------------------------------
+
+        [Category("Custom Properties")]
+        public override string Text
+        {
+            get => (txtSearch.Text == Placeholder) ? string.Empty : txtSearch.Text;
+            set
+            {
+                if (string.IsNullOrEmpty(value) || value == Placeholder)
+                {
+                    txtSearch.Text = Placeholder;
+                    txtSearch.ForeColor = Color.DimGray;
+                }
+                else
+                {
+                    txtSearch.Text = value;
+                    txtSearch.ForeColor = Color.Black;
+                }
+            }
+        }
+
         private void TxtSearch_TextChanged(object sender, EventArgs e)
         {
-            if (txtSearch.Text != "Quick search by item name...")
+            // Only notify the parent if the text isn't the placeholder
+            if (txtSearch.Focused && txtSearch.Text != Placeholder)
+            {
+                TextChanged?.Invoke(this, e);
+            }
+            // If text is cleared while focused, we also want to notify to show all data
+            else if (txtSearch.Focused && string.IsNullOrEmpty(txtSearch.Text))
             {
                 TextChanged?.Invoke(this, e);
             }
@@ -76,7 +128,7 @@ namespace IRIS.Presentation.UserControls.Components
         private void TxtSearch_Enter(object sender, EventArgs e)
         {
             isFocused = true;
-            if (txtSearch.Text == "Quick search by item name...")
+            if (txtSearch.Text == Placeholder)
             {
                 txtSearch.Text = "";
                 txtSearch.ForeColor = Color.Black;
@@ -89,69 +141,10 @@ namespace IRIS.Presentation.UserControls.Components
             isFocused = false;
             if (string.IsNullOrWhiteSpace(txtSearch.Text))
             {
-                txtSearch.Text = "Quick search by item name...";
-                txtSearch.ForeColor = Color.DarkGray;
+                txtSearch.Text = Placeholder;
+                txtSearch.ForeColor = Color.DimGray;
             }
             this.Invalidate();
-        }
-
-        // --- DRAWING ---
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-            // 1. Draw Rounded Background
-            using (GraphicsPath path = GetRoundedPath(ClientRectangle, ClientRectangle.Height))
-            using (SolidBrush brush = new SolidBrush(fillColor))
-            using (Pen pen = new Pen(isFocused ? focusBorderColor : borderColor, 1.5f))
-            {
-                e.Graphics.FillPath(brush, path);
-                e.Graphics.DrawPath(pen, path);
-            }
-
-            // 2. Draw Magnifying Glass Icon
-            using (Pen iconPen = new Pen(Color.Gray, 2))
-            {
-                int iconSize = 12;
-                int iconX = 15;
-                int iconY = (this.Height - iconSize) / 2 - 2;
-
-                e.Graphics.DrawEllipse(iconPen, iconX, iconY, iconSize, iconSize);
-                e.Graphics.DrawLine(iconPen, iconX + 9, iconY + 9, iconX + 14, iconY + 14);
-            }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            if (txtSearch != null)
-            {
-                txtSearch.Location = new Point(40, (this.Height - txtSearch.Height) / 2);
-                txtSearch.Width = this.Width - 50;
-            }
-            this.Invalidate();
-        }
-
-        private GraphicsPath GetRoundedPath(Rectangle rect, int radius)
-        {
-            GraphicsPath path = new GraphicsPath();
-            rect.Inflate(-1, -1);
-
-            if (radius > rect.Height) radius = rect.Height;
-
-            int d = radius;
-            path.AddArc(rect.X, rect.Y, d, d, 180, 90);
-            path.AddArc(rect.Right - d, rect.Y, d, d, 270, 90);
-            path.AddArc(rect.Right - d, rect.Bottom - d, d, d, 0, 90);
-            path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
-            path.CloseFigure();
-            return path;
-        }
-
-        protected override void OnClick(EventArgs e)
-        {
-            txtSearch.Focus();
         }
     }
-}
+}   

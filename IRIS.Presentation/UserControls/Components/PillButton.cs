@@ -10,6 +10,12 @@ namespace IRIS.Presentation.UserControls.Components
     {
         private bool _isSelected = false;
         private bool _showDropdownArrow = false;
+        private bool _isHovered = false;
+
+        // --- Colors ---
+        // "Indigo" typically is (75, 0, 130)
+        private Color _primaryColor = Color.FromArgb(75, 0, 130);
+        private Color _whiteColor = Color.White;
 
         [Category("IRIS Design")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -19,7 +25,7 @@ namespace IRIS.Presentation.UserControls.Components
             set
             {
                 _isSelected = value;
-                Invalidate(); // Repaint when state changes
+                Invalidate();
             }
         }
 
@@ -35,85 +41,98 @@ namespace IRIS.Presentation.UserControls.Components
             }
         }
 
-        [Category("IRIS Design")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color SelectedBackColor { get; set; } = Color.FromArgb(75, 0, 130); // Indigo
-
-        [Category("IRIS Design")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color SelectedForeColor { get; set; } = Color.White;
-
         public PillButton()
         {
             this.FlatStyle = FlatStyle.Flat;
             this.FlatAppearance.BorderSize = 0;
             this.Size = new Size(100, 35);
             this.BackColor = Color.White;
-            this.ForeColor = Color.Black;
             this.Cursor = Cursors.Hand;
             this.DoubleBuffered = true;
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            _isHovered = true;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            _isHovered = false;
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs pevent)
         {
             var g = pevent.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            // 1. Clear background
+            // 1. Clear background (match parent)
             g.Clear(this.Parent.BackColor);
 
-            // 2. Define the rounded "Pill" shape
+            // 2. Define Shape
             Rectangle rect = new Rectangle(0, 0, this.Width - 1, this.Height - 1);
-            int radius = this.Height; // Full roundness
+            int radius = this.Height;
+
             using (GraphicsPath path = GetRoundedPath(rect, radius))
             {
-                // 3. Determine Colors based on State
-                Color fill = IsSelected ? SelectedBackColor : Color.White;
-                Color text = IsSelected ? SelectedForeColor : Color.DimGray;
-                Color border = IsSelected ? SelectedBackColor : Color.LightGray;
+                // --- COLOR LOGIC ---
+                // If Hovered OR Selected -> Filled Indigo, White Text
+                // Else (Normal)         -> White Back, Indigo Text, Indigo Border
 
-                // 4. Fill Background
-                using (SolidBrush brush = new SolidBrush(fill))
+                bool isActive = _isSelected || _isHovered;
+
+                Color fillColor = isActive ? _primaryColor : _whiteColor;
+                Color textColor = isActive ? _whiteColor : _primaryColor;
+                Color borderColor = _primaryColor; // Border is always Indigo
+
+                // 3. Fill Background
+                using (SolidBrush brush = new SolidBrush(fillColor))
                 {
                     g.FillPath(brush, path);
                 }
 
-                // 5. Draw Border
-                using (Pen pen = new Pen(border, 1))
+                // 4. Draw Border
+                using (Pen pen = new Pen(borderColor, 1))
                 {
                     g.DrawPath(pen, path);
                 }
-            }
 
-            // 6. Draw Text (Centered)
-            TextFormatFlags flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
-            Rectangle textRect = this.ClientRectangle;
+                // 5. Draw Text
+                TextFormatFlags flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+                Rectangle textRect = this.ClientRectangle;
+                if (ShowDropdownArrow) textRect.Width -= 15;
 
-            // Adjust text if there's an arrow
-            if (ShowDropdownArrow) textRect.Width -= 15;
+                TextRenderer.DrawText(g, this.Text, this.Font, textRect, textColor, flags);
 
-            TextRenderer.DrawText(g, this.Text, this.Font, textRect,
-                IsSelected ? SelectedForeColor : Color.DimGray, flags);
+                // 6. Draw Dropdown Arrow (if enabled)
+                if (ShowDropdownArrow)
+                {
+                    int arrowX = this.Width - 25;
+                    int arrowY = (this.Height / 2) - 2;
+                    Point[] arrows = {
+                        new Point(arrowX, arrowY),
+                        new Point(arrowX + 8, arrowY),
+                        new Point(arrowX + 4, arrowY + 4)
+                    };
 
-            // 7. Draw Dropdown Arrow (if enabled)
-            if (ShowDropdownArrow)
-            {
-                int arrowX = this.Width - 25;
-                int arrowY = (this.Height / 2) - 2;
-                Point[] arrows = {
-                    new Point(arrowX, arrowY),
-                    new Point(arrowX + 8, arrowY),
-                    new Point(arrowX + 4, arrowY + 4)
-                };
-                g.FillPolygon(Brushes.Gray, arrows);
+                    // Arrow color matches text color
+                    using (SolidBrush arrowBrush = new SolidBrush(textColor))
+                    {
+                        g.FillPolygon(arrowBrush, arrows);
+                    }
+                }
             }
         }
 
-        // Helper for rounded path
         private GraphicsPath GetRoundedPath(Rectangle rect, float radius)
         {
             GraphicsPath path = new GraphicsPath();
-            float r = rect.Height; // Make it fully rounded based on height
+            float r = rect.Height;
             path.StartFigure();
             path.AddArc(rect.X, rect.Y, r, r, 90, 180);
             path.AddArc(rect.Right - r, rect.Y, r, r, 270, 180);

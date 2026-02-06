@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using IRIS.Domain.Enums;
 using IRIS.Services.Interfaces;
 using IRIS.Presentation.DependencyInjection;
+using IRIS.Presentation.Properties; // Needed for Resources
 
 namespace IRIS.Presentation.UserControls.Components
 {
@@ -17,6 +18,7 @@ namespace IRIS.Presentation.UserControls.Components
         WellStockedItems
     }
 
+    [DefaultEvent("IconClicked")]
     public partial class StatusCardUC : UserControl
     {
         // --- FIELDS ---
@@ -24,6 +26,10 @@ namespace IRIS.Presentation.UserControls.Components
         private CardType _cardType = CardType.LowStockItems;
         private int _borderRadius = 20;
         private int _stripWidth = 10;
+
+        // Icon Fields
+        private Image _currentIcon = null;
+        private Rectangle _iconRect; // Defines where the user must click
 
         // Text Data
         private string _titleText = "Status";
@@ -33,8 +39,11 @@ namespace IRIS.Presentation.UserControls.Components
         private readonly IIngredientService _ingredientService;
         private readonly IRestockService _restockService;
 
-        // --- PROPERTIES ---
+        // --- EVENTS ---
+        [Category("Action")]
+        public event EventHandler IconClicked;
 
+        // --- PROPERTIES ---
         [Category("IRIS Design")]
         [Description("Choose the logic for this card.")]
         [Browsable(true)]
@@ -46,10 +55,7 @@ namespace IRIS.Presentation.UserControls.Components
             {
                 _cardType = value;
                 UpdateCardDesign();
-
-                // FIX: Recalculate numbers immediately when type changes
                 if (!DesignMode) LoadStatistics();
-
                 this.Invalidate();
             }
         }
@@ -75,38 +81,47 @@ namespace IRIS.Presentation.UserControls.Components
                     if (_restockService != null)
                         _restockService.OnInventoryUpdated += LoadStatistics;
 
-                    // Initial Load
                     LoadStatistics();
                 }
-                catch { /* Ignore designer errors */ }
+                catch { }
             }
         }
 
         private void UpdateCardDesign()
         {
-            switch (_cardType)
+            try
             {
-                case CardType.LowStockItems:
-                    _titleText = "Low Stock Items";
-                    _subtitleText = "Requires attention";
-                    _accentColor = Color.Goldenrod;
-                    break;
-                case CardType.EmptyItems:
-                    _titleText = "Empty Items";
-                    _subtitleText = "Critical - Out of stock";
-                    _accentColor = Color.Crimson;
-                    break;
-                case CardType.WellStockedItems:
-                    _titleText = "Well Stocked";
-                    _subtitleText = "Above minimum threshold";
-                    _accentColor = Color.SeaGreen;
-                    break;
+                switch (_cardType)
+                {
+                    case CardType.LowStockItems:
+                        _titleText = "Low Stock Items";
+                        _subtitleText = "Requires attention";
+                        _accentColor = Color.Goldenrod;
+                        _currentIcon = Resources.icons8_medium_risk_50;
+                        break;
+                    case CardType.EmptyItems:
+                        _titleText = "Empty Items";
+                        _subtitleText = "Critical - Out of stock";
+                        _accentColor = Color.Crimson;
+                        _currentIcon = Resources.icons8_box_64;
+                        break;
+                    case CardType.WellStockedItems:
+                        _titleText = "Well Stocked";
+                        _subtitleText = "Above minimum threshold";
+                        _accentColor = Color.SeaGreen;
+                        _currentIcon = Resources.icons8_arrow_up_48;
+                        break;
+                }
+            }
+            catch
+            {
+                // If image is missing, we just don't show it (prevents crash)
+                _currentIcon = null;
             }
         }
 
         public void LoadStatistics()
         {
-            // Safety checks
             if (this.DesignMode || _ingredientService == null) return;
             if (this.InvokeRequired) { this.Invoke(new Action(LoadStatistics)); return; }
 
@@ -121,7 +136,6 @@ namespace IRIS.Presentation.UserControls.Components
                         count = allIngredients.Count(i => i.CurrentStock <= 0);
                         break;
                     case CardType.LowStockItems:
-                        // Only count items that have stock but are below minimum
                         count = allIngredients.Count(i => i.CurrentStock > 0 && i.CurrentStock <= i.MinimumStock);
                         break;
                     case CardType.WellStockedItems:
@@ -130,7 +144,7 @@ namespace IRIS.Presentation.UserControls.Components
                 }
 
                 _numberText = count.ToString();
-                this.Invalidate(); // Redraw with new number
+                this.Invalidate();
             }
             catch
             {
@@ -139,7 +153,31 @@ namespace IRIS.Presentation.UserControls.Components
             }
         }
 
+        // --- MOUSE CLICK LOGIC ---
+
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+
+            // Check if the click happened inside the Icon's area
+            if (_iconRect.Contains(e.Location))
+            {
+                IconClicked?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        // Optional: Change cursor only when over the icon so user knows it's clickable
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (_iconRect.Contains(e.Location))
+                this.Cursor = Cursors.Hand;
+            else
+                this.Cursor = Cursors.Default;
+        }
+
         // --- DRAWING ---
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -147,6 +185,8 @@ namespace IRIS.Presentation.UserControls.Components
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
             Rectangle rect = new Rectangle(0, 0, this.Width - 1, this.Height - 1);
+
+            // 1. Draw Card Shape
             using (GraphicsPath path = GetRoundedPath(rect, _borderRadius))
             {
                 using (Pen shadowPen = new Pen(Color.FromArgb(15, Color.Black), 4)) g.DrawPath(shadowPen, path);
@@ -161,20 +201,35 @@ namespace IRIS.Presentation.UserControls.Components
 
             int textLeftPadding = _stripWidth + 15;
 
-            // Draw Title
-            using (Font titleFont = new Font("Segoe UI", 9, FontStyle.Regular))
+            // 2. Draw Text
+            using (Font titleFont = new Font("Segoe UI", 14, FontStyle.Regular))
             using (Brush titleBrush = new SolidBrush(Color.Gray))
-                g.DrawString(_titleText, titleFont, titleBrush, textLeftPadding, 15);
+                g.DrawString(_titleText, titleFont, titleBrush, textLeftPadding, 20);
 
-            // Draw Number
-            using (Font numberFont = new Font("Segoe UI", 24, FontStyle.Bold))
+            using (Font numberFont = new Font("Segoe UI", 20, FontStyle.Bold))
             using (Brush numberBrush = new SolidBrush(Color.Black))
-                g.DrawString(_numberText, numberFont, numberBrush, textLeftPadding - 3, 35);
+                g.DrawString(_numberText, numberFont, numberBrush, textLeftPadding - 3, 70);
 
-            // Draw Subtitle
-            using (Font subFont = new Font("Segoe UI", 8, FontStyle.Regular))
+            using (Font subFont = new Font("Segoe UI", 10, FontStyle.Regular))
             using (Brush subBrush = new SolidBrush(Color.Gray))
-                g.DrawString(_subtitleText, subFont, subBrush, textLeftPadding, 78);
+                g.DrawString(_subtitleText, subFont, subBrush, textLeftPadding, 140);
+
+            // 3. Draw Icon (Static, Top-Right)
+            if (_currentIcon != null)
+            {
+                int iconSize = 40; // Fixed size
+                int iconX = this.Width - iconSize - 20; // 20px padding from right
+                int iconY = 20; // 20px padding from top
+
+                _iconRect = new Rectangle(iconX, iconY, iconSize, iconSize);
+
+                g.DrawImage(_currentIcon, _iconRect);
+            }
+            else
+            {
+                // Safety: define rect even if image missing so click doesn't crash
+                _iconRect = new Rectangle(this.Width - 50, 20, 40, 40);
+            }
         }
 
         private GraphicsPath GetRoundedPath(Rectangle rect, int radius)
