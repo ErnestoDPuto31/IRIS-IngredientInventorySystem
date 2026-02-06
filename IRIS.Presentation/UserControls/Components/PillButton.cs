@@ -1,8 +1,6 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
+﻿using System.Drawing.Drawing2D;
 using System.ComponentModel;
+using System.Drawing.Text;
 
 namespace IRIS.Presentation.UserControls.Components
 {
@@ -12,8 +10,6 @@ namespace IRIS.Presentation.UserControls.Components
         private bool _showDropdownArrow = false;
         private bool _isHovered = false;
 
-        // --- Colors ---
-        // "Indigo" typically is (75, 0, 130)
         private Color _primaryColor = Color.FromArgb(75, 0, 130);
         private Color _whiteColor = Color.White;
 
@@ -49,6 +45,22 @@ namespace IRIS.Presentation.UserControls.Components
             this.BackColor = Color.White;
             this.Cursor = Cursors.Hand;
             this.DoubleBuffered = true;
+            this.Font = GetPoppinsFont(9f, FontStyle.Regular);
+        }
+
+        private Font GetPoppinsFont(float size, FontStyle style)
+        {
+            try
+            {
+                using (FontFamily ff = new FontFamily("Poppins"))
+                {
+                    return new Font(ff, size, style);
+                }
+            }
+            catch
+            {
+                return new Font("Segoe UI", size, style);
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -69,10 +81,13 @@ namespace IRIS.Presentation.UserControls.Components
         {
             var g = pevent.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+            // Critical for custom fonts to look sharp
+            g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             // 1. Clear background (match parent)
-            g.Clear(this.Parent.BackColor);
+            if (this.Parent != null)
+                g.Clear(this.Parent.BackColor);
 
             // 2. Define Shape
             Rectangle rect = new Rectangle(0, 0, this.Width - 1, this.Height - 1);
@@ -80,15 +95,11 @@ namespace IRIS.Presentation.UserControls.Components
 
             using (GraphicsPath path = GetRoundedPath(rect, radius))
             {
-                // --- COLOR LOGIC ---
-                // If Hovered OR Selected -> Filled Indigo, White Text
-                // Else (Normal)         -> White Back, Indigo Text, Indigo Border
-
                 bool isActive = _isSelected || _isHovered;
 
                 Color fillColor = isActive ? _primaryColor : _whiteColor;
                 Color textColor = isActive ? _whiteColor : _primaryColor;
-                Color borderColor = _primaryColor; // Border is always Indigo
+                Color borderColor = _primaryColor;
 
                 // 3. Fill Background
                 using (SolidBrush brush = new SolidBrush(fillColor))
@@ -103,24 +114,23 @@ namespace IRIS.Presentation.UserControls.Components
                 }
 
                 // 5. Draw Text
-                TextFormatFlags flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+                TextFormatFlags flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
                 Rectangle textRect = this.ClientRectangle;
                 if (ShowDropdownArrow) textRect.Width -= 15;
 
                 TextRenderer.DrawText(g, this.Text, this.Font, textRect, textColor, flags);
 
-                // 6. Draw Dropdown Arrow (if enabled)
+                // 6. Draw Dropdown Arrow
                 if (ShowDropdownArrow)
                 {
-                    int arrowX = this.Width - 25;
-                    int arrowY = (this.Height / 2) - 2;
+                    int arrowX = this.Width - 20; // Adjusted for better spacing
+                    int arrowY = (this.Height / 2) - 1;
                     Point[] arrows = {
                         new Point(arrowX, arrowY),
                         new Point(arrowX + 8, arrowY),
                         new Point(arrowX + 4, arrowY + 4)
                     };
 
-                    // Arrow color matches text color
                     using (SolidBrush arrowBrush = new SolidBrush(textColor))
                     {
                         g.FillPolygon(arrowBrush, arrows);

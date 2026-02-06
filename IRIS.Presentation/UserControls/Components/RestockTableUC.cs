@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Windows.Forms;
+using System.Reflection;
 using IRIS.Domain.Entities;
 using IRIS.Services.Interfaces;
 using IRIS.Presentation.DependencyInjection;
@@ -13,77 +13,100 @@ namespace IRIS.Presentation.UserControls.Table
 {
     public class RestockTableUC : UserControl
     {
-        // -------------------------------------------------------------------------
-        // UI & CONTROLS
-        // -------------------------------------------------------------------------
+        private readonly Color _cIndigo = Color.FromArgb(75, 0, 130);
+        private readonly Color _cBackground = Color.White;
+        private readonly Color _cHoverHeader = Color.FromArgb(245, 240, 255);
 
-        private IRestockService _restockService;
-        private Panel _headerPanel;
-        private FlowLayoutPanel _itemsPanel;
-        private IrisSearchBar _searchBar;
-
-        // Master list that holds everything (Empty, Low, and Well-Stocked)
-        private List<Restock> _allData = new List<Restock>();
-
+        // Grid Config
         private readonly float[] _colWeights = { 0.18f, 0.12f, 0.14f, 0.14f, 0.16f, 0.10f, 0.16f };
         private readonly string[] _headers = { "Ingredient", "Category", "Current Stock", "Min Threshold", "Suggested", "Status", "Action" };
-        private Color _cIndigo = Color.FromArgb(75, 0, 130);
         private int _borderRadius = 15;
         private int _hoveredHeaderIndex = -1;
+
+        // Data State
+        private IRestockService _restockService;
+        private List<Restock> _allData = new List<Restock>();
+
+        // -------------------------------------------------------------------------
+        // 2. UI CONTROLS
+        // -------------------------------------------------------------------------
+        private Panel _headerPanel;
+        private FlowLayoutPanel _itemsPanel;
+        private SearchBar _searchBar;
 
         public RestockTableUC()
         {
             this.Size = new Size(1200, 700);
-            this.BackColor = Color.White;
+            this.BackColor = _cBackground;
             this.Padding = new Padding(25);
             this.DoubleBuffered = true;
-            BuildLayout();
+
+            InitializeLayout();
         }
 
-        private void BuildLayout()
+        private void InitializeLayout()
         {
-            // Search Bar Setup
-            _searchBar = new IrisSearchBar
-            {
-                Location = new Point(this.Width - 350, 20),
-                Width = 300,
-                Anchor = AnchorStyles.Top | AnchorStyles.Right
-            };
-            _searchBar.TextChanged += (s, e) => ApplyFilter(_searchBar.Text);
-            this.Controls.Add(_searchBar);
+            SetupSearchBar();
+            SetupHeaderPanel();
+            SetupItemsGrid();
+        }
 
-            // Header Setup
+        private void SetupSearchBar()
+        {
+            _searchBar = new SearchBar();
+            _searchBar.Location = new Point(this.Width - 365, 15);
+            _searchBar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            _searchBar.SearchTextChanged += (s, searchText) =>
+            {
+                ApplyFilter(searchText);
+            };
+
+            this.Controls.Add(_searchBar);
+        }
+
+        private void SetupHeaderPanel()
+        {
             _headerPanel = new Panel
             {
-                Location = new Point(25, 70),
+                Location = new Point(25, 75),
                 Height = 45,
                 Width = this.Width - 50,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.White
             };
+
             _headerPanel.Paint += HeaderPanel_Paint;
             _headerPanel.MouseMove += HeaderPanel_MouseMove;
-            _headerPanel.MouseLeave += (s, e) => { _hoveredHeaderIndex = -1; _headerPanel.Invalidate(); };
-            this.Controls.Add(_headerPanel);
+            _headerPanel.MouseLeave += (s, e) => {
+                _hoveredHeaderIndex = -1;
+                _headerPanel.Invalidate();
+            };
 
-            // Items List Setup
+            this.Controls.Add(_headerPanel);
+        }
+
+        private void SetupItemsGrid()
+        {
             _itemsPanel = new FlowLayoutPanel
             {
-                Location = new Point(25, 115),
+                Location = new Point(25, 120),
                 Width = this.Width - 50,
-                Height = this.Height - 140,
+                Height = this.Height - 145,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
                 AutoScroll = true,
                 BackColor = Color.White
             };
+
+            EnableDoubleBuffering(_itemsPanel);
+
             _itemsPanel.SizeChanged += (s, e) => ResizeRows();
             this.Controls.Add(_itemsPanel);
         }
 
         // -------------------------------------------------------------------------
-        // BACKEND: DATA LOADING, SORTING & SEARCHING
+        // 4. DATA LOGIC (Search, Filter, Sort)
         // -------------------------------------------------------------------------
 
         protected override void OnLoad(EventArgs e)
@@ -99,29 +122,24 @@ namespace IRIS.Presentation.UserControls.Table
         public void LoadData()
         {
             if (_restockService == null) return;
-
             _restockService.RefreshRestockData();
-            var data = _restockService.GetRestockList();
-
-            // SetData handles the master list update and sorting
-            SetData(data?.ToList() ?? new List<Restock>());
+            SetData(_restockService.GetRestockList()?.ToList());
         }
 
-        // PUBLIC METHOD: Accessible from your Main Form
         public void SetData(List<Restock> items)
         {
-            // Update master list so search bar can see all items
             _allData = items ?? new List<Restock>();
 
-            // Refresh the UI based on whatever is currently in the search bar
-            ApplyFilter(_searchBar.Text);
+            // Use the public property from your SearchBar to maintain state
+            string currentSearch = _searchBar != null ? _searchBar.SearchText : "";
+            ApplyFilter(currentSearch);
         }
 
         private void ApplyFilter(string query)
         {
             _itemsPanel.SuspendLayout();
 
-            // Clear current rows
+            // 1. Cleanup old controls
             while (_itemsPanel.Controls.Count > 0)
             {
                 var c = _itemsPanel.Controls[0];
@@ -129,25 +147,30 @@ namespace IRIS.Presentation.UserControls.Table
                 c.Dispose();
             }
 
-            // FILTER: If search is empty, show all. Otherwise, filter name/category.
+            // 2. Filter Logic
             var filtered = string.IsNullOrWhiteSpace(query)
                 ? _allData
                 : _allData.Where(x =>
-                    x.IngredientName.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    x.Category.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0
+                    (x.IngredientName != null && x.IngredientName.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    (x.Category != null && x.Category.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
                 ).ToList();
 
-            // SORT: Empty (0) -> Low (1) -> Stocked (2)
+            // 3. Sort Logic
             var sorted = filtered
                 .OrderBy(x => GetSortPriority(x))
                 .ThenBy(x => x.IngredientName)
                 .ToList();
 
-            // ADD ROWS
+            // 4. Render
+            int rowWidth = _itemsPanel.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
+
             foreach (var item in sorted)
             {
-                var row = new RestockRowUC(item);
-                row.Width = _itemsPanel.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
+                var row = new RestockRowUC(item)
+                {
+                    Width = rowWidth,
+                    Margin = new Padding(0, 0, 0, 5)
+                };
                 row.RestockClicked += (s, data) => HandleRestock(data);
                 _itemsPanel.Controls.Add(row);
             }
@@ -157,14 +180,15 @@ namespace IRIS.Presentation.UserControls.Table
 
         private int GetSortPriority(Restock item)
         {
-            if (item.CurrentStock <= 0) return 0; // Highest priority
-            if (item.CurrentStock <= item.MinimumThreshold) return 1; // Medium
-            return 2; // Well Stocked (Bottom of list)
+            if (item.CurrentStock <= 0) return 0; // Critical
+            if (item.CurrentStock <= item.MinimumThreshold) return 1; // Low
+            return 2; // OK
         }
 
         private void HandleRestock(Restock data)
         {
-            string input = Microsoft.VisualBasic.Interaction.InputBox($"Restock amount for {data.IngredientName}:", "Restock", "0");
+            string input = Microsoft.VisualBasic.Interaction.InputBox($"Restock amount for {data.IngredientName}:", "Restock Inventory", "0");
+
             if (decimal.TryParse(input, out decimal amt) && amt > 0)
             {
                 _restockService.ProcessRestock(data.RestockId, amt);
@@ -173,7 +197,7 @@ namespace IRIS.Presentation.UserControls.Table
         }
 
         // -------------------------------------------------------------------------
-        // FRONTEND: DRAWING & UI LOGIC
+        // 5. GRAPHICS & RENDERING
         // -------------------------------------------------------------------------
 
         protected override void OnPaint(PaintEventArgs e)
@@ -183,9 +207,9 @@ namespace IRIS.Presentation.UserControls.Table
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
+            // Draw Rounded Background Border
             Rectangle rect = this.ClientRectangle;
             rect.Inflate(-1, -1);
-
             using (GraphicsPath path = GetRoundedPath(rect, _borderRadius))
             using (Pen pen = new Pen(Color.LightGray, 1.5f))
             {
@@ -193,6 +217,7 @@ namespace IRIS.Presentation.UserControls.Table
                 e.Graphics.DrawPath(pen, path);
             }
 
+            // Draw Title
             using (Font titleFont = new Font("Segoe UI", 14, FontStyle.Bold))
             using (Brush titleBrush = new SolidBrush(_cIndigo))
             {
@@ -223,7 +248,7 @@ namespace IRIS.Presentation.UserControls.Table
 
                     if (i == _hoveredHeaderIndex)
                     {
-                        using (SolidBrush bgBrush = new SolidBrush(Color.FromArgb(245, 240, 255)))
+                        using (SolidBrush bgBrush = new SolidBrush(_cHoverHeader))
                             g.FillRectangle(bgBrush, currentX, 5, colW, _headerPanel.Height - 10);
                     }
 
@@ -243,14 +268,25 @@ namespace IRIS.Presentation.UserControls.Table
                 if (e.X >= currentX && e.X < currentX + w) { newIndex = i; break; }
                 currentX += w;
             }
-            if (newIndex != _hoveredHeaderIndex) { _hoveredHeaderIndex = newIndex; _headerPanel.Invalidate(); }
+            if (newIndex != _hoveredHeaderIndex)
+            {
+                _hoveredHeaderIndex = newIndex;
+                _headerPanel.Invalidate();
+            }
         }
+
+        // -------------------------------------------------------------------------
+        // 6. HELPERS
+        // -------------------------------------------------------------------------
 
         private void ResizeRows()
         {
             _itemsPanel.SuspendLayout();
-            int w = _itemsPanel.ClientSize.Width - (SystemInformation.VerticalScrollBarWidth);
-            foreach (Control c in _itemsPanel.Controls) { if (c.Width != w) c.Width = w; }
+            int w = _itemsPanel.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
+            foreach (Control c in _itemsPanel.Controls)
+            {
+                if (c.Width != w) c.Width = w;
+            }
             _itemsPanel.ResumeLayout();
         }
 
@@ -264,6 +300,13 @@ namespace IRIS.Presentation.UserControls.Table
             path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
             path.CloseFigure();
             return path;
+        }
+
+        public static void EnableDoubleBuffering(Control control)
+        {
+            typeof(Control).InvokeMember("DoubleBuffered",
+                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+                null, control, new object[] { true });
         }
     }
 }

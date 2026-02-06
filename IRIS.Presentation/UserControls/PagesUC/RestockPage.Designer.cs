@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            guna2HtmlLabel3 = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            btnFilterCategory = new IRIS.Presentation.UserControls.Components.PillButton();
             btnFilterAll = new IRIS.Presentation.UserControls.Components.PillButton();
             btnFilterLow = new IRIS.Presentation.UserControls.Components.PillButton();
             btnFilterEmpty = new IRIS.Presentation.UserControls.Components.PillButton();
@@ -43,64 +44,41 @@
             EmptyItems = new IRIS.Presentation.UserControls.Components.StatusCardUC();
             WellStockedItems = new IRIS.Presentation.UserControls.Components.StatusCardUC();
             restockTableuc1 = new IRIS.Presentation.UserControls.Table.RestockTableUC();
+            cmbFilter = new Guna.UI2.WinForms.Guna2ComboBox();
+            guna2ImageButton1 = new Guna.UI2.WinForms.Guna2ImageButton();
             SuspendLayout();
             // 
             // guna2HtmlLabel1
             // 
             guna2HtmlLabel1.BackColor = Color.Transparent;
-            guna2HtmlLabel1.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            guna2HtmlLabel1.Location = new Point(150, 71);
+            guna2HtmlLabel1.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            guna2HtmlLabel1.Location = new Point(150, 27);
             guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            guna2HtmlLabel1.Size = new Size(397, 47);
+            guna2HtmlLabel1.Size = new Size(487, 72);
             guna2HtmlLabel1.TabIndex = 4;
             guna2HtmlLabel1.Text = "RESTOCK MANAGEMENT";
             // 
             // guna2HtmlLabel2
             // 
             guna2HtmlLabel2.BackColor = Color.Transparent;
-            guna2HtmlLabel2.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            guna2HtmlLabel2.Font = new Font("Poppins", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             guna2HtmlLabel2.ForeColor = SystemColors.ControlDarkDark;
-            guna2HtmlLabel2.Location = new Point(150, 115);
+            guna2HtmlLabel2.Location = new Point(150, 81);
             guna2HtmlLabel2.Name = "guna2HtmlLabel2";
-            guna2HtmlLabel2.Size = new Size(414, 25);
+            guna2HtmlLabel2.Size = new Size(629, 42);
             guna2HtmlLabel2.TabIndex = 5;
             guna2HtmlLabel2.Text = "Manage restocking for low and empty inventory items";
-            // 
-            // guna2HtmlLabel3
-            // 
-            guna2HtmlLabel3.BackColor = Color.Transparent;
-            guna2HtmlLabel3.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            guna2HtmlLabel3.ForeColor = SystemColors.ControlDark;
-            guna2HtmlLabel3.Location = new Point(150, 370);
-            guna2HtmlLabel3.Name = "guna2HtmlLabel3";
-            guna2HtmlLabel3.Size = new Size(71, 25);
-            guna2HtmlLabel3.TabIndex = 8;
-            guna2HtmlLabel3.Text = "FILTERS:";
-            guna2HtmlLabel3.TextAlignment = ContentAlignment.MiddleCenter;
-            // 
-            // btnFilterCategory
-            // 
-            btnFilterCategory.BackColor = Color.White;
-            btnFilterCategory.FlatAppearance.BorderSize = 0;
-            btnFilterCategory.FlatStyle = FlatStyle.Flat;
-            btnFilterCategory.ForeColor = Color.Black;
-            btnFilterCategory.Location = new Point(253, 370);
-            btnFilterCategory.Name = "btnFilterCategory";
-            btnFilterCategory.Size = new Size(150, 40);
-            btnFilterCategory.TabIndex = 9;
-            btnFilterCategory.Text = "All Categories ▼";
-            btnFilterCategory.UseVisualStyleBackColor = false;
-            btnFilterCategory.MouseHover += btnFilterCategory_MouseHover;
             // 
             // btnFilterAll
             // 
             btnFilterAll.BackColor = Color.White;
             btnFilterAll.FlatAppearance.BorderSize = 0;
             btnFilterAll.FlatStyle = FlatStyle.Flat;
+            btnFilterAll.Font = new Font("Poppins", 9F);
             btnFilterAll.ForeColor = Color.Black;
-            btnFilterAll.Location = new Point(409, 370);
+            btnFilterAll.Location = new Point(617, 370);
             btnFilterAll.Name = "btnFilterAll";
-            btnFilterAll.Size = new Size(100, 40);
+            btnFilterAll.Size = new Size(100, 36);
             btnFilterAll.TabIndex = 10;
             btnFilterAll.Text = "All Status";
             btnFilterAll.UseVisualStyleBackColor = false;
@@ -111,10 +89,11 @@
             btnFilterLow.BackColor = Color.White;
             btnFilterLow.FlatAppearance.BorderSize = 0;
             btnFilterLow.FlatStyle = FlatStyle.Flat;
+            btnFilterLow.Font = new Font("Poppins", 9F);
             btnFilterLow.ForeColor = Color.Black;
-            btnFilterLow.Location = new Point(515, 370);
+            btnFilterLow.Location = new Point(723, 370);
             btnFilterLow.Name = "btnFilterLow";
-            btnFilterLow.Size = new Size(100, 40);
+            btnFilterLow.Size = new Size(100, 36);
             btnFilterLow.TabIndex = 11;
             btnFilterLow.Text = "Low Stock";
             btnFilterLow.UseVisualStyleBackColor = false;
@@ -125,10 +104,11 @@
             btnFilterEmpty.BackColor = Color.White;
             btnFilterEmpty.FlatAppearance.BorderSize = 0;
             btnFilterEmpty.FlatStyle = FlatStyle.Flat;
+            btnFilterEmpty.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFilterEmpty.ForeColor = Color.Black;
-            btnFilterEmpty.Location = new Point(621, 370);
+            btnFilterEmpty.Location = new Point(829, 370);
             btnFilterEmpty.Name = "btnFilterEmpty";
-            btnFilterEmpty.Size = new Size(100, 40);
+            btnFilterEmpty.Size = new Size(100, 36);
             btnFilterEmpty.TabIndex = 12;
             btnFilterEmpty.Text = "Empty";
             btnFilterEmpty.UseVisualStyleBackColor = false;
@@ -139,10 +119,11 @@
             btnFilterWell.BackColor = Color.White;
             btnFilterWell.FlatAppearance.BorderSize = 0;
             btnFilterWell.FlatStyle = FlatStyle.Flat;
+            btnFilterWell.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFilterWell.ForeColor = Color.Black;
-            btnFilterWell.Location = new Point(727, 370);
+            btnFilterWell.Location = new Point(935, 370);
             btnFilterWell.Name = "btnFilterWell";
-            btnFilterWell.Size = new Size(100, 40);
+            btnFilterWell.Size = new Size(124, 36);
             btnFilterWell.TabIndex = 13;
             btnFilterWell.Text = "Well Stocked";
             btnFilterWell.UseVisualStyleBackColor = false;
@@ -162,7 +143,7 @@
             // 
             btnRefresh.BackColor = Color.White;
             btnRefresh.BorderRadius = 10;
-            btnRefresh.CustomizableEdges = customizableEdges3;
+            btnRefresh.CustomizableEdges = customizableEdges1;
             btnRefresh.DisabledState.BorderColor = Color.DarkGray;
             btnRefresh.DisabledState.CustomBorderColor = Color.DarkGray;
             btnRefresh.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -172,13 +153,12 @@
             btnRefresh.ForeColor = Color.White;
             btnRefresh.Image = Properties.Resources.icons8_sync_64;
             btnRefresh.ImageSize = new Size(40, 40);
-            btnRefresh.Location = new Point(1094, 441);
+            btnRefresh.Location = new Point(1118, 441);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            btnRefresh.Size = new Size(89, 35);
+            btnRefresh.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            btnRefresh.Size = new Size(49, 44);
             btnRefresh.TabIndex = 17;
             btnRefresh.Click += btnRefresh_Click;
-            btnRefresh.MouseHover += btnRefresh_MouseHover;
             // 
             // EmptyItems
             // 
@@ -207,10 +187,58 @@
             restockTableuc1.Size = new Size(1380, 451);
             restockTableuc1.TabIndex = 21;
             // 
+            // cmbFilter
+            // 
+            cmbFilter.BackColor = Color.Transparent;
+            cmbFilter.BorderColor = Color.Indigo;
+            cmbFilter.BorderRadius = 15;
+            cmbFilter.CustomizableEdges = customizableEdges3;
+            cmbFilter.DrawMode = DrawMode.OwnerDrawFixed;
+            cmbFilter.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbFilter.FocusedColor = Color.White;
+            cmbFilter.FocusedState.BorderColor = Color.White;
+            cmbFilter.FocusedState.FillColor = Color.Indigo;
+            cmbFilter.FocusedState.ForeColor = Color.White;
+            cmbFilter.Font = new Font("Segoe UI", 10F);
+            cmbFilter.ForeColor = Color.FromArgb(68, 88, 112);
+            cmbFilter.HoverState.BorderColor = Color.White;
+            cmbFilter.HoverState.FillColor = Color.Indigo;
+            cmbFilter.HoverState.ForeColor = Color.White;
+            cmbFilter.ItemHeight = 30;
+            cmbFilter.ItemsAppearance.BackColor = Color.White;
+            cmbFilter.ItemsAppearance.ForeColor = Color.Black;
+            cmbFilter.ItemsAppearance.SelectedBackColor = Color.Indigo;
+            cmbFilter.ItemsAppearance.SelectedForeColor = Color.White;
+            cmbFilter.Location = new Point(185, 370);
+            cmbFilter.Name = "cmbFilter";
+            cmbFilter.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            cmbFilter.Size = new Size(354, 36);
+            cmbFilter.TabIndex = 22;
+            cmbFilter.SelectedIndexChanged += cmbFilter_SelectedIndexChanged;
+            // 
+            // guna2ImageButton1
+            // 
+            guna2ImageButton1.CheckedState.ImageSize = new Size(64, 64);
+            guna2ImageButton1.HoverState.ImageSize = new Size(64, 64);
+            guna2ImageButton1.Image = Properties.Resources.icons8_filter_100;
+            guna2ImageButton1.ImageOffset = new Point(0, 0);
+            guna2ImageButton1.ImageRotate = 0F;
+            guna2ImageButton1.ImageSize = new Size(24, 24);
+            guna2ImageButton1.Location = new Point(150, 370);
+            guna2ImageButton1.Name = "guna2ImageButton1";
+            guna2ImageButton1.PressedState.ImageSize = new Size(64, 64);
+            guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges5;
+            guna2ImageButton1.Size = new Size(29, 36);
+            guna2ImageButton1.TabIndex = 23;
+            // 
             // RestockPage
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(guna2ImageButton1);
+            Controls.Add(cmbFilter);
+            Controls.Add(guna2HtmlLabel2);
+            Controls.Add(guna2HtmlLabel1);
             Controls.Add(btnRefresh);
             Controls.Add(restockTableuc1);
             Controls.Add(WellStockedItems);
@@ -220,10 +248,6 @@
             Controls.Add(btnFilterEmpty);
             Controls.Add(btnFilterLow);
             Controls.Add(btnFilterAll);
-            Controls.Add(btnFilterCategory);
-            Controls.Add(guna2HtmlLabel3);
-            Controls.Add(guna2HtmlLabel1);
-            Controls.Add(guna2HtmlLabel2);
             Name = "RestockPage";
             Size = new Size(1600, 900);
             Load += RestockPage_Load;
@@ -235,7 +259,6 @@
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel3;
-        private Components.PillButton btnFilterCategory;
         private Components.PillButton btnFilterAll;
         private Components.PillButton btnFilterLow;
         private Components.PillButton btnFilterEmpty;
@@ -245,5 +268,7 @@
         private Components.StatusCardUC EmptyItems;
         private Components.StatusCardUC WellStockedItems;
         private Table.RestockTableUC restockTableuc1;
+        private Guna.UI2.WinForms.Guna2ComboBox cmbFilter;
+        private Guna.UI2.WinForms.Guna2ImageButton guna2ImageButton1;
     }
 }

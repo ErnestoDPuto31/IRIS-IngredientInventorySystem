@@ -107,7 +107,7 @@
             cmbSortIngredients.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSortIngredients.FocusedColor = Color.FromArgb(95, 20, 161);
             cmbSortIngredients.FocusedState.BorderColor = Color.FromArgb(95, 20, 161);
-            cmbSortIngredients.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cmbSortIngredients.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbSortIngredients.ForeColor = Color.Black;
             cmbSortIngredients.HoverState.BorderColor = Color.FromArgb(95, 20, 161);
             cmbSortIngredients.ItemHeight = 36;
@@ -149,7 +149,7 @@
             cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCategory.FocusedColor = Color.FromArgb(95, 20, 161);
             cmbCategory.FocusedState.BorderColor = Color.FromArgb(95, 20, 161);
-            cmbCategory.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cmbCategory.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbCategory.ForeColor = Color.Black;
             cmbCategory.HoverState.BorderColor = Color.FromArgb(95, 20, 161);
             cmbCategory.ItemHeight = 36;
@@ -177,19 +177,19 @@
             txtSearchIngredient.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
             txtSearchIngredient.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtSearchIngredient.FocusedState.BorderColor = Color.FromArgb(137, 65, 208);
-            txtSearchIngredient.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtSearchIngredient.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtSearchIngredient.ForeColor = Color.Black;
             txtSearchIngredient.HoverState.BorderColor = Color.FromArgb(137, 65, 208);
             txtSearchIngredient.IconLeft = Properties.Resources.icons8_search_100;
             txtSearchIngredient.IconLeftOffset = new Point(5, 0);
-            txtSearchIngredient.Location = new Point(25, 21);
-            txtSearchIngredient.Margin = new Padding(3, 5, 3, 5);
+            txtSearchIngredient.Location = new Point(31, 21);
+            txtSearchIngredient.Margin = new Padding(4, 8, 4, 8);
             txtSearchIngredient.Name = "txtSearchIngredient";
             txtSearchIngredient.PlaceholderForeColor = Color.Gray;
             txtSearchIngredient.PlaceholderText = "Search Ingredients...";
             txtSearchIngredient.SelectedText = "";
             txtSearchIngredient.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            txtSearchIngredient.Size = new Size(534, 42);
+            txtSearchIngredient.Size = new Size(668, 42);
             txtSearchIngredient.TabIndex = 0;
             txtSearchIngredient.TextChanged += txtSearchIngredient_TextChanged;
             // 
@@ -210,18 +210,18 @@
             btnAddIngredient.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnAddIngredient.FillColor = Color.FromArgb(77, 10, 133);
             btnAddIngredient.FillColor2 = Color.FromArgb(137, 65, 208);
-            btnAddIngredient.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAddIngredient.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAddIngredient.ForeColor = Color.White;
             btnAddIngredient.HoverState.FillColor = Color.FromArgb(95, 20, 161);
             btnAddIngredient.HoverState.FillColor2 = Color.FromArgb(155, 86, 226);
             btnAddIngredient.Image = Properties.Resources.icons8_add_100;
             btnAddIngredient.ImageAlign = HorizontalAlignment.Left;
             btnAddIngredient.ImageOffset = new Point(3, 0);
-            btnAddIngredient.Location = new Point(1312, 47);
+            btnAddIngredient.Location = new Point(1296, 59);
             btnAddIngredient.Name = "btnAddIngredient";
             btnAddIngredient.PressedColor = Color.FromArgb(111, 49, 171);
             btnAddIngredient.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            btnAddIngredient.Size = new Size(207, 69);
+            btnAddIngredient.Size = new Size(223, 69);
             btnAddIngredient.TabIndex = 1;
             btnAddIngredient.Text = " Add Ingredient";
             btnAddIngredient.TextAlign = HorizontalAlignment.Left;
@@ -230,21 +230,21 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Microsoft Sans Serif", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(127, 33);
             label1.Name = "label1";
-            label1.Size = new Size(570, 46);
+            label1.Size = new Size(559, 70);
             label1.TabIndex = 2;
             label1.Text = "INVENTORY MANAGEMENT";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Font = new Font("Poppins", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = SystemColors.ControlDarkDark;
             label2.Location = new Point(132, 86);
             label2.Name = "label2";
-            label2.Size = new Size(526, 29);
+            label2.Size = new Size(569, 40);
             label2.TabIndex = 3;
             label2.Text = "Manage Ingredient Stock Levels and Categories";
             // 
