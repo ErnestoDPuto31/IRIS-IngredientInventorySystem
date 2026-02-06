@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             guna2HtmlLabel3 = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -69,13 +69,14 @@
             // guna2HtmlLabel3
             // 
             guna2HtmlLabel3.BackColor = Color.Transparent;
-            guna2HtmlLabel3.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            guna2HtmlLabel3.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             guna2HtmlLabel3.ForeColor = SystemColors.ControlDark;
-            guna2HtmlLabel3.Location = new Point(150, 384);
+            guna2HtmlLabel3.Location = new Point(150, 370);
             guna2HtmlLabel3.Name = "guna2HtmlLabel3";
-            guna2HtmlLabel3.Size = new Size(81, 30);
+            guna2HtmlLabel3.Size = new Size(71, 25);
             guna2HtmlLabel3.TabIndex = 8;
             guna2HtmlLabel3.Text = "FILTERS:";
+            guna2HtmlLabel3.TextAlignment = ContentAlignment.MiddleCenter;
             // 
             // btnFilterCategory
             // 
@@ -83,7 +84,7 @@
             btnFilterCategory.FlatAppearance.BorderSize = 0;
             btnFilterCategory.FlatStyle = FlatStyle.Flat;
             btnFilterCategory.ForeColor = Color.Black;
-            btnFilterCategory.Location = new Point(253, 376);
+            btnFilterCategory.Location = new Point(253, 370);
             btnFilterCategory.Name = "btnFilterCategory";
             btnFilterCategory.Size = new Size(150, 40);
             btnFilterCategory.TabIndex = 9;
@@ -97,7 +98,7 @@
             btnFilterAll.FlatAppearance.BorderSize = 0;
             btnFilterAll.FlatStyle = FlatStyle.Flat;
             btnFilterAll.ForeColor = Color.Black;
-            btnFilterAll.Location = new Point(409, 376);
+            btnFilterAll.Location = new Point(409, 370);
             btnFilterAll.Name = "btnFilterAll";
             btnFilterAll.Size = new Size(100, 40);
             btnFilterAll.TabIndex = 10;
@@ -111,7 +112,7 @@
             btnFilterLow.FlatAppearance.BorderSize = 0;
             btnFilterLow.FlatStyle = FlatStyle.Flat;
             btnFilterLow.ForeColor = Color.Black;
-            btnFilterLow.Location = new Point(518, 376);
+            btnFilterLow.Location = new Point(515, 370);
             btnFilterLow.Name = "btnFilterLow";
             btnFilterLow.Size = new Size(100, 40);
             btnFilterLow.TabIndex = 11;
@@ -125,7 +126,7 @@
             btnFilterEmpty.FlatAppearance.BorderSize = 0;
             btnFilterEmpty.FlatStyle = FlatStyle.Flat;
             btnFilterEmpty.ForeColor = Color.Black;
-            btnFilterEmpty.Location = new Point(627, 376);
+            btnFilterEmpty.Location = new Point(621, 370);
             btnFilterEmpty.Name = "btnFilterEmpty";
             btnFilterEmpty.Size = new Size(100, 40);
             btnFilterEmpty.TabIndex = 12;
@@ -139,7 +140,7 @@
             btnFilterWell.FlatAppearance.BorderSize = 0;
             btnFilterWell.FlatStyle = FlatStyle.Flat;
             btnFilterWell.ForeColor = Color.Black;
-            btnFilterWell.Location = new Point(736, 376);
+            btnFilterWell.Location = new Point(727, 370);
             btnFilterWell.Name = "btnFilterWell";
             btnFilterWell.Size = new Size(100, 40);
             btnFilterWell.TabIndex = 13;
@@ -161,7 +162,7 @@
             // 
             btnRefresh.BackColor = Color.White;
             btnRefresh.BorderRadius = 10;
-            btnRefresh.CustomizableEdges = customizableEdges1;
+            btnRefresh.CustomizableEdges = customizableEdges3;
             btnRefresh.DisabledState.BorderColor = Color.DarkGray;
             btnRefresh.DisabledState.CustomBorderColor = Color.DarkGray;
             btnRefresh.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -173,7 +174,7 @@
             btnRefresh.ImageSize = new Size(40, 40);
             btnRefresh.Location = new Point(1094, 441);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            btnRefresh.ShadowDecoration.CustomizableEdges = customizableEdges4;
             btnRefresh.Size = new Size(89, 35);
             btnRefresh.TabIndex = 17;
             btnRefresh.Click += btnRefresh_Click;
