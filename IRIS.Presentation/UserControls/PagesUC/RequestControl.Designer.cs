@@ -1,4 +1,4 @@
-﻿namespace IRIS.Presentation.Forms
+﻿namespace IRIS.Presentation.UserControls.PagesUC
 {
     partial class RequestControl
     {
@@ -37,8 +37,8 @@
             label1 = new Label();
             label2 = new Label();
             pnlMainContent = new Guna.UI2.WinForms.Guna2Panel();
+            requestTable = new IRIS.Presentation.UserControls.Table.RequestTableUC();
             btnNewRequest = new Guna.UI2.WinForms.Guna2GradientButton();
-            requestTableuc2 = new IRIS.Presentation.UserControls.Table.RequestTableUC();
             pnlMainContent.SuspendLayout();
             SuspendLayout();
             // 
@@ -71,7 +71,7 @@
             // 
             // pnlMainContent
             // 
-            pnlMainContent.Controls.Add(requestTableuc2);
+            pnlMainContent.Controls.Add(requestTable);
             pnlMainContent.Controls.Add(btnNewRequest);
             pnlMainContent.Controls.Add(label2);
             pnlMainContent.Controls.Add(label1);
@@ -84,6 +84,15 @@
             pnlMainContent.ShadowDecoration.Shadow = new Padding(10);
             pnlMainContent.Size = new Size(1600, 900);
             pnlMainContent.TabIndex = 5;
+            // 
+            // requestTable
+            // 
+            requestTable.BackColor = Color.White;
+            requestTable.Location = new Point(118, 146);
+            requestTable.Name = "requestTable";
+            requestTable.Padding = new Padding(25);
+            requestTable.Size = new Size(1408, 632);
+            requestTable.TabIndex = 5;
             // 
             // btnNewRequest
             // 
@@ -114,15 +123,6 @@
             btnNewRequest.TextOffset = new Point(10, 0);
             btnNewRequest.Click += btnNewRequest_Click;
             // 
-            // requestTableuc2
-            // 
-            requestTableuc2.BackColor = Color.White;
-            requestTableuc2.Location = new Point(118, 146);
-            requestTableuc2.Name = "requestTableuc2";
-            requestTableuc2.Padding = new Padding(25);
-            requestTableuc2.Size = new Size(1408, 632);
-            requestTableuc2.TabIndex = 5;
-            // 
             // RequestControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -143,6 +143,6 @@
         private Guna.UI2.WinForms.Guna2Panel pnlMainContent;
         private Guna.UI2.WinForms.Guna2GradientButton btnNewRequest;
         private UserControls.Table.RequestTableUC requestTableuc1;
-        private UserControls.Table.RequestTableUC requestTableuc2;
+        private UserControls.Table.RequestTableUC requestTable;
     }
 }

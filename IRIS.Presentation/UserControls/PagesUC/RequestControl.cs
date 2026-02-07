@@ -2,8 +2,9 @@
 using IRIS.Infrastructure.Data;
 using IRIS.Services.Implementations;
 using IRIS.Presentation.Window_Forms;
+using IRIS.Presentation.UserControls.Table;
 
-namespace IRIS.Presentation.Forms
+namespace IRIS.Presentation.UserControls.PagesUC
 {
     public partial class RequestControl : UserControl
     {
@@ -31,7 +32,7 @@ namespace IRIS.Presentation.Forms
 
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    requestTableuc1.LoadData();
+                    requestTable.LoadData();
                 }
             }
         }
