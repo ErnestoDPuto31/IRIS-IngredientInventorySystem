@@ -42,19 +42,21 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(484, 192);
+            label1.Location = new Point(605, 240);
+            label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(50, 20);
+            label1.Size = new Size(59, 25);
             label1.TabIndex = 0;
             label1.Text = "label1";
             // 
             // Dashboard
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1280, 720);
+            ClientSize = new Size(1600, 900);
             Controls.Add(label1);
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(4);
             Name = "Dashboard";
             Text = "Dashboard";
             ResumeLayout(false);
