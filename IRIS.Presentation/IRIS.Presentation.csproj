@@ -25,7 +25,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\IRIS.Application\IRIS.Application.csproj" />
 		<ProjectReference Include="..\IRIS.Domain\IRIS.Domain.csproj" />
 		<ProjectReference Include="..\IRIS.Services\IRIS.Services.csproj" />
 	</ItemGroup>

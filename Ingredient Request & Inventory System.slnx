@@ -1,5 +1,7 @@
 <Solution>
-  <Project Path="IRIS.Application/IRIS.Application.csproj" Id="8614a6e1-c55e-4770-b184-42728ac6640d" />
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Project Path="IRIS.Domain/IRIS.Domain.csproj" Id="5fa8c26c-f327-4677-b17a-bb5112c4073e" />
   <Project Path="IRIS.Infrastructure/IRIS.Infrastructure.csproj" Id="98f02b45-f953-453a-b1a9-c6a57c3aed0c" />
   <Project Path="IRIS.Presentation/IRIS.Presentation.csproj" Id="30de6178-a3d9-4da6-8a3f-dca2a5d2da4f" />

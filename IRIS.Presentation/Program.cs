@@ -1,9 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using IRIS.Infrastructure.Data;
-using System;
-using System.Windows.Forms;
-using IRIS.Presentation.Forms;
 
 namespace IRIS.Presentation
 {
@@ -44,7 +41,7 @@ namespace IRIS.Presentation
             }
 
             // Run the UI
-            Application.Run(new MainForm());
+            Application.Run(new LoginForm());
         }
     }
 }

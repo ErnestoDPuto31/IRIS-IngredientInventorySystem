@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using IRIS.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IRIS.Domain.Entities
 {
@@ -8,13 +10,20 @@ namespace IRIS.Domain.Entities
 
         [Required, MaxLength(100)] public string? Subject { get; set; }
         [Required, MaxLength(100)] public string? FacultyName { get; set; }
-        [Required] public int StudentCount { get; set; }
-        [Required, MaxLength(20)] public string? Status { get; set; }
-        [Required] public int EncodedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
 
-        //Navigation
-        public ICollection<RequestItem>? RequestItems { get; set; }
-        public ICollection<Approval>? Approvals { get; set; }
+        [Required] public int StudentCount { get; set; }
+        public decimal RecipeCosting { get; set; }
+
+        [Required] public RequestStatus Status { get; set; } = RequestStatus.Pending;
+        public DateTime DateOfUse { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [Required] public int EncodedById { get; set; }
+        [ForeignKey("EncodedById")] public virtual User? EncodedBy { get; set; }
+
+        public virtual ICollection<RequestItem> RequestItems { get; set; } = new List<RequestItem>();
+        public virtual ICollection<Approval> Approvals { get; set; } = new List<Approval>();
+
+        [NotMapped] public decimal TotalAllowedQty => StudentCount * RecipeCosting;
     }
 }

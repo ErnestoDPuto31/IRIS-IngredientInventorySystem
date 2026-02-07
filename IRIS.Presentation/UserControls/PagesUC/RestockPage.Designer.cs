@@ -137,26 +137,25 @@
             LowStockItems.Padding = new Padding(25, 10, 10, 10);
             LowStockItems.Size = new Size(450, 200);
             LowStockItems.TabIndex = 14;
-            LowStockItems.TypeOfCard = Components.CardType.LowStockItems;
             // 
             // btnRefresh
             // 
-            btnRefresh.BackColor = Color.White;
+            btnRefresh.BackColor = Color.Transparent;
             btnRefresh.BorderRadius = 10;
             btnRefresh.CustomizableEdges = customizableEdges1;
             btnRefresh.DisabledState.BorderColor = Color.DarkGray;
             btnRefresh.DisabledState.CustomBorderColor = Color.DarkGray;
             btnRefresh.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             btnRefresh.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            btnRefresh.FillColor = Color.White;
+            btnRefresh.FillColor = Color.Transparent;
             btnRefresh.Font = new Font("Segoe UI", 9F);
             btnRefresh.ForeColor = Color.White;
             btnRefresh.Image = Properties.Resources.icons8_sync_64;
             btnRefresh.ImageSize = new Size(40, 40);
-            btnRefresh.Location = new Point(1118, 441);
+            btnRefresh.Location = new Point(545, 370);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btnRefresh.Size = new Size(49, 44);
+            btnRefresh.Size = new Size(49, 36);
             btnRefresh.TabIndex = 17;
             btnRefresh.Click += btnRefresh_Click;
             // 
@@ -167,7 +166,6 @@
             EmptyItems.Name = "EmptyItems";
             EmptyItems.Size = new Size(450, 200);
             EmptyItems.TabIndex = 19;
-            EmptyItems.TypeOfCard = Components.CardType.LowStockItems;
             // 
             // WellStockedItems
             // 
@@ -176,7 +174,6 @@
             WellStockedItems.Name = "WellStockedItems";
             WellStockedItems.Size = new Size(450, 200);
             WellStockedItems.TabIndex = 20;
-            WellStockedItems.TypeOfCard = Components.CardType.LowStockItems;
             // 
             // restockTableuc1
             // 

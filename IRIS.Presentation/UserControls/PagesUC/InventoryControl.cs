@@ -5,10 +5,9 @@ using IRIS.Presentation.Interfaces;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.UserControls;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace IRIS.Presentation.Forms
 {
@@ -17,31 +16,24 @@ namespace IRIS.Presentation.Forms
         private FlowLayoutPanel _ingredientsGrid;
         private InventoryPresenter _presenter;
 
+        private const int CARD_MARGIN = 10;
+        private const int CARDS_PER_ROW = 4;
+        private const int SCROLLBAR_OFFSET = 25; 
+
         public InventoryControl()
         {
             InitializeComponent();
             InitializeCustomLayout();
-        }
 
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED (Prevents flickering)
-                return cp;
-            }
+            this.Resize += (s, e) => ResizeCards();
         }
 
         private void InitializeCustomLayout()
         {
             this.DoubleBuffered = true;
-
-            // --- 1. SETUP DROPDOWNS ---
             if (cmbCategory != null)
             {
                 cmbCategory.Items.Clear();
-                // Ensure these strings match exactly what your Service expects
                 cmbCategory.Items.AddRange(new object[] {
                     "All Categories", "Produce", "Protein", "Dairy & Eggs",
                     "Pantry Staples", "Spices & Seasonings", "Condiments & Oils",
@@ -53,7 +45,6 @@ namespace IRIS.Presentation.Forms
             if (cmbSortIngredients != null)
             {
                 cmbSortIngredients.Items.Clear();
-                // Ensure these strings match exactly what your Service expects
                 cmbSortIngredients.Items.AddRange(new object[] {
                     "Newest First", "Oldest First",
                     "Name (A-Z)", "Name (Z-A)",
@@ -62,7 +53,6 @@ namespace IRIS.Presentation.Forms
                 cmbSortIngredients.SelectedIndex = 0;
             }
 
-            // --- 2. SETUP GRID ---
             _ingredientsGrid = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -70,9 +60,10 @@ namespace IRIS.Presentation.Forms
                 WrapContents = true,
                 AutoScroll = true,
                 BackColor = Color.White,
+                Padding = new Padding(10, 10, 0, 10)
             };
 
-            // Reflection Hack for smooth scrolling
+
             typeof(FlowLayoutPanel).InvokeMember("DoubleBuffered",
                 System.Reflection.BindingFlags.SetProperty |
                 System.Reflection.BindingFlags.Instance |
@@ -95,14 +86,10 @@ namespace IRIS.Presentation.Forms
             {
                 var service = ServiceFactory.GetIngredientService();
                 _presenter = new InventoryPresenter(this, service);
-
-                // Instead of LoadIngredients(), we call TriggerSearch()
-                // This loads the initial list respecting the default "All" and "Newest" filters.
                 TriggerSearch();
             }
         }
 
-        // --- 3. HELPER: The "Trigger" that asks the Service for data ---
         private void TriggerSearch()
         {
             if (_presenter == null) return;
@@ -111,11 +98,8 @@ namespace IRIS.Presentation.Forms
             string category = cmbCategory.SelectedItem?.ToString() ?? "All Categories";
             string sort = cmbSortIngredients.SelectedItem?.ToString() ?? "Newest First";
 
-            // Call the method you added to InventoryPresenter in the previous step
             _presenter.LoadFilteredIngredients(search, category, sort);
         }
-
-        // --- IInventoryView Implementation ---
 
         public void DisplayIngredients(IEnumerable<Ingredient> ingredients)
         {
@@ -127,33 +111,31 @@ namespace IRIS.Presentation.Forms
                 AddCardToGrid(item);
             }
 
+            ResizeCards(); // Ensure they are sized correctly immediately
             _ingredientsGrid.ResumeLayout();
         }
 
         public void AddIngredientCard(Ingredient ingredient)
         {
-            // Instead of adding the card manually, we reload the search.
-            // This ensures the new item is placed in the correct sorted position (e.g. A-Z).
             TriggerSearch();
         }
 
         private void AddCardToGrid(Ingredient item)
         {
             var card = new IngredientCard(item);
-            card.Margin = new Padding(7);
 
-            // --- DELETE LOGIC ---
+            card.Margin = new Padding(CARD_MARGIN);
+
             card.DeleteClicked += (sender, id) =>
             {
                 if (MessageBox.Show("Are you sure you want to delete this?", "Confirm",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
                     _presenter.DeleteIngredient(id);
-                    TriggerSearch(); // Refresh the list from DB to confirm deletion
+                    TriggerSearch();
                 }
             };
 
-            // --- EDIT LOGIC ---
             card.EditClicked += (sender, data) =>
             {
                 using (frmAddIngredient form = new frmAddIngredient(data))
@@ -161,12 +143,38 @@ namespace IRIS.Presentation.Forms
                     if (form.ShowDialog() == DialogResult.OK)
                     {
                         _presenter.UpdateIngredient(form.NewIngredient);
-                        TriggerSearch(); // Refresh list to show updates & re-sort
+                        TriggerSearch();
                     }
                 }
             };
 
             _ingredientsGrid.Controls.Add(card);
+        }
+
+        private void ResizeCards()
+        {
+            if (_ingredientsGrid.Controls.Count == 0) return;
+
+            _ingredientsGrid.SuspendLayout();
+
+            int totalWidth = _ingredientsGrid.ClientSize.Width;
+            int scrollbarGap = 25;
+            int leftPadding = _ingredientsGrid.Padding.Left;
+            int usableWidth = totalWidth - scrollbarGap - leftPadding;
+            int gapBetweenCards = 15;
+            int totalGapSpace = 4 * gapBetweenCards;
+            int cardWidth = (usableWidth - totalGapSpace) / 4;
+            foreach (Control ctrl in _ingredientsGrid.Controls)
+            {
+                if (ctrl is IngredientCard card)
+                {
+                    card.MinimumSize = new Size(0, 0);
+                    card.Size = new Size(cardWidth, 280);
+                    card.Margin = new Padding(0, 0, gapBetweenCards, gapBetweenCards);
+                }
+            }
+
+            _ingredientsGrid.ResumeLayout(true);
         }
 
         public void ShowMessage(string message)
@@ -178,8 +186,6 @@ namespace IRIS.Presentation.Forms
         {
             MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
-        // --- 4. EVENT HANDLERS (All map to TriggerSearch) ---
 
         private void txtSearchIngredient_TextChanged(object sender, EventArgs e)
         {
@@ -203,14 +209,8 @@ namespace IRIS.Presentation.Forms
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     _presenter.AddNewIngredient(form.NewIngredient);
-                    // AddNewIngredient -> calls AddIngredientCard -> calls TriggerSearch
                 }
             }
-        }
-
-        private void materialButton1_Click(object sender, EventArgs e)
-        {
-            // Future logic...
         }
     }
 }

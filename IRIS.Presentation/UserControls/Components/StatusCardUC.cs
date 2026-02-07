@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using IRIS.Domain.Enums;
 using IRIS.Services.Interfaces;
 using IRIS.Presentation.DependencyInjection;
-using IRIS.Presentation.Properties; // Needed for Resources
+using IRIS.Presentation.Properties;
 
 namespace IRIS.Presentation.UserControls.Components
 {
@@ -48,6 +48,7 @@ namespace IRIS.Presentation.UserControls.Components
         [Description("Choose the logic for this card.")]
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [DefaultValue(CardType.LowStockItems)] // Kept the fix for VS Designer error
         public CardType TypeOfCard
         {
             get => _cardType;
@@ -115,7 +116,6 @@ namespace IRIS.Presentation.UserControls.Components
             }
             catch
             {
-                // If image is missing, we just don't show it (prevents crash)
                 _currentIcon = null;
             }
         }
@@ -153,7 +153,7 @@ namespace IRIS.Presentation.UserControls.Components
             }
         }
 
-        // --- MOUSE CLICK LOGIC ---
+        // --- MOUSE CLICK LOGIC (Original) ---
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
@@ -166,7 +166,7 @@ namespace IRIS.Presentation.UserControls.Components
             }
         }
 
-        // Optional: Change cursor only when over the icon so user knows it's clickable
+        // Change cursor only when over the icon
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -189,14 +189,19 @@ namespace IRIS.Presentation.UserControls.Components
             // 1. Draw Card Shape
             using (GraphicsPath path = GetRoundedPath(rect, _borderRadius))
             {
-                using (Pen shadowPen = new Pen(Color.FromArgb(15, Color.Black), 4)) g.DrawPath(shadowPen, path);
-                using (SolidBrush bgBrush = new SolidBrush(Color.White)) g.FillPath(bgBrush, path);
+                using (Pen shadowPen = new Pen(Color.FromArgb(15, Color.Black), 4))
+                    g.DrawPath(shadowPen, path);
+
+                using (SolidBrush bgBrush = new SolidBrush(Color.White))
+                    g.FillPath(bgBrush, path);
 
                 g.SetClip(path);
-                using (SolidBrush accentBrush = new SolidBrush(_accentColor)) g.FillRectangle(accentBrush, 0, 0, _stripWidth, this.Height);
+                using (SolidBrush accentBrush = new SolidBrush(_accentColor))
+                    g.FillRectangle(accentBrush, 0, 0, _stripWidth, this.Height);
                 g.ResetClip();
 
-                using (Pen borderPen = new Pen(Color.FromArgb(220, 220, 220), 1)) g.DrawPath(borderPen, path);
+                using (Pen borderPen = new Pen(Color.FromArgb(220, 220, 220), 1))
+                    g.DrawPath(borderPen, path);
             }
 
             int textLeftPadding = _stripWidth + 15;
@@ -217,9 +222,9 @@ namespace IRIS.Presentation.UserControls.Components
             // 3. Draw Icon (Static, Top-Right)
             if (_currentIcon != null)
             {
-                int iconSize = 40; // Fixed size
-                int iconX = this.Width - iconSize - 20; // 20px padding from right
-                int iconY = 20; // 20px padding from top
+                int iconSize = 40;
+                int iconX = this.Width - iconSize - 20;
+                int iconY = 20;
 
                 _iconRect = new Rectangle(iconX, iconY, iconSize, iconSize);
 
@@ -227,7 +232,6 @@ namespace IRIS.Presentation.UserControls.Components
             }
             else
             {
-                // Safety: define rect even if image missing so click doesn't crash
                 _iconRect = new Rectangle(this.Width - 50, 20, 40, 40);
             }
         }

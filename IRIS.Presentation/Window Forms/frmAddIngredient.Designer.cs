@@ -100,7 +100,7 @@
             btnExitForm.ImageOffset = new Point(0, 0);
             btnExitForm.ImageRotate = 0F;
             btnExitForm.ImageSize = new Size(24, 24);
-            btnExitForm.Location = new Point(559, 27);
+            btnExitForm.Location = new Point(549, 12);
             btnExitForm.Name = "btnExitForm";
             btnExitForm.ShadowDecoration.CustomizableEdges = customizableEdges15;
             btnExitForm.Size = new Size(29, 26);

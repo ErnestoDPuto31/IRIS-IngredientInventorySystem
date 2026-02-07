@@ -54,29 +54,19 @@
             navigationPanel1.BackColor = Color.Indigo;
             navigationPanel1.Dock = DockStyle.Left;
             navigationPanel1.Location = new Point(0, 0);
-            navigationPanel1.Margin = new Padding(5);
+            navigationPanel1.Margin = new Padding(4, 4, 4, 4);
             navigationPanel1.Name = "navigationPanel1";
-            navigationPanel1.Size = new Size(75, 900);
+            navigationPanel1.Size = new Size(60, 900);
             navigationPanel1.TabIndex = 0;
-            // 
-            // pnlMainContent
-            // 
-            pnlMainContent.Dock = DockStyle.Fill;
-            pnlMainContent.Location = new Point(0, 0);
-            pnlMainContent.Margin = new Padding(4);
-            pnlMainContent.Name = "pnlMainContent";
-            pnlMainContent.Size = new Size(1600, 900);
-            pnlMainContent.TabIndex = 1;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1600, 900);
             Controls.Add(navigationPanel1);
             Controls.Add(pnlMainContent);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(4);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "MainForm";

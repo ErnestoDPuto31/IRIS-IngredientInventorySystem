@@ -255,7 +255,7 @@
             pnlIngredients.Location = new Point(127, 264);
             pnlIngredients.Name = "pnlIngredients";
             pnlIngredients.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            pnlIngredients.Size = new Size(1392, 558);
+            pnlIngredients.Size = new Size(1400, 560);
             pnlIngredients.TabIndex = 4;
             // 
             // scrlIngredients
@@ -263,10 +263,10 @@
             scrlIngredients.BindingContainer = pnlIngredients;
             scrlIngredients.InUpdate = false;
             scrlIngredients.LargeChange = 10;
-            scrlIngredients.Location = new Point(1498, 264);
+            scrlIngredients.Location = new Point(1506, 264);
             scrlIngredients.Name = "scrlIngredients";
             scrlIngredients.ScrollbarSize = 21;
-            scrlIngredients.Size = new Size(21, 558);
+            scrlIngredients.Size = new Size(21, 560);
             scrlIngredients.TabIndex = 0;
             scrlIngredients.ThumbColor = Color.FromArgb(137, 65, 208);
             scrlIngredients.ThumbSize = 5F;

@@ -127,7 +127,6 @@ namespace IRIS.Presentation.UserControls
             btnLogout.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogout.ForeColor = Color.White;
             btnLogout.Image = Properties.Resources.icons8_logout_48;
-            btnLogout.ImageAlign = HorizontalAlignment.Left;
             btnLogout.ImageSize = new Size(30, 30);
             btnLogout.Location = new Point(0, 0);
             btnLogout.Name = "btnLogout";
@@ -144,7 +143,7 @@ namespace IRIS.Presentation.UserControls
             pnlRestock.Location = new Point(3, 390);
             pnlRestock.Name = "pnlRestock";
             pnlRestock.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            pnlRestock.Size = new Size(69, 50);
+            pnlRestock.Size = new Size(72, 50);
             pnlRestock.TabIndex = 7;
             // 
             // btnRestock
@@ -163,7 +162,7 @@ namespace IRIS.Presentation.UserControls
             btnRestock.Location = new Point(0, 0);
             btnRestock.Name = "btnRestock";
             btnRestock.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            btnRestock.Size = new Size(69, 50);
+            btnRestock.Size = new Size(72, 50);
             btnRestock.TabIndex = 0;
             btnRestock.Click += btnRestock_Click;
             // 

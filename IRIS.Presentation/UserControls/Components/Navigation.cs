@@ -146,7 +146,7 @@ namespace IRIS.Presentation.UserControls
                 if (_isExpanded) btnHamburger_Click(null, null);
             }
         }
-        private void btnRestock_Click(object sender, EventArgs e) { }
+
         private void btnRequests_Click(object sender, EventArgs e)
         {
             if (this.ParentForm is MainForm main)
@@ -163,7 +163,7 @@ namespace IRIS.Presentation.UserControls
                 if (_isExpanded) btnHamburger_Click(null, null);
             }
         }
-        private void btnRequests_Click(object sender, EventArgs e) { }
+
         private void btnReports_Click(object sender, EventArgs e) { }
         private void btnHistory_Click(object sender, EventArgs e) { }
         private void btnLogout_Click(object sender, EventArgs e)
