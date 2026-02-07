@@ -146,6 +146,16 @@ namespace IRIS.Presentation.UserControls
                 if (_isExpanded) btnHamburger_Click(null, null);
             }
         }
+        private void btnRestock_Click(object sender, EventArgs e) { }
+        private void btnRequests_Click(object sender, EventArgs e)
+        {
+            if (this.ParentForm is MainForm main)
+            {
+                main.LoadPage(new RequestControl());
+
+                if (_isExpanded) btnHamburger_Click(null, null);
+            }
+        }
         private void btnRestock_Click(object sender, EventArgs e) {
             if (this.ParentForm is MainForm main)
             {
@@ -163,12 +173,6 @@ namespace IRIS.Presentation.UserControls
 
             if (result == DialogResult.Yes)
             {
-                /* * DATABASE HOOK: 
-                 * 1. Update UserSession log in DB: userSession.LogoutTime = DateTime.Now;
-                 * 2. _context.SaveChanges();
-                 */
-
-                // Clear the session so the next user has a clean slate
                 UserSession.CurrentUser = null;
 
                 if (this.ParentForm != null)
