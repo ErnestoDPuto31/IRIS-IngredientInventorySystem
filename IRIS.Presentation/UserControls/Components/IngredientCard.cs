@@ -1,7 +1,4 @@
 ﻿using IRIS.Domain.Entities;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace IRIS.Presentation.UserControls
 {
@@ -146,6 +143,11 @@ namespace IRIS.Presentation.UserControls
         private void btnDeleteIngredient_Click(object sender, EventArgs e)
         {
             DeleteClicked?.Invoke(this, this.IngredientData.IngredientId);
+        }
+
+        internal void HideActionButtons() {
+            if (btnEditIngredient != null) btnEditIngredient.Visible = false;
+            if (btnDeleteIngredient != null) btnDeleteIngredient.Visible = false;
         }
     }
 }

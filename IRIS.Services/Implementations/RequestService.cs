@@ -8,17 +8,45 @@ namespace IRIS.Services.Implementations
     public class RequestService
     {
         private readonly IrisDbContext _context;
-        public RequestService(IrisDbContext context) { _context = context; }
+
+        public RequestService(IrisDbContext context)
+        {
+            _context = context;
+        }
 
         public Request GetRequestById(int id)
         {
             return _context.Requests
                 .Include(r => r.RequestItems)
-                .ThenInclude(r => r.Ingredient)
+                    .ThenInclude(ri => ri.Ingredient)
                 .Include(r => r.EncodedBy)
                 .Include(r => r.Approvals)
+                    .ThenInclude(a => a.Approver)
                 .FirstOrDefault(r => r.RequestId == id);
         }
+
+        public void UpdateRequestStatus(int requestId, RequestStatus newStatus, string remarks, int currentUserId)
+        {
+            var request = _context.Requests.Find(requestId);
+
+            if (request != null)
+            {
+                request.Status = newStatus;
+                request.UpdatedAt = DateTime.Now;
+                var approval = new Approval
+                {
+                    RequestId = requestId,
+                    ApproverId = currentUserId,
+                    ActionType = newStatus,     
+                    Remarks = remarks,         
+                    ActionDate = DateTime.Now   
+                };
+
+                _context.Approvals.Add(approval);
+                _context.SaveChanges();
+            }
+        }
+
 
         public List<Request> GetAllRequests()
         {
@@ -57,28 +85,7 @@ namespace IRIS.Services.Implementations
             }
         }
 
-        public void ProcessApproval(int requestId, int approverId, bool isApproved, string remarks)
-        {
-            var request = _context.Requests.Find(requestId);
-            if (request == null) throw new Exception("Request not found");
-
-            var approval = new Approval
-            {
-                RequestId = requestId,
-                ApproverId = approverId,
-                ActionType = isApproved ? RequestStatus.Approved : RequestStatus.Rejected,
-                Remarks = remarks,
-                ActionDate = DateTime.Now
-            };
-            _context.Approvals.Add(approval);
-
-            if (isApproved) request.Status = RequestStatus.Approved;
-            else request.Status = RequestStatus.Rejected;
-
-            _context.SaveChanges();
-        }
-
-        public void ReleaseRequest(int requestId)
+        public void ApproveRequest(int requestId, int approverId, string remarks, UserRole userRole)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -86,30 +93,99 @@ namespace IRIS.Services.Implementations
                 {
                     var request = _context.Requests
                         .Include(r => r.RequestItems)
+                        .ThenInclude(ri => ri.Ingredient)
                         .FirstOrDefault(r => r.RequestId == requestId);
 
-                    if (request == null) return;
-                    if (request.Status != RequestStatus.Approved)
-                        throw new Exception("Only Approved Requests can be Released.");
+                    if (request == null) throw new Exception("Request not found");
 
-                    foreach (var item in request.RequestItems)
+                    if (request.Status == RequestStatus.Released)
+                        throw new Exception("Request is already released.");
+
+                    if (request.Status == RequestStatus.Rejected)
+                        throw new Exception("Cannot approve a rejected request.");
+
+                    // Log the Approval Action (Audit Trail)
+                    var approval = new Approval
                     {
-                        var inventoryItem = _context.Ingredients.Find(item.IngredientId);
+                        RequestId = requestId,
+                        ApproverId = approverId,
+                        ActionType = RequestStatus.Approved,
+                        Remarks = remarks,
+                        ActionDate = DateTime.Now
+                    };
+                    _context.Approvals.Add(approval);
 
-                        if (inventoryItem != null)
+                    // Role-Based Logic
+                    if (userRole == UserRole.Dean)
+                    {
+                        // DEAN LOGIC: Validate Stock -> Subtract -> Release ===
+
+                        foreach (var item in request.RequestItems)
                         {
-                            // FIX: Check condition first!
+                            var inventoryItem = item.Ingredient; // Already included above
+
+                            // Check Stock
                             if (inventoryItem.CurrentStock < item.RequestedQty)
                             {
-                                throw new Exception($"Not enough stock for {inventoryItem.Name}. Current: {inventoryItem.CurrentStock}, Needed: {item.RequestedQty}");
+                                throw new Exception($"Insufficient stock for {inventoryItem.Name}. " +
+                                                    $"Current: {inventoryItem.CurrentStock}, Needed: {item.RequestedQty}");
                             }
 
-                            // Deduct stock
+                            // Deduct Stock
                             inventoryItem.CurrentStock -= item.RequestedQty;
                         }
+
+                        request.Status = RequestStatus.Released; // Dean sets it to Released
+                    }
+                    else if (userRole == UserRole.AssistantDean)
+                    {
+                        // === ASSISTANT DEAN LOGIC: Approve Only ===
+                        // Does NOT subtract stock yet. Just changes status to Approved.
+
+                        request.Status = RequestStatus.Approved;
+                    }
+                    else
+                    {
+                        throw new UnauthorizedAccessException("You do not have permission to approve requests.");
                     }
 
-                    request.Status = RequestStatus.Released;
+                    request.UpdatedAt = DateTime.Now;
+
+                    _context.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public void RejectRequest(int requestId, int rejectorId, string remarks)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var request = _context.Requests.Find(requestId);
+                    if (request == null) throw new Exception("Request not found");
+
+                    // Log the Rejection
+                    var approval = new Approval
+                    {
+                        RequestId = requestId,
+                        ApproverId = rejectorId,
+                        ActionType = RequestStatus.Rejected,
+                        Remarks = remarks,
+                        ActionDate = DateTime.Now
+                    };
+                    _context.Approvals.Add(approval);
+
+                    // Update Status
+                    request.Status = RequestStatus.Rejected;
+                    request.UpdatedAt = DateTime.Now;
+
                     _context.SaveChanges();
                     transaction.Commit();
                 }

@@ -20,7 +20,7 @@ namespace IRIS.Domain.Entities
         [Required]
         public decimal AllowedQty { get; set; }
 
-        // --- NAVIGATION PROPERTIES ---
+        // NAVIGATION PROPERTIES
 
         // ingredient id
         [ForeignKey("IngredientId")]

@@ -40,23 +40,108 @@
 
         private void SetupGrid()
         {
+            // 1. Basic Modern Settings
             gridItems.AutoGenerateColumns = false;
             gridItems.DataSource = _tempItems;
+            gridItems.AllowUserToAddRows = false;
+            gridItems.AllowUserToResizeRows = false;
+            gridItems.RowHeadersVisible = false; // Hide the ugly selector column on the left
+            gridItems.BackgroundColor = Color.White;
+            gridItems.BorderStyle = BorderStyle.None;
+            gridItems.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal; // Only horizontal lines
+            gridItems.GridColor = Color.FromArgb(240, 240, 240); // Very light grey lines
+            gridItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            gridItems.MultiSelect = false;
 
-            gridItems.Columns["Ingreident"].DataPropertyName = "Ingredient";
-            gridItems.Columns["Quantity"].DataPropertyName = "RequestedQty";
+            // 2. Data Binding
+            if (gridItems.Columns["Ingreident"] != null) gridItems.Columns["Ingreident"].DataPropertyName = "Ingredient";
+            if (gridItems.Columns["Quantity"] != null) gridItems.Columns["Quantity"].DataPropertyName = "RequestedQty";
 
+            // 3. Header Styling
+            gridItems.EnableHeadersVisualStyles = false; // REQUIRED to change header colors
+            gridItems.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            gridItems.ColumnHeadersHeight = 50; // Taller modern header
+            gridItems.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 246, 250); // Light gray modern background
+            gridItems.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64); // Dark gray text
+            gridItems.ColumnHeadersDefaultCellStyle.Font = new Font("Poppins", 9f, FontStyle.Bold); // Your font
+            gridItems.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(245, 246, 250); // Prevent blue highlight on header click
+
+            // 4. Row Styling
+            gridItems.DefaultCellStyle.BackColor = Color.White;
+            gridItems.DefaultCellStyle.ForeColor = Color.FromArgb(45, 52, 54);
+            gridItems.DefaultCellStyle.SelectionBackColor = Color.FromArgb(236, 240, 241); // Soft selection color (not deep blue)
+            gridItems.DefaultCellStyle.SelectionForeColor = Color.Black;
+            gridItems.DefaultCellStyle.Font = new Font("Poppins", 9f, FontStyle.Regular);
+            gridItems.RowTemplate.Height = 45; // More breathing room (padding)
+
+            // 5. Delete Button Configuration
+            if (gridItems.Columns.Contains("Delete"))
+            {
+                var deleteCol = (DataGridViewButtonColumn)gridItems.Columns["Delete"];
+                deleteCol.HeaderText = "";
+                deleteCol.Text = "Delete";
+                deleteCol.UseColumnTextForButtonValue = true;
+                deleteCol.Width = 80;
+                deleteCol.FlatStyle = FlatStyle.Flat;
+            }
+
+            // 6. EVENT HANDLERS
+
+            // Handle Formatting (Text and Units)
             gridItems.CellFormatting += (s, e) =>
             {
-                if (gridItems.Columns[e.ColumnIndex].Name == "Ingreident" && e.Value != null)
+                if (e.RowIndex < 0 || e.Value == null) return;
+
+                // Format Ingredient Name
+                if (gridItems.Columns[e.ColumnIndex].Name == "Ingreident")
                 {
-                    e.Value = ((Ingredient)e.Value).Name;
-                    e.FormattingApplied = true;
+                    if (e.Value is Ingredient ing)
+                    {
+                        e.Value = ing.Name;
+                        e.FormattingApplied = true;
+                    }
                 }
-                if (gridItems.Columns[e.ColumnIndex].Name == "Quantity" && e.Value != null)
+
+                // Format Quantity with CORRECT Unit
+                if (gridItems.Columns[e.ColumnIndex].Name == "Quantity")
                 {
-                    e.Value = $"{e.Value} g";
-                    e.FormattingApplied = true;
+                    // Get the actual data object for this row to find the specific unit
+                    var item = gridItems.Rows[e.RowIndex].DataBoundItem as RequestItem;
+                    if (item != null && item.Ingredient != null)
+                    {
+                        // Result: "500 g", "2 pcs", "1.5 kg" based on the ingredient
+                        e.Value = $"{e.Value} {item.Ingredient.Unit}";
+                        e.FormattingApplied = true;
+                    }
+                }
+            };
+
+            // Handle Custom Painting (To make the Delete button look like a rounded pill)
+            gridItems.CellPainting += (s, e) =>
+            {
+                if (e.RowIndex >= 0 && gridItems.Columns[e.ColumnIndex].Name == "Delete")
+                {
+                    e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
+
+                    // Define the button area (make it smaller than the cell for padding)
+                    var buttonRect = new Rectangle(e.CellBounds.X + 5, e.CellBounds.Y + 8, e.CellBounds.Width - 10, e.CellBounds.Height - 16);
+
+                    // Choose color: Red normally, Darker Red if mouse is hovering
+                    // Note: Use simple logic here, or track mouse state for hover effects
+                    var btnColor = Color.FromArgb(255, 235, 238); // Very light red background
+                    var textColor = Color.FromArgb(211, 47, 47);   // Dark red text
+
+                    // Draw Rounded Rectangle (Simulated by drawing path or simple fill for simplicity)
+                    using (var brush = new SolidBrush(btnColor))
+                    {
+                        e.Graphics.FillRectangle(brush, buttonRect); // Keeping it simple rectangle for performance, or use GraphicsPath for round
+                    }
+
+                    // Draw Text
+                    TextRenderer.DrawText(e.Graphics, "Delete", e.CellStyle.Font, buttonRect, textColor,
+                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+
+                    e.Handled = true; // Tell Windows Forms we finished drawing
                 }
             };
         }
@@ -173,6 +258,22 @@
             {
                 string qty = $"{ingredient.CurrentStock:N0} {ingredient.Unit}";
                 e.Value = $"{ingredient.Name} - {qty} Avail.";
+            }
+        }
+
+        private void gridItems_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && gridItems.Columns[e.ColumnIndex].Name == "Delete")
+            {
+                var result = MessageBox.Show("Are you sure you want to remove this ingredient?",
+                                           "Confirm Delete",
+                                           MessageBoxButtons.YesNo,
+                                           MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    _tempItems.RemoveAt(e.RowIndex);
+                }
             }
         }
     }

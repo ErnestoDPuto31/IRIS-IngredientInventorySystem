@@ -4,6 +4,7 @@ using IRIS.Presentation.Presenters;
 using IRIS.Presentation.Interfaces;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.UserControls;
+using IRIS.Domain.Enums; // Assuming UserRole is here
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -18,7 +19,7 @@ namespace IRIS.Presentation.Forms
 
         private const int CARD_MARGIN = 10;
         private const int CARDS_PER_ROW = 4;
-        private const int SCROLLBAR_OFFSET = 25; 
+        private const int SCROLLBAR_OFFSET = 25;
 
         public InventoryControl()
         {
@@ -63,7 +64,6 @@ namespace IRIS.Presentation.Forms
                 Padding = new Padding(10, 10, 0, 10)
             };
 
-
             typeof(FlowLayoutPanel).InvokeMember("DoubleBuffered",
                 System.Reflection.BindingFlags.SetProperty |
                 System.Reflection.BindingFlags.Instance |
@@ -80,6 +80,13 @@ namespace IRIS.Presentation.Forms
             {
                 pnlMainContent.Dock = DockStyle.Fill;
                 pnlMainContent.SendToBack();
+            }
+
+            // --- ROLE SECURITY CHECK ---
+            // Only Office Staff can see the "Add Ingredient" button.
+            if (UserSession.CurrentUser.Role != UserRole.OfficeStaff)
+            {
+                btnAddIngredient.Visible = false;
             }
 
             if (!DesignMode)
@@ -111,7 +118,7 @@ namespace IRIS.Presentation.Forms
                 AddCardToGrid(item);
             }
 
-            ResizeCards(); // Ensure they are sized correctly immediately
+            ResizeCards();
             _ingredientsGrid.ResumeLayout();
         }
 
@@ -123,30 +130,37 @@ namespace IRIS.Presentation.Forms
         private void AddCardToGrid(Ingredient item)
         {
             var card = new IngredientCard(item);
-
             card.Margin = new Padding(CARD_MARGIN);
 
-            card.DeleteClicked += (sender, id) =>
+            // f current user is NOT Office Staff, disable card interactions
+            if (UserSession.CurrentUser.Role != UserRole.OfficeStaff)
             {
-                if (MessageBox.Show("Are you sure you want to delete this?", "Confirm",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                {
-                    _presenter.DeleteIngredient(id);
-                    TriggerSearch();
-                }
-            };
-
-            card.EditClicked += (sender, data) =>
+                card.HideActionButtons();
+            }
+            else
             {
-                using (frmAddIngredient form = new frmAddIngredient(data))
+                card.DeleteClicked += (sender, id) =>
                 {
-                    if (form.ShowDialog() == DialogResult.OK)
+                    if (MessageBox.Show("Are you sure you want to delete this?", "Confirm",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
-                        _presenter.UpdateIngredient(form.NewIngredient);
+                        _presenter.DeleteIngredient(id);
                         TriggerSearch();
                     }
-                }
-            };
+                };
+
+                card.EditClicked += (sender, data) =>
+                {
+                    using (frmAddIngredient form = new frmAddIngredient(data))
+                    {
+                        if (form.ShowDialog() == DialogResult.OK)
+                        {
+                            _presenter.UpdateIngredient(form.NewIngredient);
+                            TriggerSearch();
+                        }
+                    }
+                };
+            }
 
             _ingredientsGrid.Controls.Add(card);
         }
@@ -177,30 +191,11 @@ namespace IRIS.Presentation.Forms
             _ingredientsGrid.ResumeLayout(true);
         }
 
-        public void ShowMessage(string message)
-        {
-            MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        public void ShowError(string message)
-        {
-            MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void txtSearchIngredient_TextChanged(object sender, EventArgs e)
-        {
-            TriggerSearch();
-        }
-
-        private void cmbCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            TriggerSearch();
-        }
-
-        private void cmbSortIngredients_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            TriggerSearch();
-        }
+        public void ShowMessage(string message) => MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        public void ShowError(string message) => MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        private void txtSearchIngredient_TextChanged(object sender, EventArgs e) => TriggerSearch();
+        private void cmbCategory_SelectedIndexChanged(object sender, EventArgs e) => TriggerSearch();
+        private void cmbSortIngredients_SelectedIndexChanged(object sender, EventArgs e) => TriggerSearch();
 
         private void btnAddIngredient_Click(object sender, EventArgs e)
         {

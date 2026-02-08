@@ -77,8 +77,6 @@
             lblAllowedQtyDisplay = new Label();
             label9 = new Label();
             gridItems = new Guna.UI2.WinForms.Guna2DataGridView();
-            Ingreident = new DataGridViewTextBoxColumn();
-            Quantity = new DataGridViewTextBoxColumn();
             pnlAddItems = new Panel();
             label11 = new Label();
             label10 = new Label();
@@ -87,6 +85,9 @@
             cboIngredients = new Guna.UI2.WinForms.Guna2ComboBox();
             btnSubmit = new Guna.UI2.WinForms.Guna2Button();
             btnCancel = new Guna.UI2.WinForms.Guna2Button();
+            Ingreident = new DataGridViewTextBoxColumn();
+            Quantity = new DataGridViewTextBoxColumn();
+            Delete = new DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)numStudentCount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numRecipeCosting).BeginInit();
             guna2Panel1.SuspendLayout();
@@ -386,7 +387,7 @@
             gridItems.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             gridItems.ColumnHeadersHeight = 22;
             gridItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            gridItems.Columns.AddRange(new DataGridViewColumn[] { Ingreident, Quantity });
+            gridItems.Columns.AddRange(new DataGridViewColumn[] { Ingreident, Quantity, Delete });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.White;
             dataGridViewCellStyle3.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -432,20 +433,7 @@
             gridItems.ThemeStyle.RowsStyle.Height = 29;
             gridItems.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
             gridItems.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
-            // 
-            // Ingreident
-            // 
-            Ingreident.HeaderText = "Ingredient";
-            Ingreident.MinimumWidth = 6;
-            Ingreident.Name = "Ingreident";
-            Ingreident.ReadOnly = true;
-            // 
-            // Quantity
-            // 
-            Quantity.HeaderText = "Quantity";
-            Quantity.MinimumWidth = 6;
-            Quantity.Name = "Quantity";
-            Quantity.ReadOnly = true;
+            gridItems.CellContentClick += gridItems_CellContentClick;
             // 
             // pnlAddItems
             // 
@@ -593,6 +581,29 @@
             btnCancel.Text = "Cancel";
             btnCancel.Click += btnCancel_Click;
             // 
+            // Ingreident
+            // 
+            Ingreident.HeaderText = "Ingredient";
+            Ingreident.MinimumWidth = 6;
+            Ingreident.Name = "Ingreident";
+            Ingreident.ReadOnly = true;
+            // 
+            // Quantity
+            // 
+            Quantity.FillWeight = 50F;
+            Quantity.HeaderText = "Quantity";
+            Quantity.MinimumWidth = 6;
+            Quantity.Name = "Quantity";
+            Quantity.ReadOnly = true;
+            // 
+            // Delete
+            // 
+            Delete.FillWeight = 25F;
+            Delete.HeaderText = "Action";
+            Delete.MinimumWidth = 6;
+            Delete.Name = "Delete";
+            Delete.Text = "Delete";
+            // 
             // frmRequestEntry
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -667,5 +678,6 @@
         private Guna.UI2.WinForms.Guna2Button btnCancel;
         private DataGridViewTextBoxColumn Ingreident;
         private DataGridViewTextBoxColumn Quantity;
+        private DataGridViewButtonColumn Delete;
     }
 }

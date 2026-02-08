@@ -1,12 +1,10 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using IRIS.Domain.Entities;
+﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
+using System.Drawing.Drawing2D;
 
 namespace IRIS.Presentation.UserControls.Table
 {
+
     public class RequestRowUC : UserControl
     {
         public Request Data { get; private set; }

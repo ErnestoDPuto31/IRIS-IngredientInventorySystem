@@ -1,20 +1,16 @@
 ﻿using IRIS.Domain.Entities;
-using IRIS.Infrastructure.Data;      
+using IRIS.Infrastructure.Data;
 using IRIS.Presentation.UserControls.Components;
 using IRIS.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace IRIS.Presentation.UserControls.Table
 {
     public class RequestTableUC : UserControl
     {
+        public event EventHandler<int> RowActionClicked;
 
         private readonly Color _cIndigo = Color.FromArgb(75, 0, 130);
         private readonly Color _cBackground = Color.White;
@@ -52,6 +48,7 @@ namespace IRIS.Presentation.UserControls.Table
             {
                 try
                 {
+                    // Note: It's often better to pass the Service in, but this works for self-loading
                     var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
                     optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=IRIS_DB;Trusted_Connection=True;");
 
@@ -73,7 +70,6 @@ namespace IRIS.Presentation.UserControls.Table
             SetupItemsGrid();
         }
 
-
         public void LoadData()
         {
             if (_requestService == null) return;
@@ -85,7 +81,6 @@ namespace IRIS.Presentation.UserControls.Table
         public void SetData(List<Request> items)
         {
             _allData = items ?? new List<Request>();
-
             string currentSearch = _searchBar != null ? _searchBar.SearchText : "";
             ApplyFilter(currentSearch);
         }
@@ -94,6 +89,7 @@ namespace IRIS.Presentation.UserControls.Table
         {
             _itemsPanel.SuspendLayout();
 
+            // Clean up old controls to prevent memory leaks
             while (_itemsPanel.Controls.Count > 0)
             {
                 var c = _itemsPanel.Controls[0];
@@ -116,18 +112,22 @@ namespace IRIS.Presentation.UserControls.Table
                 {
                     Width = rowWidth
                 };
+
+                // 2. CONNECT INTERNAL ROW CLICK TO TABLE HANDLER
                 row.ViewClicked += Row_ViewClicked;
+
                 _itemsPanel.Controls.Add(row);
             }
 
             _itemsPanel.ResumeLayout();
         }
 
+        // 3. HANDLE CLICK AND PASS UP
         private void Row_ViewClicked(object sender, int requestId)
         {
-            MessageBox.Show($"Opening Request Details ID: {requestId}");
+            // Instead of MessageBox, we fire the public event!
+            RowActionClicked?.Invoke(this, requestId);
         }
-
 
         private void SetupSearchBar()
         {
@@ -149,7 +149,6 @@ namespace IRIS.Presentation.UserControls.Table
                 BackColor = Color.White
             };
 
-   
             _headerPanel.Paint += HeaderPanel_Paint;
             _headerPanel.MouseMove += HeaderPanel_MouseMove;
             _headerPanel.MouseLeave += (s, e) => { _hoveredHeaderIndex = -1; _headerPanel.Invalidate(); };

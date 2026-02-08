@@ -16,7 +16,9 @@ namespace IRIS.Domain.Entities
 
         [Required] public RequestStatus Status { get; set; } = RequestStatus.Pending;
         public DateTime DateOfUse { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         [Required] public int EncodedById { get; set; }
         [ForeignKey("EncodedById")] public virtual User? EncodedBy { get; set; }
@@ -25,5 +27,6 @@ namespace IRIS.Domain.Entities
         public virtual ICollection<Approval> Approvals { get; set; } = new List<Approval>();
 
         [NotMapped] public decimal TotalAllowedQty => StudentCount * RecipeCosting;
+        [NotMapped] public string? Remarks { get; set; }
     }
 }
