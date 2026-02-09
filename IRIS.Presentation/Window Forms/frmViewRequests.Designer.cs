@@ -360,7 +360,6 @@
             dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(141, 52, 222);
             dataGridViewCellStyle1.SelectionForeColor = Color.White;
             gridItems.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            gridItems.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.White;
             dataGridViewCellStyle2.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -644,6 +643,7 @@
             Controls.Add(lblTitle);
             FormBorderStyle = FormBorderStyle.None;
             Name = "frmViewRequests";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "frmViewRequests";
             ((System.ComponentModel.ISupportInitialize)gridItems).EndInit();
             ResumeLayout(false);

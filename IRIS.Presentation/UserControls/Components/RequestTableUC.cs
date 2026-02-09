@@ -19,7 +19,7 @@ namespace IRIS.Presentation.UserControls.Table
         private readonly float[] _colWeights = { 0.20f, 0.18f, 0.12f, 0.10f, 0.15f, 0.12f, 0.13f };
         private readonly string[] _headers = { "Subject", "Faculty", "Date of Use", "Students", "Submitted", "Status", "" };
 
-        private int _borderRadius = 15;
+        private readonly int _borderRadius = 15;
         private int _hoveredHeaderIndex = -1;
 
         private IrisDbContext _context;
@@ -43,24 +43,43 @@ namespace IRIS.Presentation.UserControls.Table
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
             if (!DesignMode)
             {
-                try
-                {
-                    // Note: It's often better to pass the Service in, but this works for self-loading
-                    var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
-                    optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=IRIS_DB;Trusted_Connection=True;");
-
-                    _context = new IrisDbContext(optionsBuilder.Options);
-                    _requestService = new RequestService(_context);
-                    LoadData();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Connection Error: {ex.Message}");
-                }
+                LoadData(); // LoadData handles the connection creation now
             }
+        }
+
+        // --- 1. NEW METHOD TO RESET DB CONNECTION ---
+        // We need this because if we don't recreate the context, EF Core will give us 
+        // "cached" old data even after you approve/reject items in a different window.
+        private void InitializeContext()
+        {
+            _context?.Dispose(); // Close old connection if exists
+
+            try
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
+                optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=IRIS_DB;Trusted_Connection=True;");
+
+                _context = new IrisDbContext(optionsBuilder.Options);
+                _requestService = new RequestService(_context);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Connection Error: {ex.Message}");
+            }
+        }
+
+        // --- 2. UPDATED LOADDATA ---
+        public void LoadData()
+        {
+            // Always get a fresh connection before loading
+            InitializeContext();
+
+            if (_requestService == null) return;
+
+            var data = _requestService.GetAllRequests();
+            SetData(data);
         }
 
         private void InitializeLayout()
@@ -68,14 +87,6 @@ namespace IRIS.Presentation.UserControls.Table
             SetupSearchBar();
             SetupHeaderPanel();
             SetupItemsGrid();
-        }
-
-        public void LoadData()
-        {
-            if (_requestService == null) return;
-
-            var data = _requestService.GetAllRequests();
-            SetData(data);
         }
 
         public void SetData(List<Request> items)
@@ -113,20 +124,17 @@ namespace IRIS.Presentation.UserControls.Table
                     Width = rowWidth
                 };
 
-                // 2. CONNECT INTERNAL ROW CLICK TO TABLE HANDLER
                 row.ViewClicked += Row_ViewClicked;
-
                 _itemsPanel.Controls.Add(row);
             }
 
             _itemsPanel.ResumeLayout();
         }
 
-        // 3. HANDLE CLICK AND PASS UP
         private void Row_ViewClicked(object sender, int requestId)
         {
-            // Instead of MessageBox, we fire the public event!
             RowActionClicked?.Invoke(this, requestId);
+            LoadData();
         }
 
         private void SetupSearchBar()
@@ -190,7 +198,7 @@ namespace IRIS.Presentation.UserControls.Table
                 e.Graphics.DrawPath(pen, path);
             }
 
-            using (Font titleFont = new Font("Segoe UI", 14, FontStyle.Bold)) 
+            using (Font titleFont = new Font("Segoe UI", 14, FontStyle.Bold))
             using (Brush titleBrush = new SolidBrush(_cIndigo))
             {
                 g.DrawString("Laboratory Requests", titleFont, titleBrush, 30, 25);

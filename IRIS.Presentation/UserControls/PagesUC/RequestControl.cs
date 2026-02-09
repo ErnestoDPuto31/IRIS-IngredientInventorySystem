@@ -56,6 +56,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 {
                     requestTable.LoadData();
                 }
+                Refresh();
             }
         }
     }

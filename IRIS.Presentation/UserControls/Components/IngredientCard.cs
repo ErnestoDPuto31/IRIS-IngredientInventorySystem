@@ -36,7 +36,15 @@ namespace IRIS.Presentation.UserControls
             lblCurrentStock.Text = $"{IngredientData.CurrentStock} {unit}";
             lblMinThreshold.Text = $"{IngredientData.MinimumStock} {unit}";
 
-            lblUpdatedAt.Text = $"Updated At {DateTime.Now.ToString("g")}";
+            if (IngredientData.UpdatedAt == DateTime.MinValue || IngredientData.UpdatedAt.Year == 1)
+            {
+                lblUpdatedAt.Text = "Newly Added";
+            }
+            else
+            {
+                lblUpdatedAt.Visible = true;
+                lblUpdatedAt.Text = $"Updated: {IngredientData.UpdatedAt.ToString("MMM dd, yyyy h:mm tt")}";
+            }
 
             UpdateVisuals();
         }

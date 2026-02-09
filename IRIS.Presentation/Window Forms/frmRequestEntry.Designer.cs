@@ -77,6 +77,9 @@
             lblAllowedQtyDisplay = new Label();
             label9 = new Label();
             gridItems = new Guna.UI2.WinForms.Guna2DataGridView();
+            Ingreident = new DataGridViewTextBoxColumn();
+            Quantity = new DataGridViewTextBoxColumn();
+            Delete = new DataGridViewButtonColumn();
             pnlAddItems = new Panel();
             label11 = new Label();
             label10 = new Label();
@@ -85,9 +88,6 @@
             cboIngredients = new Guna.UI2.WinForms.Guna2ComboBox();
             btnSubmit = new Guna.UI2.WinForms.Guna2Button();
             btnCancel = new Guna.UI2.WinForms.Guna2Button();
-            Ingreident = new DataGridViewTextBoxColumn();
-            Quantity = new DataGridViewTextBoxColumn();
-            Delete = new DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)numStudentCount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numRecipeCosting).BeginInit();
             guna2Panel1.SuspendLayout();
@@ -435,6 +435,29 @@
             gridItems.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
             gridItems.CellContentClick += gridItems_CellContentClick;
             // 
+            // Ingreident
+            // 
+            Ingreident.HeaderText = "Ingredient";
+            Ingreident.MinimumWidth = 6;
+            Ingreident.Name = "Ingreident";
+            Ingreident.ReadOnly = true;
+            // 
+            // Quantity
+            // 
+            Quantity.FillWeight = 50F;
+            Quantity.HeaderText = "Quantity";
+            Quantity.MinimumWidth = 6;
+            Quantity.Name = "Quantity";
+            Quantity.ReadOnly = true;
+            // 
+            // Delete
+            // 
+            Delete.FillWeight = 25F;
+            Delete.HeaderText = "Action";
+            Delete.MinimumWidth = 6;
+            Delete.Name = "Delete";
+            Delete.Text = "Delete";
+            // 
             // pnlAddItems
             // 
             pnlAddItems.Controls.Add(label11);
@@ -581,29 +604,6 @@
             btnCancel.Text = "Cancel";
             btnCancel.Click += btnCancel_Click;
             // 
-            // Ingreident
-            // 
-            Ingreident.HeaderText = "Ingredient";
-            Ingreident.MinimumWidth = 6;
-            Ingreident.Name = "Ingreident";
-            Ingreident.ReadOnly = true;
-            // 
-            // Quantity
-            // 
-            Quantity.FillWeight = 50F;
-            Quantity.HeaderText = "Quantity";
-            Quantity.MinimumWidth = 6;
-            Quantity.Name = "Quantity";
-            Quantity.ReadOnly = true;
-            // 
-            // Delete
-            // 
-            Delete.FillWeight = 25F;
-            Delete.HeaderText = "Action";
-            Delete.MinimumWidth = 6;
-            Delete.Name = "Delete";
-            Delete.Text = "Delete";
-            // 
             // frmRequestEntry
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -633,6 +633,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmRequestEntry";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "frmRequestEntry";
             ((System.ComponentModel.ISupportInitialize)numStudentCount).EndInit();
             ((System.ComponentModel.ISupportInitialize)numRecipeCosting).EndInit();

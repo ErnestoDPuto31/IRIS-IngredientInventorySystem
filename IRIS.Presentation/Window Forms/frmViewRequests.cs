@@ -11,6 +11,9 @@ namespace IRIS.Presentation.Window_Forms
         private readonly int _currentUserId;
         private Request _currentRequest;
 
+        private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243); // Blue
+        private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60); // Green
+
         public frmViewRequests(int requestId, RequestService requestService, int currentUserId)
         {
             InitializeComponent();
@@ -28,7 +31,6 @@ namespace IRIS.Presentation.Window_Forms
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-
             gridItems.ClearSelection();
             gridItems.CurrentCell = null;
             this.ActiveControl = null;
@@ -103,88 +105,86 @@ namespace IRIS.Presentation.Window_Forms
 
         private void UpdateStatusUI(RequestStatus status)
         {
-            // 1. Setup Colors
+            // 1. Setup Badge Colors (Keep existing logic)
             Color bg, fg;
             string statusText = status.ToString().ToUpper();
 
             switch (status)
             {
                 case RequestStatus.Approved:
-                    bg = Color.FromArgb(232, 245, 233); // Light Green
-                    fg = Color.FromArgb(56, 142, 60);   // Dark Green
+                    bg = Color.FromArgb(232, 245, 233);
+                    fg = Color.FromArgb(56, 142, 60);
                     break;
                 case RequestStatus.Rejected:
-                    bg = Color.FromArgb(255, 235, 238); // Light Red
-                    fg = Color.FromArgb(211, 47, 47);   // Dark Red
+                    bg = Color.FromArgb(255, 235, 238);
+                    fg = Color.FromArgb(211, 47, 47);
                     break;
                 case RequestStatus.Released:
-                    bg = Color.FromArgb(227, 242, 253); // Light Blue
-                    fg = Color.FromArgb(33, 150, 243);  // Blue
+                    bg = Color.FromArgb(227, 242, 253);
+                    fg = Color.FromArgb(33, 150, 243);
                     break;
                 default: // Pending
-                    bg = Color.FromArgb(255, 248, 225); // Light Yellow
-                    fg = Color.FromArgb(255, 143, 0);   // Dark Orange
+                    bg = Color.FromArgb(255, 248, 225);
+                    fg = Color.FromArgb(255, 143, 0);
                     break;
             }
 
-            // 2. Apply Badge Styles
+            // 2. Apply Badge Styles (Keep existing logic)
             lblStatusBadge.Text = statusText;
             lblStatusBadge.FillColor = bg;
             lblStatusBadge.ForeColor = fg;
             lblStatusBadge.BorderColor = bg;
-
             lblStatusBadge.DisabledState.FillColor = bg;
             lblStatusBadge.DisabledState.ForeColor = fg;
             lblStatusBadge.DisabledState.BorderColor = bg;
-            lblStatusBadge.ReadOnly = true;
-            lblStatusBadge.Enabled = false;
 
+            // 3. Determine User Roles (Keep existing logic)
             UserRole currentUserRole = UserSession.CurrentUser.Role;
-            UserRole? lastApproverRole = null;
 
-            var lastApproval = _currentRequest.Approvals.OrderByDescending(a => a.ActionDate).FirstOrDefault();
-            if (lastApproval != null && lastApproval.Approver != null)
-            {
-                lastApproverRole = lastApproval.Approver.Role;
-            }
-
-            // Rule A: Office Staff - ALWAYS View Only
             if (currentUserRole == UserRole.OfficeStaff)
             {
                 HideActionButtons();
                 txtRemarks.Visible = false;
                 lblRemarksTitle.Visible = false;
             }
-            // Rule B: Pending Status - Admin/Dean/AsstDean can Act
             else if (status == RequestStatus.Pending)
             {
-                ShowActionButtons();
+                ShowActionButtons("Approve", _cApproveGreen);
             }
-            // Rule C: Special "Dean Override" logic
-            else if (status == RequestStatus.Approved
-                     && lastApproverRole == UserRole.AssistantDean
-                     && currentUserRole == UserRole.Dean)
+            else if (status == RequestStatus.Approved && currentUserRole == UserRole.Dean)
             {
-                ShowActionButtons();
-                btnApprove.Text = "Approve";
+                ShowActionButtons("Release", _cReleaseBlue);
+                btnReject.Visible = false;
             }
-            // Rule D: Default (Rejected, Released, or finalized by Dean) - Hide Buttons
             else
             {
                 HideActionButtons();
                 txtRemarks.Visible = true;
                 txtRemarks.ReadOnly = true;
                 lblRemarksTitle.Text = "Remarks";
-
             }
         }
 
-        private void ShowActionButtons()
+        private void ShowActionButtons(string approveBtnText, Color? baseColor = null)
         {
             btnApprove.Visible = true;
             btnReject.Visible = true;
             txtRemarks.Visible = true;
             txtRemarks.ReadOnly = false;
+            lblRemarksTitle.Visible = true;
+
+            btnApprove.Text = approveBtnText;
+
+            if (baseColor.HasValue)
+            {
+                Color color = baseColor.Value;
+
+                btnApprove.FillColor = color;
+                btnApprove.FillColor2 = ControlPaint.Light(color, 0.1f);
+
+                btnApprove.HoverState.FillColor = ControlPaint.Light(color, 0.3f);
+                btnApprove.HoverState.FillColor2 = ControlPaint.Light(color, 0.4f);
+            }
         }
 
         private void HideActionButtons()
@@ -195,11 +195,15 @@ namespace IRIS.Presentation.Window_Forms
 
         private void btnApprove_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to Approve this request?", "Confirm Approval", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            bool isReleaseAction = btnApprove.Text == "Release";
+            string actionName = isReleaseAction ? "Release" : "Approve";
+            RequestStatus newStatus = isReleaseAction ? RequestStatus.Released : RequestStatus.Approved;
+
+            if (MessageBox.Show($"Are you sure you want to {actionName} this request?", $"Confirm {actionName}", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 try
                 {
-                    _requestService.UpdateRequestStatus(_requestId, RequestStatus.Approved, txtRemarks.Text, _currentUserId);
+                    _requestService.UpdateRequestStatus(_requestId, newStatus, txtRemarks.Text, _currentUserId);
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }

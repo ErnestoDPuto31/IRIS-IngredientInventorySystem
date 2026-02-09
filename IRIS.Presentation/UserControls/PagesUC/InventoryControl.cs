@@ -1,14 +1,11 @@
 ﻿using IRIS.Domain.Entities;
-using IRIS.Presentation.Window_Forms;
-using IRIS.Presentation.Presenters;
-using IRIS.Presentation.Interfaces;
+using IRIS.Domain.Enums; 
 using IRIS.Presentation.DependencyInjection;
+using IRIS.Presentation.Interfaces;
+using IRIS.Presentation.Presenters;
 using IRIS.Presentation.UserControls;
-using IRIS.Domain.Enums; // Assuming UserRole is here
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Collections.Generic;
+using IRIS.Presentation.Window_Forms;
+
 
 namespace IRIS.Presentation.Forms
 {
@@ -132,7 +129,6 @@ namespace IRIS.Presentation.Forms
             var card = new IngredientCard(item);
             card.Margin = new Padding(CARD_MARGIN);
 
-            // f current user is NOT Office Staff, disable card interactions
             if (UserSession.CurrentUser.Role != UserRole.OfficeStaff)
             {
                 card.HideActionButtons();
@@ -155,13 +151,16 @@ namespace IRIS.Presentation.Forms
                     {
                         if (form.ShowDialog() == DialogResult.OK)
                         {
+                            form.NewIngredient.UpdatedAt = DateTime.Now;
                             _presenter.UpdateIngredient(form.NewIngredient);
-                            TriggerSearch();
+                            if (sender is IngredientCard clickedCard)
+                            {
+                                clickedCard.UpdateData(form.NewIngredient);
+                            }
                         }
                     }
                 };
             }
-
             _ingredientsGrid.Controls.Add(card);
         }
 
