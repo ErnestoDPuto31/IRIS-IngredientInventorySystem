@@ -1,9 +1,7 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Infrastructure.Data;
 using IRIS.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace IRIS.Services.Implementations
 {
@@ -15,10 +13,7 @@ namespace IRIS.Services.Implementations
         {
             _context = context;
         }
-
-        // ... Keep Add, Update, Delete, GetAll methods same as before ...
-
-        public IEnumerable<Ingredient> GetAllIngredients() => _context.Ingredients.ToList();
+        public IEnumerable<Ingredient> GetAllIngredients() => _context.Ingredients.AsNoTracking().ToList();
 
         public int AddIngredient(Ingredient ingredient)
         {
@@ -29,6 +24,15 @@ namespace IRIS.Services.Implementations
 
         public void UpdateIngredient(Ingredient ingredient)
         {
+            var local = _context.Ingredients
+                .Local
+                .FirstOrDefault(entry => entry.IngredientId == ingredient.IngredientId);
+
+            if (local != null)
+            {
+                _context.Entry(local).State = EntityState.Detached;
+            }
+
             _context.Ingredients.Update(ingredient);
             _context.SaveChanges();
         }
@@ -43,26 +47,22 @@ namespace IRIS.Services.Implementations
             }
         }
 
-        // --- THE LOGIC MOVED HERE ---
         public IEnumerable<Ingredient> GetFilteredIngredients(string searchTerm, string category, string sortBy)
         {
-            // 1. Start with all data (AsQueryable allows efficient DB querying)
-            var query = _context.Ingredients.AsQueryable();
+            // FIX 3: Use AsNoTracking().AsQueryable() here
+            var query = _context.Ingredients.AsNoTracking().AsQueryable();
 
-            // 2. Search Logic
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 string term = searchTerm.ToLower().Trim();
                 query = query.Where(i => i.Name.ToLower().Contains(term));
             }
 
-            // 3. Category Logic
             if (!string.IsNullOrEmpty(category) && category != "All Categories")
             {
                 query = query.Where(i => i.Category == category);
             }
 
-            // 4. Sorting Logic
             switch (sortBy)
             {
                 case "Newest First":
@@ -84,7 +84,7 @@ namespace IRIS.Services.Implementations
                     query = query.OrderByDescending(i => i.CurrentStock);
                     break;
                 default:
-                    query = query.OrderByDescending(i => i.IngredientId); // Default fallback
+                    query = query.OrderByDescending(i => i.IngredientId);
                     break;
             }
 

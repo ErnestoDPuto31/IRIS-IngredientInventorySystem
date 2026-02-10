@@ -1,12 +1,11 @@
 ﻿using IRIS.Domain.Entities;
-using System;
-using System.Windows.Forms;
 
 namespace IRIS.Presentation.Window_Forms
 {
     public partial class frmAddIngredient : Form
     {
         public Ingredient NewIngredient { get; private set; }
+        private int _ingredientId = 0;
 
         public frmAddIngredient()
         {
@@ -22,8 +21,11 @@ namespace IRIS.Presentation.Window_Forms
         {
             lblIngredientTitle.Text = "Update Ingredient";
             btnAddIngredient.Text = "Save Changes";
-            txtIngredientName.Text = ingredientToEdit.Name;
 
+            // 2. Capture the ID from the ingredient we want to edit
+            _ingredientId = ingredientToEdit.IngredientId;
+
+            txtIngredientName.Text = ingredientToEdit.Name;
             numCurrentStock.Value = ingredientToEdit.CurrentStock;
             numMinimumThreshold.Value = ingredientToEdit.MinimumStock;
 
@@ -61,6 +63,8 @@ namespace IRIS.Presentation.Window_Forms
 
             NewIngredient = new Ingredient
             {
+                IngredientId = _ingredientId,
+
                 Name = txtIngredientName.Text.Trim(),
                 Category = cmbCategory.SelectedItem?.ToString() ?? cmbCategory.Text,
                 Unit = cmbUnit.SelectedItem?.ToString() ?? cmbUnit.Text,
