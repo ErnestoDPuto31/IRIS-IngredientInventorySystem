@@ -15,7 +15,11 @@ namespace IRIS.Presentation.UserControls.Components
     {
         EmptyItems,
         LowStockItems,
-        WellStockedItems
+        WellStockedItems,
+        TotalIngredients,
+        TotalRequests,
+        ApprovalRate,
+        TotalTransactions
     }
 
     [DefaultEvent("IconClicked")]
@@ -154,7 +158,6 @@ namespace IRIS.Presentation.UserControls.Components
         }
 
         // --- MOUSE CLICK LOGIC (Original) ---
-
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);

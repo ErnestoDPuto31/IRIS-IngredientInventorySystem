@@ -2,10 +2,11 @@
 using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using IRIS.Services.Interfaces;
 
 namespace IRIS.Services.Implementations
 {
-    public class RequestService
+    public class RequestService : IRequestService
     {
         private readonly IrisDbContext _context;
 

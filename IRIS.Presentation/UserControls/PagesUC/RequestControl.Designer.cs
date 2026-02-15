@@ -52,9 +52,10 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(118, 28);
+            label1.Location = new Point(148, 35);
+            label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(532, 70);
+            label1.Size = new Size(635, 84);
             label1.TabIndex = 2;
             label1.Text = "REQUESTS MANAGEMENT";
             // 
@@ -63,9 +64,10 @@
             label2.AutoSize = true;
             label2.Font = new Font("Poppins", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = SystemColors.ControlDarkDark;
-            label2.Location = new Point(128, 80);
+            label2.Location = new Point(160, 100);
+            label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new Size(487, 40);
+            label2.Size = new Size(585, 50);
             label2.TabIndex = 3;
             label2.Text = "Create and manage ingredient requests";
             // 
@@ -78,20 +80,22 @@
             pnlMainContent.CustomizableEdges = customizableEdges3;
             pnlMainContent.Dock = DockStyle.Fill;
             pnlMainContent.Location = new Point(0, 0);
+            pnlMainContent.Margin = new Padding(4);
             pnlMainContent.Name = "pnlMainContent";
             pnlMainContent.ShadowDecoration.CustomizableEdges = customizableEdges4;
             pnlMainContent.ShadowDecoration.Enabled = true;
             pnlMainContent.ShadowDecoration.Shadow = new Padding(10);
-            pnlMainContent.Size = new Size(1600, 900);
+            pnlMainContent.Size = new Size(2000, 1125);
             pnlMainContent.TabIndex = 5;
             // 
             // requestTable
             // 
             requestTable.BackColor = Color.White;
-            requestTable.Location = new Point(118, 146);
+            requestTable.Location = new Point(148, 182);
+            requestTable.Margin = new Padding(4);
             requestTable.Name = "requestTable";
-            requestTable.Padding = new Padding(25);
-            requestTable.Size = new Size(1408, 632);
+            requestTable.Padding = new Padding(31);
+            requestTable.Size = new Size(1760, 790);
             requestTable.TabIndex = 5;
             // 
             // btnNewRequest
@@ -112,11 +116,12 @@
             btnNewRequest.Image = Properties.Resources.icons8_add_100;
             btnNewRequest.ImageAlign = HorizontalAlignment.Left;
             btnNewRequest.ImageOffset = new Point(3, 0);
-            btnNewRequest.Location = new Point(1327, 51);
+            btnNewRequest.Location = new Point(1659, 64);
+            btnNewRequest.Margin = new Padding(4);
             btnNewRequest.Name = "btnNewRequest";
             btnNewRequest.PressedColor = Color.FromArgb(111, 49, 171);
             btnNewRequest.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btnNewRequest.Size = new Size(199, 69);
+            btnNewRequest.Size = new Size(249, 86);
             btnNewRequest.TabIndex = 4;
             btnNewRequest.Text = "New Request";
             btnNewRequest.TextAlign = HorizontalAlignment.Left;
@@ -125,12 +130,13 @@
             // 
             // RequestControl
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(254, 253, 253);
             Controls.Add(pnlMainContent);
+            Margin = new Padding(4);
             Name = "RequestControl";
-            Size = new Size(1600, 900);
+            Size = new Size(2000, 1125);
             pnlMainContent.ResumeLayout(false);
             pnlMainContent.PerformLayout();
             ResumeLayout(false);

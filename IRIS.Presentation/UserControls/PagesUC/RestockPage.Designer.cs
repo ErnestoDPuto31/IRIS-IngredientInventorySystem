@@ -52,7 +52,7 @@
             // 
             guna2HtmlLabel1.BackColor = Color.Transparent;
             guna2HtmlLabel1.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            guna2HtmlLabel1.Location = new Point(150, 27);
+            guna2HtmlLabel1.Location = new Point(110, 27);
             guna2HtmlLabel1.Name = "guna2HtmlLabel1";
             guna2HtmlLabel1.Size = new Size(487, 72);
             guna2HtmlLabel1.TabIndex = 4;
@@ -63,7 +63,7 @@
             guna2HtmlLabel2.BackColor = Color.Transparent;
             guna2HtmlLabel2.Font = new Font("Poppins", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             guna2HtmlLabel2.ForeColor = SystemColors.ControlDarkDark;
-            guna2HtmlLabel2.Location = new Point(150, 81);
+            guna2HtmlLabel2.Location = new Point(110, 81);
             guna2HtmlLabel2.Name = "guna2HtmlLabel2";
             guna2HtmlLabel2.Size = new Size(629, 42);
             guna2HtmlLabel2.TabIndex = 5;
@@ -76,7 +76,7 @@
             btnFilterAll.FlatStyle = FlatStyle.Flat;
             btnFilterAll.Font = new Font("Poppins", 9F);
             btnFilterAll.ForeColor = Color.Black;
-            btnFilterAll.Location = new Point(617, 370);
+            btnFilterAll.Location = new Point(577, 370);
             btnFilterAll.Name = "btnFilterAll";
             btnFilterAll.Size = new Size(100, 36);
             btnFilterAll.TabIndex = 10;
@@ -91,7 +91,7 @@
             btnFilterLow.FlatStyle = FlatStyle.Flat;
             btnFilterLow.Font = new Font("Poppins", 9F);
             btnFilterLow.ForeColor = Color.Black;
-            btnFilterLow.Location = new Point(723, 370);
+            btnFilterLow.Location = new Point(683, 370);
             btnFilterLow.Name = "btnFilterLow";
             btnFilterLow.Size = new Size(100, 36);
             btnFilterLow.TabIndex = 11;
@@ -106,7 +106,7 @@
             btnFilterEmpty.FlatStyle = FlatStyle.Flat;
             btnFilterEmpty.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFilterEmpty.ForeColor = Color.Black;
-            btnFilterEmpty.Location = new Point(829, 370);
+            btnFilterEmpty.Location = new Point(789, 370);
             btnFilterEmpty.Name = "btnFilterEmpty";
             btnFilterEmpty.Size = new Size(100, 36);
             btnFilterEmpty.TabIndex = 12;
@@ -121,7 +121,7 @@
             btnFilterWell.FlatStyle = FlatStyle.Flat;
             btnFilterWell.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFilterWell.ForeColor = Color.Black;
-            btnFilterWell.Location = new Point(935, 370);
+            btnFilterWell.Location = new Point(895, 370);
             btnFilterWell.Name = "btnFilterWell";
             btnFilterWell.Size = new Size(124, 36);
             btnFilterWell.TabIndex = 13;
@@ -132,7 +132,7 @@
             // LowStockItems
             // 
             LowStockItems.BackColor = Color.Transparent;
-            LowStockItems.Location = new Point(150, 146);
+            LowStockItems.Location = new Point(110, 146);
             LowStockItems.Name = "LowStockItems";
             LowStockItems.Padding = new Padding(25, 10, 10, 10);
             LowStockItems.Size = new Size(450, 200);
@@ -152,7 +152,7 @@
             btnRefresh.ForeColor = Color.White;
             btnRefresh.Image = Properties.Resources.icons8_sync_64;
             btnRefresh.ImageSize = new Size(40, 40);
-            btnRefresh.Location = new Point(545, 370);
+            btnRefresh.Location = new Point(505, 370);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.ShadowDecoration.CustomizableEdges = customizableEdges2;
             btnRefresh.Size = new Size(49, 36);
@@ -162,7 +162,7 @@
             // EmptyItems
             // 
             EmptyItems.BackColor = Color.Transparent;
-            EmptyItems.Location = new Point(615, 146);
+            EmptyItems.Location = new Point(575, 146);
             EmptyItems.Name = "EmptyItems";
             EmptyItems.Size = new Size(450, 200);
             EmptyItems.TabIndex = 19;
@@ -170,7 +170,7 @@
             // WellStockedItems
             // 
             WellStockedItems.BackColor = Color.Transparent;
-            WellStockedItems.Location = new Point(1080, 146);
+            WellStockedItems.Location = new Point(1040, 146);
             WellStockedItems.Name = "WellStockedItems";
             WellStockedItems.Size = new Size(450, 200);
             WellStockedItems.TabIndex = 20;
@@ -178,7 +178,7 @@
             // restockTableuc1
             // 
             restockTableuc1.BackColor = Color.Transparent;
-            restockTableuc1.Location = new Point(150, 425);
+            restockTableuc1.Location = new Point(110, 425);
             restockTableuc1.Name = "restockTableuc1";
             restockTableuc1.Padding = new Padding(20);
             restockTableuc1.Size = new Size(1380, 451);
@@ -206,7 +206,7 @@
             cmbFilter.ItemsAppearance.ForeColor = Color.Black;
             cmbFilter.ItemsAppearance.SelectedBackColor = Color.Indigo;
             cmbFilter.ItemsAppearance.SelectedForeColor = Color.White;
-            cmbFilter.Location = new Point(185, 370);
+            cmbFilter.Location = new Point(145, 370);
             cmbFilter.Name = "cmbFilter";
             cmbFilter.ShadowDecoration.CustomizableEdges = customizableEdges4;
             cmbFilter.Size = new Size(354, 36);
@@ -221,7 +221,7 @@
             guna2ImageButton1.ImageOffset = new Point(0, 0);
             guna2ImageButton1.ImageRotate = 0F;
             guna2ImageButton1.ImageSize = new Size(24, 24);
-            guna2ImageButton1.Location = new Point(150, 370);
+            guna2ImageButton1.Location = new Point(110, 370);
             guna2ImageButton1.Name = "guna2ImageButton1";
             guna2ImageButton1.PressedState.ImageSize = new Size(64, 64);
             guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges5;
