@@ -1,6 +1,7 @@
 ﻿using IRIS.Domain.Entities;
-using IRIS.Services.Interfaces;
+using IRIS.Domain.Enums;
 using IRIS.Presentation.Interfaces;
+using IRIS.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,7 +78,15 @@ namespace IRIS.Presentation.Presenters
         {
             try
             {
-                var results = _service.GetFilteredIngredients(search, category, sort);
+                // 1. Convert the 'sort' string to the 'IngredientSortBy' Enum
+                // Default to 'Name' or 'None' if the string is invalid or empty
+                if (!Enum.TryParse(sort, true, out IngredientSortBy sortEnum))
+                {
+                    sortEnum = IngredientSortBy.Category; 
+                }
+
+                // 2. Pass the Enum, not the string
+                var results = _service.GetFilteredIngredients(search, category, sortEnum);
 
                 _view.DisplayIngredients(results);
             }

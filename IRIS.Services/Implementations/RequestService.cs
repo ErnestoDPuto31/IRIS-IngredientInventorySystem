@@ -92,7 +92,7 @@ namespace IRIS.Services.Implementations
             }
         }
 
-        public void CreateRequest(Request newRequest, List<RequestItem> items)
+        public void CreateRequest(Request newRequest, List<RequestDetails> items)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {

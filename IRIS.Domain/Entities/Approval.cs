@@ -15,8 +15,6 @@ namespace IRIS.Domain.Entities
         public DateTime ActionDate { get; set; } = DateTime.Now;
         public RequestStatus ActionType { get; set; } = RequestStatus.Pending;  
         public string? Remarks { get; set; }
-
-
         [ForeignKey("RequestId")] public virtual Request Request { get; set; }
 
         [ForeignKey("ApproverId")] public virtual User Approver { get; set; }

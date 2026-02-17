@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using IRIS.Domain.Entities;
+﻿using IRIS.Domain.Entities;
+using IRIS.Domain.Enums;
+using System.Collections.Generic;
 
 namespace IRIS.Services.Interfaces
 {
@@ -9,6 +10,6 @@ namespace IRIS.Services.Interfaces
         int AddIngredient(Ingredient ingredient);
         void UpdateIngredient(Ingredient ingredient);
         void DeleteIngredient(int ingredientId);
-        IEnumerable<Ingredient> GetFilteredIngredients(string searchTerm, string category, string sortBy);
+        IEnumerable<Ingredient> GetFilteredIngredients(string searchTerm, string category, IngredientSortBy sortBy);
     }
 }

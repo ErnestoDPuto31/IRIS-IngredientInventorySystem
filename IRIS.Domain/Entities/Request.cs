@@ -10,23 +10,18 @@ namespace IRIS.Domain.Entities
 
         [Required, MaxLength(100)] public string? Subject { get; set; }
         [Required, MaxLength(100)] public string? FacultyName { get; set; }
-
         [Required] public int StudentCount { get; set; }
-        public decimal RecipeCosting { get; set; }
-
         [Required] public RequestStatus Status { get; set; } = RequestStatus.Pending;
         public DateTime DateOfUse { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         [Required] public int EncodedById { get; set; }
         [ForeignKey("EncodedById")] public virtual User? EncodedBy { get; set; }
-
-        public virtual ICollection<RequestItem> RequestItems { get; set; } = new List<RequestItem>();
+        public virtual ICollection<RequestDetails> RequestItems { get; set; } = new List<RequestDetails>();
         public virtual ICollection<Approval> Approvals { get; set; } = new List<Approval>();
 
-        [NotMapped] public decimal TotalAllowedQty => StudentCount * RecipeCosting;
-        [NotMapped] public string? Remarks { get; set; }
+        [MaxLength(500)]
+        public string? Remarks { get; set; }
     }
 }

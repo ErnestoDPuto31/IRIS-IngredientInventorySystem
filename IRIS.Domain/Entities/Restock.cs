@@ -12,24 +12,15 @@ namespace IRIS.Domain.Entities
         [Required]
         public int IngredientId { get; set; }
 
-        [ForeignKey("IngredientId")] public virtual Ingredient Ingredient { get; set; }
-
-        [Required, MaxLength(100)]
-        public string IngredientName { get; set; } = string.Empty;
-
-        [Required, MaxLength(50)]
-        public string Category { get; set; } = string.Empty;
+        [ForeignKey("IngredientId")]
+        public virtual Ingredient Ingredient { get; set; }
 
         [Required]
-        public decimal CurrentStock { get; set; }
+        public StockStatus Status { get; set; } = StockStatus.Empty;
 
         [Required]
-        public decimal MinimumThreshold { get; set; }
-
+        public DateTime DateRestocked { get; set; } = DateTime.Now;
         [Required]
         public decimal SuggestedRestockQuantity { get; set; }
-
-        [Required]
-        public StockStatus Status { get; set; } = StockStatus.WellStocked;
     }
 }

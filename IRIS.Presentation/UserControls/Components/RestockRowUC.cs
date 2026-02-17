@@ -18,6 +18,7 @@ namespace IRIS.Presentation.UserControls.Table
 
         private Button _btnRestock;
         private bool _isHovered = false;
+        // Columns: Name, Category, Stock, Min, Request Qty, Status, Action
         private readonly float[] _colWeights = { 0.18f, 0.12f, 0.14f, 0.14f, 0.16f, 0.10f, 0.16f };
 
         private readonly Color _cTextMain = Color.FromArgb(50, 50, 50);
@@ -93,6 +94,13 @@ namespace IRIS.Presentation.UserControls.Table
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
+            // Safe accessors (in case Ingredient is null, though it shouldn't be if Included)
+            string ingName = Data.Ingredient?.Name ?? "Unknown";
+            string ingUnit = Data.Ingredient?.Unit ?? "units";
+            string ingCat = Data.Ingredient?.Category.ToString() ?? "Uncategorized"; // Enum to String
+            decimal currentStock = Data.Ingredient?.CurrentStock ?? 0;
+            decimal minStock = Data.Ingredient?.MinimumStock ?? 0;
+
             if (_isHovered)
             {
                 using (SolidBrush hoverBrush = new SolidBrush(_cHoverBg))
@@ -101,31 +109,39 @@ namespace IRIS.Presentation.UserControls.Table
                     g.FillRectangle(accent, 0, 0, 4, this.Height);
             }
 
-            string unit = Data.Ingredient?.Unit ?? "units";
             using (Font fBold = new Font("Segoe UI", 10F, FontStyle.Bold))
             using (Font fReg = new Font("Segoe UI", 10F))
             using (Pen linePen = new Pen(_cLine, 1))
             {
                 g.DrawLine(linePen, 20, this.Height - 1, this.Width - 20, this.Height - 1);
 
-                DrawText(g, Data.IngredientName, fBold, _cTextMain, 0, this.Width, StringAlignment.Near);
-                DrawCategoryPill(g, Data.Category, 1, this.Width);
+                // 1. Name
+                DrawText(g, ingName, fBold, _cTextMain, 0, this.Width, StringAlignment.Near);
 
-                // --- FIXED STOCK COLOR LOGIC ---
+                // 2. Category
+                DrawCategoryPill(g, ingCat, 1, this.Width);
+
+                // 3. Current Stock (Color Logic)
                 Color stockColor;
-                if (Data.CurrentStock <= 0) stockColor = Color.Crimson;
-                else if (Data.CurrentStock <= Data.MinimumThreshold) stockColor = _cTextOrange;
+                if (currentStock <= 0) stockColor = Color.Crimson;
+                else if (currentStock <= minStock) stockColor = _cTextOrange;
                 else stockColor = Color.ForestGreen;
 
-                DrawText(g, $"{Data.CurrentStock} {unit}", fBold, stockColor, 2, this.Width, StringAlignment.Center);
-                DrawText(g, $"{Data.MinimumThreshold} {unit}", fReg, _cTextMain, 3, this.Width, StringAlignment.Center);
-                DrawText(g, $"{Data.SuggestedRestockQuantity} {unit}", fBold, _cTextPurple, 4, this.Width, StringAlignment.Center);
+                DrawText(g, $"{currentStock} {ingUnit}", fBold, stockColor, 2, this.Width, StringAlignment.Center);
 
-                DrawStatusPill(g, 5, this.Width);
+                // 4. Minimum Threshold
+                DrawText(g, $"{minStock} {ingUnit}", fReg, _cTextMain, 3, this.Width, StringAlignment.Center);
+
+                // 5. Requested Quantity (Property name changed to QuantityRequested)
+              //  DrawText(g, $"{Data.QuantityRequested} {ingUnit}", fBold, _cTextPurple, 4, this.Width, StringAlignment.Center);
+
+                // 6. Status Pill
+                DrawStatusPill(g, 5, this.Width, currentStock, minStock);
             }
         }
 
-        private void DrawStatusPill(Graphics g, int colIndex, int totalWidth)
+        // Updated to accept stock values explicitly so we don't need to look them up again
+        private void DrawStatusPill(Graphics g, int colIndex, int totalWidth, decimal currentStock, decimal minStock)
         {
             float colX = GetColX(colIndex, totalWidth);
             float colW = totalWidth * _colWeights[colIndex];
@@ -133,23 +149,23 @@ namespace IRIS.Presentation.UserControls.Table
             string statusText;
             Color bg, fg;
 
-            // --- FIXED STATUS LOGIC ---
-            if (Data.CurrentStock <= 0)
+            // --- FIXED STATUS LOGIC (Using Ingredient Data) ---
+            if (currentStock <= 0)
             {
                 statusText = "Empty";
-                bg = Color.FromArgb(255, 235, 235); // Very Light Red
+                bg = Color.FromArgb(255, 235, 235);
                 fg = Color.Crimson;
             }
-            else if (Data.CurrentStock <= Data.MinimumThreshold)
+            else if (currentStock <= minStock)
             {
                 statusText = "Low";
-                bg = Color.FromArgb(255, 248, 225); // Very Light Orange/Yellow
-                fg = Color.FromArgb(230, 140, 20);  // Deep Orange
+                bg = Color.FromArgb(255, 248, 225);
+                fg = Color.FromArgb(230, 140, 20);
             }
             else
             {
                 statusText = "Stocked";
-                bg = Color.FromArgb(232, 250, 232); // Very Light Green
+                bg = Color.FromArgb(232, 250, 232);
                 fg = Color.ForestGreen;
             }
 

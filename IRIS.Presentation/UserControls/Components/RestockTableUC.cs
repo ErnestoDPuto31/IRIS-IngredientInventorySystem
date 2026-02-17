@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using IRIS.Domain.Entities;
 using IRIS.Services.Interfaces;
 using IRIS.Presentation.DependencyInjection;
@@ -147,18 +148,18 @@ namespace IRIS.Presentation.UserControls.Table
                 c.Dispose();
             }
 
-            // 2. Filter Logic
+            // 2. Filter Logic - FIX: Access Ingredient Properties safely
             var filtered = string.IsNullOrWhiteSpace(query)
                 ? _allData
                 : _allData.Where(x =>
-                    (x.IngredientName != null && x.IngredientName.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                    (x.Category != null && x.Category.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                    (x.Ingredient != null && x.Ingredient.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    (x.Ingredient != null && x.Ingredient.Category.ToString().IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
                 ).ToList();
 
-            // 3. Sort Logic
+            // 3. Sort Logic - FIX: Access Ingredient Properties safely
             var sorted = filtered
                 .OrderBy(x => GetSortPriority(x))
-                .ThenBy(x => x.IngredientName)
+                .ThenBy(x => x.Ingredient?.Name ?? "")
                 .ToList();
 
             // 4. Render
@@ -180,14 +181,18 @@ namespace IRIS.Presentation.UserControls.Table
 
         private int GetSortPriority(Restock item)
         {
-            if (item.CurrentStock <= 0) return 0; // Critical
-            if (item.CurrentStock <= item.MinimumThreshold) return 1; // Low
+            // FIX: Access CurrentStock inside Ingredient
+            if (item.Ingredient == null) return 2;
+
+            if (item.Ingredient.CurrentStock <= 0) return 0; // Critical
+            if (item.Ingredient.CurrentStock <= item.Ingredient.MinimumStock) return 1; // Low
             return 2; // OK
         }
 
         private void HandleRestock(Restock data)
         {
-            string input = Microsoft.VisualBasic.Interaction.InputBox($"Restock amount for {data.IngredientName}:", "Restock Inventory", "0");
+            string name = data.Ingredient?.Name ?? "Item";
+            string input = Microsoft.VisualBasic.Interaction.InputBox($"Restock amount for {name}:", "Restock Inventory", "0");
 
             if (decimal.TryParse(input, out decimal amt) && amt > 0)
             {

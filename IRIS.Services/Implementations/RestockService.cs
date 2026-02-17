@@ -2,6 +2,7 @@
 using IRIS.Domain.Enums;
 using IRIS.Infrastructure.Data;
 using IRIS.Services.Interfaces;
+using Microsoft.EntityFrameworkCore; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,18 +22,20 @@ namespace IRIS.Services.Implementations
 
         public IEnumerable<Restock> GetRestockList()
         {
-            return _context.Restocks.ToList();
+            return _context.Restocks
+                .Include(r => r.Ingredient)
+                .ToList();
         }
-
-        // --- NEW CLEAN ARCHITECTURE METHODS ---
 
         public IEnumerable<Restock> GetFilteredRestockList(string category, string status)
         {
             var query = _context.Ingredients.AsQueryable();
-
-            if (!string.IsNullOrEmpty(category) && category != "All")
+            if (!string.IsNullOrEmpty(category) && category != "All" && category != "All Categories")
             {
-                query = query.Where(i => i.Category == category);
+                if (Enum.TryParse<Categories>(category, true, out var catEnum))
+                {
+                    query = query.Where(i => i.Category == catEnum);
+                }
             }
 
             switch (status)
@@ -47,18 +50,13 @@ namespace IRIS.Services.Implementations
                     query = query.Where(i => i.CurrentStock > i.MinimumStock);
                     break;
             }
-
-
-            return query.Select(i => new Restock
+            return query.ToList().Select(i => new Restock
             {
                 IngredientId = i.IngredientId,
-                IngredientName = i.Name ?? "Unknown",
-                Category = i.Category ?? "Uncategorized",
-                CurrentStock = i.CurrentStock,
-                MinimumThreshold = i.MinimumStock,
-                SuggestedRestockQuantity = (i.MinimumStock - i.CurrentStock) > 0 ? (i.MinimumStock - i.CurrentStock) : 0,
+                Ingredient = i,
+            //    SuggestedRestockQuantity = (i.MinimumStock - i.CurrentStock) > 0 ? (i.MinimumStock - i.CurrentStock) : 0,
                 Status = i.CurrentStock <= 0 ? StockStatus.Empty :
-                         (i.CurrentStock <= i.MinimumStock ? StockStatus.LowStock : StockStatus.LowStock) 
+                         (i.CurrentStock <= i.MinimumStock ? StockStatus.LowStock : StockStatus.WellStocked)
             }).ToList();
         }
 
@@ -76,17 +74,15 @@ namespace IRIS.Services.Implementations
                     return 0;
             }
         }
-
-        // --------------------------------------
-
         public IEnumerable<Restock> SearchRestockList(string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return GetRestockList();
 
+            // FIX: Search inside the linked Ingredient entity
             return _context.Restocks
-                .Where(r => r.IngredientName.Contains(searchTerm) ||
-                            r.Category.Contains(searchTerm))
+                .Include(r => r.Ingredient)
+                .Where(r => r.Ingredient.Name.Contains(searchTerm))
                 .ToList();
         }
 
@@ -100,7 +96,7 @@ namespace IRIS.Services.Implementations
             {
                 var existingRestock = _context.Restocks
                     .FirstOrDefault(r => r.IngredientId == ing.IngredientId);
-
+                // Your logic: Empty vs LowStock
                 var currentStatus = ing.CurrentStock <= 0 ? StockStatus.Empty : StockStatus.LowStock;
 
                 if (existingRestock == null)
@@ -108,26 +104,21 @@ namespace IRIS.Services.Implementations
                     var newRestock = new Restock
                     {
                         IngredientId = ing.IngredientId,
-                        IngredientName = ing.Name ?? "Unknown",
-                        Category = ing.Category ?? "Uncategorized",
-                        CurrentStock = ing.CurrentStock,
-                        MinimumThreshold = ing.MinimumStock,
-                        SuggestedRestockQuantity = ing.MinimumStock - ing.CurrentStock,
-                        Status = currentStatus,
+                     //   SuggestedRestockQuantity = ing.MinimumStock - ing.CurrentStock,
+                        Status = currentStatus
                     };
                     _context.Restocks.Add(newRestock);
                 }
                 else
                 {
-                    existingRestock.CurrentStock = ing.CurrentStock;
-                    existingRestock.SuggestedRestockQuantity = ing.MinimumStock - ing.CurrentStock;
+                 //   existingRestock.SuggestedRestockQuantity = ing.MinimumStock - ing.CurrentStock;
                     existingRestock.Status = currentStatus;
                 }
             }
-
             var resolvedRestocks = _context.Restocks
+                .Include(r => r.Ingredient)
                 .AsEnumerable()
-                .Where(r => !_context.Ingredients.Any(i => i.IngredientId == r.IngredientId && i.CurrentStock <= i.MinimumStock))
+                .Where(r => r.Ingredient != null && r.Ingredient.CurrentStock > r.Ingredient.MinimumStock)
                 .ToList();
 
             if (resolvedRestocks.Any())
@@ -156,8 +147,9 @@ namespace IRIS.Services.Implementations
                     }
                     else
                     {
-                        restockItem.CurrentStock = ingredient.CurrentStock;
-                        restockItem.SuggestedRestockQuantity = ingredient.MinimumStock - ingredient.CurrentStock;
+                  
+                  //      restockItem.SuggestedRestockQuantity = ingredient.MinimumStock - ingredient.CurrentStock;
+                        restockItem.Status = ingredient.CurrentStock <= 0 ? StockStatus.Empty : StockStatus.LowStock;
                     }
                 }
                 _context.SaveChanges();
@@ -167,12 +159,14 @@ namespace IRIS.Services.Implementations
 
         public IEnumerable<string> GetCategories()
         {
+            // FIX: Convert the Enums to Strings for your UI
             return _context.Ingredients
-                            .Where(i => !string.IsNullOrEmpty(i.Category))
-                            .Select(i => i.Category)
-                            .Distinct()
-                            .OrderBy(c => c)
-                            .ToList();
+                .Select(i => i.Category)
+                .Distinct()
+                .ToList()               // Fetch Enums from DB
+                .Select(c => c.ToString()) // Convert to String in memory
+                .OrderBy(c => c)
+                .ToList();
         }
     }
 }
