@@ -8,7 +8,6 @@ namespace IRIS.Infrastructure.Data
     {
         public static IrisDbContext Create()
         {
-            // We search for "IrisConnection" specifically
             var settings = ConfigurationManager.ConnectionStrings["IrisConnection"];
 
             if (settings == null || string.IsNullOrEmpty(settings.ConnectionString))

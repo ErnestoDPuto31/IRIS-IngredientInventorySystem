@@ -1,6 +1,6 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
-using IRIS.Infrastructure.Security;
+using Microsoft.AspNetCore.Identity;
 
 namespace IRIS.Infrastructure.Data
 {
@@ -8,46 +8,29 @@ namespace IRIS.Infrastructure.Data
     {
         public static void Initialize(IrisDbContext context)
         {
-            if (context.Users.Any()) return; // DB has been seeded
-
+            if (context.Users.Any()) return;
             var usersToSeed = new List<User>();
 
-            usersToSeed.Add(new User
-            {
-                Username = "dean",
-                PasswordHash = PasswordHasher.HashPassword("dean"),
-                Role = UserRole.Dean,
-                IsActive = true
-            });
+            var hasher = new PasswordHasher<User>();
 
-            usersToSeed.Add(new User
-            {
-                Username = "assistantdean",
-                PasswordHash = PasswordHasher.HashPassword("assistantdean"),
-                Role = UserRole.AssistantDean,
-                IsActive = true
-            });
+            var dean = new User { Username = "dean", Role = UserRole.Dean, isFirstLogin = true, IsActive = true };
+            dean.PasswordHash = hasher.HashPassword(dean, "dean");
+            usersToSeed.Add(dean);
 
-            usersToSeed.Add(new User
-            {
-                Username = "qa",
-                PasswordHash = PasswordHasher.HashPassword("qa"),
-                Role = UserRole.QA,
-                IsActive = true
-            });
+            var assistantdean = new User { Username = "assistantdean", Role = UserRole.AssistantDean, isFirstLogin = true, IsActive = true };
+            assistantdean.PasswordHash = hasher.HashPassword(assistantdean, "assistantdean");
+            usersToSeed.Add(assistantdean);
 
-            // Seeding 10 Officers
-            for (int i = 1; i <= 10; i++)
+            var qa = new User { Username = "qa", Role = UserRole.QA, isFirstLogin = true, IsActive = true };
+            qa.PasswordHash = hasher.HashPassword(qa, "qa");
+            usersToSeed.Add(qa);
+
+            for (int i = 0; i <= 10; i++)
             {
                 string uname = $"officestaff{i}";
-
-                usersToSeed.Add(new User
-                {
-                    Username = uname,
-                    PasswordHash = PasswordHasher.HashPassword(uname),
-                    Role = UserRole.OfficeStaff,
-                    IsActive = true,
-                });
+                var officer = new User { Username = uname, Role = UserRole.OfficeStaff, isFirstLogin = true, IsActive = true };
+                officer.PasswordHash = hasher.HashPassword(officer, uname);
+                usersToSeed.Add(officer);
             }
 
             context.Users.AddRange(usersToSeed);

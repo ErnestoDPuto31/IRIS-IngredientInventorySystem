@@ -12,9 +12,7 @@ namespace IRIS.Domain.Entities
         [Required]
         public int IngredientId { get; set; }
 
-        // This links this class to the Ingredient class
-        [ForeignKey("IngredientId")]
-        public virtual Ingredient Ingredient { get; set; }
+        [ForeignKey("IngredientId")] public virtual Ingredient Ingredient { get; set; }
 
         [Required, MaxLength(100)]
         public string IngredientName { get; set; } = string.Empty;
@@ -32,6 +30,6 @@ namespace IRIS.Domain.Entities
         public decimal SuggestedRestockQuantity { get; set; }
 
         [Required]
-        public StockStatus Status { get; set; }
+        public StockStatus Status { get; set; } = StockStatus.WellStocked;
     }
 }

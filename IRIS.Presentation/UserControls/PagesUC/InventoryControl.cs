@@ -5,6 +5,9 @@ using IRIS.Presentation.Interfaces;
 using IRIS.Presentation.Presenters;
 using IRIS.Presentation.UserControls;
 using IRIS.Presentation.Window_Forms;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 
 namespace IRIS.Presentation.Forms
@@ -32,11 +35,13 @@ namespace IRIS.Presentation.Forms
             if (cmbCategory != null)
             {
                 cmbCategory.Items.Clear();
-                cmbCategory.Items.AddRange(new object[] {
-                    "All Categories", "Produce", "Protein", "Dairy & Eggs",
-                    "Pantry Staples", "Spices & Seasonings", "Condiments & Oils",
-                    "Grains & Legumes", "Bakery & Sweets", "Beverages", "Frozen & Prepared"
-                });
+                cmbCategory.Items.Add("All Categories");
+                var categoryStrings = Enum.GetValues(typeof(Categories))
+                                          .Cast<Categories>()
+                                          .Select(c => GetEnumDisplayName(c))
+                                          .ToArray();
+
+                cmbCategory.Items.AddRange(categoryStrings);
                 cmbCategory.SelectedIndex = 0;
             }
 
@@ -69,6 +74,13 @@ namespace IRIS.Presentation.Forms
 
             pnlIngredients.Controls.Clear();
             pnlIngredients.Controls.Add(_ingredientsGrid);
+        }
+
+        private string GetEnumDisplayName(Enum value)
+        {
+            FieldInfo field = value.GetType().GetField(value.ToString());
+            DisplayAttribute attribute = Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute;
+            return attribute == null ? value.ToString() : attribute.Name;
         }
 
         private void Inventory_Load(object sender, EventArgs e)

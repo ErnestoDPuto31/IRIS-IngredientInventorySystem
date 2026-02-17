@@ -13,7 +13,7 @@ namespace IRIS.Domain.Entities
         public int ApproverId { get; set; } 
 
         public DateTime ActionDate { get; set; } = DateTime.Now;
-        public RequestStatus ActionType { get; set; } 
+        public RequestStatus ActionType { get; set; } = RequestStatus.Pending;  
         public string? Remarks { get; set; }
 
 

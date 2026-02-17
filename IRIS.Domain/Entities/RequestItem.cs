@@ -20,14 +20,12 @@ namespace IRIS.Domain.Entities
         [Required]
         public decimal AllowedQty { get; set; }
 
-        // NAVIGATION PROPERTIES
-
         // ingredient id
         [ForeignKey("IngredientId")]
-        public virtual Ingredient Ingredient { get; set; }
+        public virtual Ingredient? Ingredient { get; set; }
 
         // requestid
         [ForeignKey("RequestId")]
-        public virtual Request Request { get; set; }
+        public virtual Request? Request { get; set; }
     }
 }

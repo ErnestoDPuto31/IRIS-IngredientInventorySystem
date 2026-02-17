@@ -8,7 +8,10 @@ namespace IRIS.Infrastructure.Data
         public IrisDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=IRIS_DB;Trusted_Connection=True;");
+
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;
+                                          Database=IRIS_DB;
+                                          Trusted_Connection=True;");
 
             return new IrisDbContext(optionsBuilder.Options);
         }

@@ -11,5 +11,7 @@ namespace IRIS.Domain.Entities
         public UserRole Role { get; set; }
         public bool isFirstLogin { get; set; } = true;
         public bool IsActive { get; set; }
+        public bool IsLoggedIn { get; set; } = false;
+        public string? SessionToken { get; set; }
     }
 }

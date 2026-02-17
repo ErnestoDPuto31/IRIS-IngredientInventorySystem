@@ -280,8 +280,6 @@ namespace IRIS.Presentation
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "LoginForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "IRIS";
-            TopMost = true;
             guna2Panel2.ResumeLayout(false);
             guna2Panel2.PerformLayout();
             ResumeLayout(false);

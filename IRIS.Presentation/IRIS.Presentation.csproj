@@ -8,6 +8,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<!-- Suppress warning for Tulpep.NotificationWindow -->
 		<NoWarn>NU1701</NoWarn>
+		<UserSecretsId>819d253c-bdff-46b1-8c18-e9fb7640757f</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,6 +22,7 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
 		<PackageReference Include="Tulpep.NotificationWindow" Version="1.1.38" />
 	</ItemGroup>
 

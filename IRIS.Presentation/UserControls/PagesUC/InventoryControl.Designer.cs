@@ -153,7 +153,6 @@
             cmbCategory.ForeColor = Color.Black;
             cmbCategory.HoverState.BorderColor = Color.FromArgb(95, 20, 161);
             cmbCategory.ItemHeight = 36;
-            cmbCategory.Items.AddRange(new object[] { "Produce", "Protein", "Dairy & Eggs", "Pantry Staples", "Spices & Seasonings", "Condiments & Oils", "Grains & Legumes", "Bakery & Sweets", "Beverages", "Frozen & Prepared" });
             cmbCategory.ItemsAppearance.BackColor = Color.White;
             cmbCategory.ItemsAppearance.ForeColor = Color.Black;
             cmbCategory.ItemsAppearance.SelectedBackColor = Color.FromArgb(95, 20, 161);
