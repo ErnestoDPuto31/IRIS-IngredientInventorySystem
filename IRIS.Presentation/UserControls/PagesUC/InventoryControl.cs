@@ -1,5 +1,5 @@
 ﻿using IRIS.Domain.Entities;
-using IRIS.Domain.Enums; 
+using IRIS.Domain.Enums;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.Interfaces;
 using IRIS.Presentation.Presenters;
@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-
 namespace IRIS.Presentation.Forms
 {
     public partial class InventoryControl : UserControl, IInventoryView
@@ -18,7 +17,6 @@ namespace IRIS.Presentation.Forms
         private InventoryPresenter _presenter;
 
         private const int CARD_MARGIN = 10;
-        private const int CARDS_PER_ROW = 4;
         private const int SCROLLBAR_OFFSET = 25;
 
         public InventoryControl()
@@ -26,16 +24,21 @@ namespace IRIS.Presentation.Forms
             InitializeComponent();
             InitializeCustomLayout();
 
+            // Handle resizing to keep cards responsive
             this.Resize += (s, e) => ResizeCards();
         }
 
         private void InitializeCustomLayout()
         {
             this.DoubleBuffered = true;
+
+            // --- 1. SETUP CATEGORY COMBOBOX ---
             if (cmbCategory != null)
             {
                 cmbCategory.Items.Clear();
                 cmbCategory.Items.Add("All Categories");
+
+                // Get display names from Enum
                 var categoryStrings = Enum.GetValues(typeof(Categories))
                                           .Cast<Categories>()
                                           .Select(c => GetEnumDisplayName(c))
@@ -45,17 +48,23 @@ namespace IRIS.Presentation.Forms
                 cmbCategory.SelectedIndex = 0;
             }
 
+            // --- 2. SETUP SORT COMBOBOX ---
             if (cmbSortIngredients != null)
             {
                 cmbSortIngredients.Items.Clear();
                 cmbSortIngredients.Items.AddRange(new object[] {
-                    "Newest First", "Oldest First",
-                    "Name (A-Z)", "Name (Z-A)",
-                    "Stock (Low to High)", "Stock (High to Low)"
+                    "Newest First",
+                    "Oldest First",
+                    "Name (A-Z)",
+                    "Name (Z-A)",
+                    "Stock (Low to High)",
+                    "Stock (High to Low)",
+                    "Category" // Added for your new requirement
                 });
                 cmbSortIngredients.SelectedIndex = 0;
             }
 
+            // --- 3. SETUP GRID ---
             _ingredientsGrid = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -66,16 +75,16 @@ namespace IRIS.Presentation.Forms
                 Padding = new Padding(10, 10, 0, 10)
             };
 
+            // Enable Double Buffering on FlowLayoutPanel to prevent flickering
             typeof(FlowLayoutPanel).InvokeMember("DoubleBuffered",
-                System.Reflection.BindingFlags.SetProperty |
-                System.Reflection.BindingFlags.Instance |
-                System.Reflection.BindingFlags.NonPublic,
+                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
                 null, _ingredientsGrid, new object[] { true });
 
             pnlIngredients.Controls.Clear();
             pnlIngredients.Controls.Add(_ingredientsGrid);
         }
 
+        // Helper to get [Display(Name="...")] from Enums
         private string GetEnumDisplayName(Enum value)
         {
             FieldInfo field = value.GetType().GetField(value.ToString());
@@ -92,7 +101,6 @@ namespace IRIS.Presentation.Forms
             }
 
             // --- ROLE SECURITY CHECK ---
-            // Only Office Staff can see the "Add Ingredient" button.
             if (UserSession.CurrentUser.Role != UserRole.OfficeStaff)
             {
                 btnAddIngredient.Visible = false;
@@ -106,15 +114,31 @@ namespace IRIS.Presentation.Forms
             }
         }
 
+        // --- THIS IS THE UPDATED METHOD WITH THE MAPPING LOGIC ---
         private void TriggerSearch()
         {
             if (_presenter == null) return;
 
             string search = txtSearchIngredient.Text;
             string category = cmbCategory.SelectedItem?.ToString() ?? "All Categories";
-            string sort = cmbSortIngredients.SelectedItem?.ToString() ?? "Newest First";
 
-            _presenter.LoadFilteredIngredients(search, category, sort);
+            // 1. Get the raw string from UI
+            string sortString = cmbSortIngredients.SelectedItem?.ToString() ?? "Newest First";
+
+            // 2. Map String -> Enum (Presentation Layer Logic)
+            IngredientSortBy sortEnum = sortString switch
+            {
+                "Oldest First" => IngredientSortBy.OldestFirst,
+                "Name (A-Z)" => IngredientSortBy.NameAscending,
+                "Name (Z-A)" => IngredientSortBy.NameDescending,
+                "Stock (Low to High)" => IngredientSortBy.StockLowToHigh,
+                "Stock (High to Low)" => IngredientSortBy.StockHighToLow,
+                "Category" => IngredientSortBy.Category,
+                _ => IngredientSortBy.NewestFirst // Default
+            };
+
+            // 3. Pass the clean Enum to the Presenter
+            _presenter.LoadFilteredIngredients(search, category, sortEnum.ToString());
         }
 
         public void DisplayIngredients(IEnumerable<Ingredient> ingredients)
@@ -165,10 +189,8 @@ namespace IRIS.Presentation.Forms
                         {
                             form.NewIngredient.UpdatedAt = DateTime.Now;
                             _presenter.UpdateIngredient(form.NewIngredient);
-                            if (sender is IngredientCard clickedCard)
-                            {
-                                clickedCard.UpdateData(form.NewIngredient);
-                            }
+                            // Refresh logic handled by TriggerSearch usually, but direct update works too
+                            TriggerSearch();
                         }
                     }
                 };
@@ -183,12 +205,20 @@ namespace IRIS.Presentation.Forms
             _ingredientsGrid.SuspendLayout();
 
             int totalWidth = _ingredientsGrid.ClientSize.Width;
-            int scrollbarGap = 25;
             int leftPadding = _ingredientsGrid.Padding.Left;
-            int usableWidth = totalWidth - scrollbarGap - leftPadding;
+            // Accounting for scrollbar usually ~20px, giving it some buffer
+            int usableWidth = totalWidth - SCROLLBAR_OFFSET - leftPadding;
+
             int gapBetweenCards = 15;
+            // Assume we want 4 cards per row
             int totalGapSpace = 4 * gapBetweenCards;
+
+            // Calculate width ensuring they fit
             int cardWidth = (usableWidth - totalGapSpace) / 4;
+
+            // Safety check so cards don't get too small
+            if (cardWidth < 200) cardWidth = 200;
+
             foreach (Control ctrl in _ingredientsGrid.Controls)
             {
                 if (ctrl is IngredientCard card)
@@ -204,6 +234,8 @@ namespace IRIS.Presentation.Forms
 
         public void ShowMessage(string message) => MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         public void ShowError(string message) => MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        // Event Handlers that just call TriggerSearch
         private void txtSearchIngredient_TextChanged(object sender, EventArgs e) => TriggerSearch();
         private void cmbCategory_SelectedIndexChanged(object sender, EventArgs e) => TriggerSearch();
         private void cmbSortIngredients_SelectedIndexChanged(object sender, EventArgs e) => TriggerSearch();

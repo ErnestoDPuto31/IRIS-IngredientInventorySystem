@@ -48,8 +48,8 @@ namespace IRIS.Presentation.Window_Forms
                 lblFaculty.Text = _currentRequest.FacultyName;
                 lblDateOfUse.Text = _currentRequest.DateOfUse.ToString("MM/dd/yyyy");
                 lblStudentCount.Text = _currentRequest.StudentCount.ToString();
-                lblRecipeCosting.Text = _currentRequest.RecipeCosting.ToString("N2");
-                lblAllowedQuantity.Text = _currentRequest.TotalAllowedQty.ToString("N2");
+   //             lblRecipeCosting.Text = _currentRequest.RecipeCosting.ToString("N2");
+        //        lblAllowedQuantity.Text = _currentRequest.TotalAllowedQty.ToString("N2");
 
                 string submitterName = _currentRequest.EncodedBy != null ? _currentRequest.EncodedBy.Username : "Unknown";
                 string submitDate = _currentRequest.CreatedAt.ToString("MMM dd, yyyy");

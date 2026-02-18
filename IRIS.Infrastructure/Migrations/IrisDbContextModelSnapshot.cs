@@ -62,10 +62,11 @@ namespace IRIS.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IngredientId"));
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("CurrentStock")
                         .HasColumnType("decimal(18,2)");
@@ -143,8 +144,9 @@ namespace IRIS.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<decimal>("RecipeCosting")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -167,13 +169,13 @@ namespace IRIS.Infrastructure.Migrations
                     b.ToTable("Requests");
                 });
 
-            modelBuilder.Entity("IRIS.Domain.Entities.RequestItem", b =>
+            modelBuilder.Entity("IRIS.Domain.Entities.RequestDetails", b =>
                 {
-                    b.Property<int>("RequestItemId")
+                    b.Property<int>("RequestDetailsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestItemId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestDetailsId"));
 
                     b.Property<decimal>("AllowedQty")
                         .HasColumnType("decimal(18,2)");
@@ -181,13 +183,16 @@ namespace IRIS.Infrastructure.Migrations
                     b.Property<int>("IngredientId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("PortionPerStudent")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("RequestId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("RequestedQty")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("RequestItemId");
+                    b.HasKey("RequestDetailsId");
 
                     b.HasIndex("IngredientId");
 
@@ -204,24 +209,11 @@ namespace IRIS.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RestockId"));
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal>("CurrentStock")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<DateTime>("DateRestocked")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("IngredientId")
                         .HasColumnType("int");
-
-                    b.Property<string>("IngredientName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal>("MinimumThreshold")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -305,7 +297,7 @@ namespace IRIS.Infrastructure.Migrations
                     b.Navigation("EncodedBy");
                 });
 
-            modelBuilder.Entity("IRIS.Domain.Entities.RequestItem", b =>
+            modelBuilder.Entity("IRIS.Domain.Entities.RequestDetails", b =>
                 {
                     b.HasOne("IRIS.Domain.Entities.Ingredient", "Ingredient")
                         .WithMany()

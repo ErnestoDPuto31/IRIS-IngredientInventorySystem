@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    [Migration("20260204100847_UpdatedRestockEntity")]
-    partial class UpdatedRestockEntity
+    [Migration("20260217200806_fixedschema")]
+    partial class fixedschema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,25 +33,24 @@ namespace IRIS.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApprovalId"));
 
-                    b.Property<int>("ApprovedByUserId")
+                    b.Property<DateTime>("ActionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ApproverId")
                         .HasColumnType("int");
 
                     b.Property<string>("Remarks")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RequestId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("ApprovalId");
+
+                    b.HasIndex("ApproverId");
 
                     b.HasIndex("RequestId");
 
@@ -66,10 +65,11 @@ namespace IRIS.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IngredientId"));
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("CurrentStock")
                         .HasColumnType("decimal(18,2)");
@@ -136,7 +136,10 @@ namespace IRIS.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EncodedBy")
+                    b.Property<DateTime>("DateOfUse")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EncodedById")
                         .HasColumnType("int");
 
                     b.Property<string>("FacultyName")
@@ -144,10 +147,12 @@ namespace IRIS.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("StudentCount")
                         .HasColumnType("int");
@@ -157,18 +162,23 @@ namespace IRIS.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("RequestId");
+
+                    b.HasIndex("EncodedById");
 
                     b.ToTable("Requests");
                 });
 
-            modelBuilder.Entity("IRIS.Domain.Entities.RequestItem", b =>
+            modelBuilder.Entity("IRIS.Domain.Entities.RequestDetails", b =>
                 {
-                    b.Property<int>("RequestItemId")
+                    b.Property<int>("RequestDetailsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestItemId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestDetailsId"));
 
                     b.Property<decimal>("AllowedQty")
                         .HasColumnType("decimal(18,2)");
@@ -176,13 +186,16 @@ namespace IRIS.Infrastructure.Migrations
                     b.Property<int>("IngredientId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("PortionPerStudent")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("RequestId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("RequestedQty")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("RequestItemId");
+                    b.HasKey("RequestDetailsId");
 
                     b.HasIndex("IngredientId");
 
@@ -199,24 +212,11 @@ namespace IRIS.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RestockId"));
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<DateTime>("DateRestocked")
+                        .HasColumnType("datetime2");
 
-                    b.Property<decimal>("CurrentStock")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("IngredientId")
+                    b.Property<int>("IngredientId")
                         .HasColumnType("int");
-
-                    b.Property<string>("IngredientName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal>("MinimumThreshold")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -225,6 +225,8 @@ namespace IRIS.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("RestockId");
+
+                    b.HasIndex("IngredientId");
 
                     b.ToTable("Restocks");
                 });
@@ -240,6 +242,9 @@ namespace IRIS.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsLoggedIn")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(225)
@@ -247,6 +252,9 @@ namespace IRIS.Infrastructure.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -264,32 +272,62 @@ namespace IRIS.Infrastructure.Migrations
 
             modelBuilder.Entity("IRIS.Domain.Entities.Approval", b =>
                 {
+                    b.HasOne("IRIS.Domain.Entities.User", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApproverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("IRIS.Domain.Entities.Request", "Request")
                         .WithMany("Approvals")
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Approver");
+
                     b.Navigation("Request");
                 });
 
-            modelBuilder.Entity("IRIS.Domain.Entities.RequestItem", b =>
+            modelBuilder.Entity("IRIS.Domain.Entities.Request", b =>
                 {
-                    b.HasOne("IRIS.Domain.Entities.Ingredient", "ingredient")
+                    b.HasOne("IRIS.Domain.Entities.User", "EncodedBy")
+                        .WithMany()
+                        .HasForeignKey("EncodedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("EncodedBy");
+                });
+
+            modelBuilder.Entity("IRIS.Domain.Entities.RequestDetails", b =>
+                {
+                    b.HasOne("IRIS.Domain.Entities.Ingredient", "Ingredient")
                         .WithMany()
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IRIS.Domain.Entities.Request", "request")
+                    b.HasOne("IRIS.Domain.Entities.Request", "Request")
                         .WithMany("RequestItems")
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ingredient");
+                    b.Navigation("Ingredient");
 
-                    b.Navigation("request");
+                    b.Navigation("Request");
+                });
+
+            modelBuilder.Entity("IRIS.Domain.Entities.Restock", b =>
+                {
+                    b.HasOne("IRIS.Domain.Entities.Ingredient", "Ingredient")
+                        .WithMany()
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ingredient");
                 });
 
             modelBuilder.Entity("IRIS.Domain.Entities.Request", b =>

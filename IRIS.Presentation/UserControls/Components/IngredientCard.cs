@@ -29,7 +29,7 @@ namespace IRIS.Presentation.UserControls
             if (IngredientData == null) return;
 
             lblIngredientName.Text = IngredientData.Name;
-            txtCategoryLabel.Text = IngredientData.Category;
+            txtCategoryLabel.Text = IngredientData.Category.ToString();
 
             string unit = string.IsNullOrEmpty(IngredientData.Unit) ? "g" : IngredientData.Unit;
 
@@ -82,7 +82,7 @@ namespace IRIS.Presentation.UserControls
             txtStatus.BorderThickness = 0;
             guna2ProgressBar1.ProgressColor = statusColor;
             guna2ProgressBar1.ProgressColor2 = statusColor;
-            ApplyCategoryColor(IngredientData.Category);
+            ApplyCategoryColor(IngredientData.Category.ToString());
         }
 
         private void ApplyCategoryColor(string category)

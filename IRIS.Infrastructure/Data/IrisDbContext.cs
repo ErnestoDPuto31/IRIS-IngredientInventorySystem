@@ -13,7 +13,7 @@ namespace IRIS.Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Request> Requests { get; set; }
-        public DbSet<RequestItem> RequestItems { get; set; }
+        public DbSet<RequestDetails> RequestItems { get; set; }
         public DbSet<Approval> Approvals { get; set; }
         public DbSet<InventoryLog> InventoryLogs { get; set; }
 
