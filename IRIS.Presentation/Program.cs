@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using IRIS.Infrastructure.Data;
+using Syncfusion.Licensing;
 
 namespace IRIS.Presentation
 {
@@ -11,6 +12,7 @@ namespace IRIS.Presentation
         [STAThread]
         static void Main()
         {
+            SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1JGaF1cXmhLYVFxWmFZfVhgcl9FY1ZURmYuP1ZhSXxVdkdhWX9Yc3dQRGNcVkB9XEA=");
             ApplicationConfiguration.Initialize();
 
             // Setup DI
@@ -19,25 +21,30 @@ namespace IRIS.Presentation
                 options.UseSqlServer(
                     System.Configuration.ConfigurationManager
                         .ConnectionStrings["IrisConnection"].ConnectionString,
-                    sqlOptions => sqlOptions.EnableRetryOnFailure() // handles transient SQL errors
+                    sqlOptions => sqlOptions.EnableRetryOnFailure()
                 )
                 .ConfigureWarnings(warnings =>
-                    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning) // ignore pending model changes
+                    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)
                 )
             );
 
             Services = services.BuildServiceProvider();
 
-            // Seed database safely (won't crash if DB not ready)
+            // Seed database safely
             try
             {
-                using var scope = Services.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<IrisDbContext>();
-                SeedData.Initialize(context);
+                using (IServiceScope scope = Services.CreateScope())
+                {
+                    var context = Microsoft.Extensions.DependencyInjection
+                        .ServiceProviderServiceExtensions.GetRequiredService<IrisDbContext>(scope.ServiceProvider);
+
+                    SeedData.Initialize(context);
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Database seeding skipped: {ex.Message}");
+                // Useful for debugging in your Software Design course
+                System.Diagnostics.Debug.WriteLine($"IRIS Database seeding skipped: {ex.Message}");
             }
 
             // Run the UI
