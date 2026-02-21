@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations;
 using System.Windows.Forms;
 using IRIS.Domain.Entities;
+using IRIS.Domain.Enums;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.Presenters;
 using IRIS.Presentation.UserControls.Components;
@@ -16,13 +20,33 @@ namespace IRIS.Presentation.UserControls.PagesUC
         {
             InitializeComponent();
 
-            // Setup Info Cards
             LowStockItems.TypeOfCard = CardType.LowStockItems;
             EmptyItems.TypeOfCard = CardType.EmptyItems;
             WellStockedItems.TypeOfCard = CardType.WellStockedItems;
 
             var service = ServiceFactory.GetRestockService();
             _presenter = new RestockPresenter(this, service);
+
+            SetupIndigoScrollBar();
+        }
+
+        private void SetupIndigoScrollBar()
+        {
+            pnlMainContent.AutoScroll = false;
+            pnlMainContent.HorizontalScroll.Maximum = 0;
+            pnlMainContent.HorizontalScroll.Visible = false;
+            pnlMainContent.AutoScroll = true;
+
+            var vScroll = new Guna.UI2.WinForms.Guna2VScrollBar
+            {
+                BindingContainer = pnlMainContent,
+                ThumbColor = Color.Indigo,
+                HoverState = { ThumbColor = Color.DarkViolet },
+                BorderRadius = 4,
+                Width = 10,
+                FillColor = Color.Transparent,
+                Margin = new Padding(0, 5, 2, 5)
+            };
         }
 
         private void RestockPage_Load(object sender, EventArgs e)
@@ -32,10 +56,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 _presenter.OnViewLoad();
             }
         }
-
-        // ---------------------------------------------------------
-        // DATA DISPLAY
-        // ---------------------------------------------------------
         public void DisplayRestockList(List<Restock> data)
         {
             restockTableuc1.SetData(data);
@@ -50,69 +70,90 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
         public void BuildCategoryMenu(IEnumerable<string> categories)
         {
-            cmbFilter.Items.Clear();
+            cmbFilter.SelectedIndexChanged -= cmbFilter_SelectedIndexChanged;
+            string currentSelection = cmbFilter.SelectedItem?.ToString();
 
-            // 1. Add Default "All" option
+            cmbFilter.Items.Clear();
             cmbFilter.Items.Add("All Categories");
 
-            // 2. Add your specific fixed filters
-            var fixedFilters = new List<string>
+            foreach (Categories cat in Enum.GetValues(typeof(Categories)))
             {
-                "Produce",
-                "Protein",
-                "Dairy & Eggs",
-                "Pantry Staples",
-                "Spices & Seasonings.",
-                "Condiments & Oils",
-                "Grains & Legumes",
-                "Bakery & Sweets",
-                "Beverages",
-                "Frozen & Prepared"
-            };
-
-            foreach (var filter in fixedFilters)
-            {
-                cmbFilter.Items.Add(filter);
-            }
-
-            // 3. Add any dynamic categories from the DB that aren't already in the fixed list
-            // (This prevents duplicates if the DB also returns "Produce")
-            if (categories != null)
-            {
-                foreach (var cat in categories)
+                string displayName = GetEnumDisplayName(cat);
+                if (!cmbFilter.Items.Contains(displayName))
                 {
-                    if (!cmbFilter.Items.Contains(cat))
-                    {
-                        cmbFilter.Items.Add(cat);
-                    }
+                    cmbFilter.Items.Add(displayName);
                 }
             }
 
-            // 4. Set default selection
-            if (cmbFilter.Items.Count > 0)
+            if (!string.IsNullOrEmpty(currentSelection) && cmbFilter.Items.Contains(currentSelection))
+            {
+                cmbFilter.SelectedItem = currentSelection;
+            }
+            else if (cmbFilter.Items.Count > 0)
+            {
                 cmbFilter.SelectedIndex = 0;
+            }
+
+  
+            cmbFilter.SelectedIndexChanged += cmbFilter_SelectedIndexChanged;
+        }
+
+        public void UpdateCategoryButtonText(string text)
+        {
+            cmbFilter.SelectedIndexChanged -= cmbFilter_SelectedIndexChanged;
+
+            if (text == "All") text = "All Categories";
+            if (Enum.TryParse(typeof(Categories), text, out object parsedEnum))
+            {
+                text = GetEnumDisplayName((Enum)parsedEnum);
+            }
+
+            if (cmbFilter.Items.Contains(text))
+            {
+                cmbFilter.SelectedItem = text;
+            }
+
+
+            cmbFilter.SelectedIndexChanged += cmbFilter_SelectedIndexChanged;
+        }
+
+        private string GetEnumDisplayName(Enum enumValue)
+        {
+            FieldInfo field = enumValue.GetType().GetField(enumValue.ToString());
+            if (field != null)
+            {
+                var displayAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(field, typeof(DisplayAttribute));
+                if (displayAttribute != null)
+                {
+                    return displayAttribute.Name;
+                }
+            }
+            return enumValue.ToString();
         }
 
         private void cmbFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cmbFilter.SelectedItem == null) return;
 
-            string selected = cmbFilter.SelectedItem.ToString();
+            string selectedDisplay = cmbFilter.SelectedItem.ToString();
 
-            // Handle the "All" logic
-            if (selected == "All Categories") selected = "All";
-
-            _presenter.FilterByCategory(selected);
-        }
-
-        public void UpdateCategoryButtonText(string text)
-        {
-            if (text == "All") text = "All Categories";
-
-            if (cmbFilter.Items.Contains(text))
+            if (selectedDisplay == "All Categories")
             {
-                cmbFilter.SelectedItem = text;
+                _presenter.FilterByCategory("All");
+                return;
             }
+
+            string rawCategoryName = selectedDisplay;
+            foreach (Categories cat in Enum.GetValues(typeof(Categories)))
+            {
+                if (GetEnumDisplayName(cat) == selectedDisplay)
+                {
+                    rawCategoryName = cat.ToString(); 
+                    break;
+                }
+            }
+
+            _presenter.FilterByCategory(rawCategoryName);
         }
 
         private void UpdateButtonSelection(object sender)

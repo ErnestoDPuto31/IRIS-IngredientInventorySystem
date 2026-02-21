@@ -1,4 +1,7 @@
-﻿using IRIS.Domain.Entities;
+﻿using System.Reflection;
+using System.ComponentModel.DataAnnotations;
+using IRIS.Domain.Entities;
+using IRIS.Domain.Enums; 
 
 namespace IRIS.Presentation.UserControls
 {
@@ -29,7 +32,8 @@ namespace IRIS.Presentation.UserControls
             if (IngredientData == null) return;
 
             lblIngredientName.Text = IngredientData.Name;
-            txtCategoryLabel.Text = IngredientData.Category.ToString();
+
+            // Removed the hardcoded ToString() here. We handle it inside UpdateVisuals() now.
 
             string unit = string.IsNullOrEmpty(IngredientData.Unit) ? "g" : IngredientData.Unit;
 
@@ -82,53 +86,54 @@ namespace IRIS.Presentation.UserControls
             txtStatus.BorderThickness = 0;
             guna2ProgressBar1.ProgressColor = statusColor;
             guna2ProgressBar1.ProgressColor2 = statusColor;
-            ApplyCategoryColor(IngredientData.Category.ToString());
+
+            ApplyCategoryColor(IngredientData.Category);
         }
 
-        private void ApplyCategoryColor(string category)
+        private void ApplyCategoryColor(Categories category)
         {
             Color textColor;
             Color backColor;
 
-            switch (category.ToLower().Trim())
+            switch (category)
             {
-                case "produce":
+                case Categories.Produce:
                     textColor = Color.FromArgb(39, 174, 96);
                     backColor = Color.FromArgb(232, 248, 241);
                     break;
-                case "protein":
+                case Categories.Protein:
                     textColor = Color.FromArgb(231, 76, 60);
                     backColor = Color.FromArgb(253, 237, 236);
                     break;
-                case "dairy & eggs":
+                case Categories.DairyAndEggs:
                     textColor = Color.FromArgb(243, 156, 18);
                     backColor = Color.FromArgb(254, 245, 231);
                     break;
-                case "pantry staples":
+                case Categories.PantryAndStaples:
                     textColor = Color.FromArgb(127, 140, 141);
                     backColor = Color.FromArgb(242, 244, 244);
                     break;
-                case "spices & seasonings":
+                case Categories.SpicesAndSeasonings:
                     textColor = Color.FromArgb(211, 84, 0);
                     backColor = Color.FromArgb(251, 238, 230);
                     break;
-                case "condiments & oils":
+                case Categories.CondimentsAndOils:
                     textColor = Color.FromArgb(160, 64, 0);
                     backColor = Color.FromArgb(246, 221, 204);
                     break;
-                case "grains & legumes":
+                case Categories.GrainsALegumes:
                     textColor = Color.FromArgb(184, 134, 11);
                     backColor = Color.FromArgb(252, 243, 207);
                     break;
-                case "bakery & sweets":
+                case Categories.BakeryAndSweets:
                     textColor = Color.FromArgb(253, 121, 168);
                     backColor = Color.FromArgb(255, 240, 245);
                     break;
-                case "beverages":
+                case Categories.Beverages:
                     textColor = Color.FromArgb(52, 152, 219);
                     backColor = Color.FromArgb(235, 245, 251);
                     break;
-                case "frozen & prepared":
+                case Categories.FrozenAndPrepared:
                     textColor = Color.FromArgb(142, 68, 173);
                     backColor = Color.FromArgb(245, 238, 248);
                     break;
@@ -137,11 +142,25 @@ namespace IRIS.Presentation.UserControls
                     backColor = Color.FromArgb(240, 240, 240);
                     break;
             }
-            txtCategoryLabel.Text = category;
+
+            txtCategoryLabel.Text = GetEnumDisplayName(category);
             txtCategoryLabel.ForeColor = textColor;
             txtCategoryLabel.FillColor = backColor;
         }
 
+        private string GetEnumDisplayName(Enum enumValue)
+        {
+            FieldInfo field = enumValue.GetType().GetField(enumValue.ToString());
+            if (field != null)
+            {
+                var displayAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(field, typeof(DisplayAttribute));
+                if (displayAttribute != null)
+                {
+                    return displayAttribute.Name;
+                }
+            }
+            return enumValue.ToString();
+        }
 
         private void btnEditIngredient_Click(object sender, EventArgs e)
         {
@@ -153,7 +172,8 @@ namespace IRIS.Presentation.UserControls
             DeleteClicked?.Invoke(this, this.IngredientData.IngredientId);
         }
 
-        internal void HideActionButtons() {
+        internal void HideActionButtons()
+        {
             if (btnEditIngredient != null) btnEditIngredient.Visible = false;
             if (btnDeleteIngredient != null) btnDeleteIngredient.Visible = false;
         }

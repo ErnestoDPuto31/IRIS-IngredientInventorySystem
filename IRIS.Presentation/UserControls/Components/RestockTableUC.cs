@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations; // Added for DisplayAttribute in Search
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -9,16 +10,16 @@ using IRIS.Domain.Entities;
 using IRIS.Services.Interfaces;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.UserControls.Components;
+// using Guna.UI2.WinForms; // Ensure this is available
 
 namespace IRIS.Presentation.UserControls.Table
 {
-    public class RestockTableUC : UserControl
+    public partial class RestockTableUC : UserControl
     {
         private readonly Color _cIndigo = Color.FromArgb(75, 0, 130);
         private readonly Color _cBackground = Color.White;
         private readonly Color _cHoverHeader = Color.FromArgb(245, 240, 255);
 
-        // Grid Config
         private readonly float[] _colWeights = { 0.18f, 0.12f, 0.14f, 0.14f, 0.16f, 0.10f, 0.16f };
         private readonly string[] _headers = { "Ingredient", "Category", "Current Stock", "Min Threshold", "Suggested", "Status", "Action" };
         private int _borderRadius = 15;
@@ -96,7 +97,6 @@ namespace IRIS.Presentation.UserControls.Table
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
-                AutoScroll = true,
                 BackColor = Color.White
             };
 
@@ -104,6 +104,31 @@ namespace IRIS.Presentation.UserControls.Table
 
             _itemsPanel.SizeChanged += (s, e) => ResizeRows();
             this.Controls.Add(_itemsPanel);
+
+            // Trigger our custom scrollbar setup
+            SetupIndigoScrollBar();
+        }
+
+        // --- NEW METHOD FOR SCROLLBAR ---
+        private void SetupIndigoScrollBar()
+        {
+            // 1. Forcefully kill the native horizontal scrollbar
+            _itemsPanel.AutoScroll = false;
+            _itemsPanel.HorizontalScroll.Maximum = 0;
+            _itemsPanel.HorizontalScroll.Visible = false;
+            _itemsPanel.AutoScroll = true;
+
+            // 2. Create a sleek Guna Vertical Scrollbar programmatically
+            var vScroll = new Guna.UI2.WinForms.Guna2VScrollBar
+            {
+                BindingContainer = _itemsPanel,
+                ThumbColor = _cIndigo,             // Using your existing private color variable
+                HoverState = { ThumbColor = Color.DarkViolet },
+                BorderRadius = 4,
+                Width = 10,
+                FillColor = Color.Transparent,
+                Margin = new Padding(0, 5, 2, 5)
+            };
         }
 
         // -------------------------------------------------------------------------
@@ -148,15 +173,15 @@ namespace IRIS.Presentation.UserControls.Table
                 c.Dispose();
             }
 
-            // 2. Filter Logic - FIX: Access Ingredient Properties safely
+            // 2. Filter Logic - Updated to search by Enum Display Name
             var filtered = string.IsNullOrWhiteSpace(query)
                 ? _allData
                 : _allData.Where(x =>
                     (x.Ingredient != null && x.Ingredient.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                    (x.Ingredient != null && x.Ingredient.Category.ToString().IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                    (x.Ingredient != null && GetEnumDisplayName(x.Ingredient.Category).IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
                 ).ToList();
 
-            // 3. Sort Logic - FIX: Access Ingredient Properties safely
+            // 3. Sort Logic
             var sorted = filtered
                 .OrderBy(x => GetSortPriority(x))
                 .ThenBy(x => x.Ingredient?.Name ?? "")
@@ -179,9 +204,23 @@ namespace IRIS.Presentation.UserControls.Table
             _itemsPanel.ResumeLayout();
         }
 
+        // --- HELPER TO ALLOW SEARCHING BY ENUM DISPLAY NAME ---
+        private string GetEnumDisplayName(Enum enumValue)
+        {
+            FieldInfo field = enumValue.GetType().GetField(enumValue.ToString());
+            if (field != null)
+            {
+                var displayAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(field, typeof(DisplayAttribute));
+                if (displayAttribute != null)
+                {
+                    return displayAttribute.Name;
+                }
+            }
+            return enumValue.ToString();
+        }
+
         private int GetSortPriority(Restock item)
         {
-            // FIX: Access CurrentStock inside Ingredient
             if (item.Ingredient == null) return 2;
 
             if (item.Ingredient.CurrentStock <= 0) return 0; // Critical
@@ -223,7 +262,7 @@ namespace IRIS.Presentation.UserControls.Table
             }
 
             // Draw Title
-            using (Font titleFont = new Font("Segoe UI", 14, FontStyle.Bold))
+            using (Font titleFont = new Font("Poppins", 14, FontStyle.Bold))
             using (Brush titleBrush = new SolidBrush(_cIndigo))
             {
                 g.DrawString("Inventory Restock Manager", titleFont, titleBrush, 30, 25);

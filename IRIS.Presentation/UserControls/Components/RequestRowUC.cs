@@ -5,7 +5,7 @@ using System.Drawing.Drawing2D;
 namespace IRIS.Presentation.UserControls.Table
 {
 
-    public class RequestRowUC : UserControl
+    public partial class RequestRowUC : UserControl
     {
         public Request Data { get; private set; }
         public event EventHandler<int> ViewClicked;

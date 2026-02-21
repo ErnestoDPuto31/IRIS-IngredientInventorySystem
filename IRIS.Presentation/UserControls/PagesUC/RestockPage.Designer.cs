@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             btnFilterAll = new IRIS.Presentation.UserControls.Components.PillButton();
@@ -45,8 +47,10 @@
             WellStockedItems = new IRIS.Presentation.UserControls.Components.StatusCardUC();
             cmbFilter = new Guna.UI2.WinForms.Guna2ComboBox();
             guna2ImageButton1 = new Guna.UI2.WinForms.Guna2ImageButton();
-            sfDataGrid1 = new Syncfusion.WinForms.DataGrid.SfDataGrid();
-            ((System.ComponentModel.ISupportInitialize)sfDataGrid1).BeginInit();
+            restockTableuc1 = new IRIS.Presentation.UserControls.Table.RestockTableUC();
+            pnlMainContent = new Guna.UI2.WinForms.Guna2Panel();
+            vScrollBar1 = new VScrollBar();
+            pnlMainContent.SuspendLayout();
             SuspendLayout();
             // 
             // guna2HtmlLabel1
@@ -143,7 +147,7 @@
             // 
             btnRefresh.BackColor = Color.Transparent;
             btnRefresh.BorderRadius = 10;
-            btnRefresh.CustomizableEdges = customizableEdges6;
+            btnRefresh.CustomizableEdges = customizableEdges1;
             btnRefresh.DisabledState.BorderColor = Color.DarkGray;
             btnRefresh.DisabledState.CustomBorderColor = Color.DarkGray;
             btnRefresh.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -155,7 +159,7 @@
             btnRefresh.ImageSize = new Size(40, 40);
             btnRefresh.Location = new Point(545, 370);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.ShadowDecoration.CustomizableEdges = customizableEdges7;
+            btnRefresh.ShadowDecoration.CustomizableEdges = customizableEdges2;
             btnRefresh.Size = new Size(49, 36);
             btnRefresh.TabIndex = 17;
             btnRefresh.Click += btnRefresh_Click;
@@ -181,7 +185,7 @@
             cmbFilter.BackColor = Color.Transparent;
             cmbFilter.BorderColor = Color.Indigo;
             cmbFilter.BorderRadius = 15;
-            cmbFilter.CustomizableEdges = customizableEdges8;
+            cmbFilter.CustomizableEdges = customizableEdges3;
             cmbFilter.DrawMode = DrawMode.OwnerDrawFixed;
             cmbFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbFilter.FocusedColor = Color.White;
@@ -200,7 +204,7 @@
             cmbFilter.ItemsAppearance.SelectedForeColor = Color.White;
             cmbFilter.Location = new Point(185, 370);
             cmbFilter.Name = "cmbFilter";
-            cmbFilter.ShadowDecoration.CustomizableEdges = customizableEdges9;
+            cmbFilter.ShadowDecoration.CustomizableEdges = customizableEdges4;
             cmbFilter.Size = new Size(354, 36);
             cmbFilter.TabIndex = 22;
             cmbFilter.SelectedIndexChanged += cmbFilter_SelectedIndexChanged;
@@ -216,51 +220,64 @@
             guna2ImageButton1.Location = new Point(150, 370);
             guna2ImageButton1.Name = "guna2ImageButton1";
             guna2ImageButton1.PressedState.ImageSize = new Size(64, 64);
-            guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges5;
             guna2ImageButton1.Size = new Size(29, 36);
             guna2ImageButton1.TabIndex = 23;
             // 
-            // sfDataGrid1
+            // restockTableuc1
             // 
-            sfDataGrid1.AccessibleName = "Table";
-            sfDataGrid1.Location = new Point(150, 445);
-            sfDataGrid1.Name = "sfDataGrid1";
-            sfDataGrid1.PreviewRowHeight = 35;
-            sfDataGrid1.Size = new Size(1380, 389);
-            sfDataGrid1.Style.BorderColor = Color.FromArgb(100, 100, 100);
-            sfDataGrid1.Style.CheckBoxStyle.CheckedBackColor = Color.FromArgb(0, 120, 215);
-            sfDataGrid1.Style.CheckBoxStyle.CheckedBorderColor = Color.FromArgb(0, 120, 215);
-            sfDataGrid1.Style.CheckBoxStyle.IndeterminateBorderColor = Color.FromArgb(0, 120, 215);
-            sfDataGrid1.Style.DragPreviewRowStyle.Font = new Font("Segoe UI", 9F);
-            sfDataGrid1.Style.DragPreviewRowStyle.RowCountIndicatorBackColor = Color.FromArgb(0, 120, 215);
-            sfDataGrid1.Style.DragPreviewRowStyle.RowCountIndicatorTextColor = Color.FromArgb(255, 255, 255);
-            sfDataGrid1.Style.HyperlinkStyle.DefaultLinkColor = Color.FromArgb(0, 120, 215);
-            sfDataGrid1.TabIndex = 24;
-            sfDataGrid1.Text = "sfDataGrid1";
+            restockTableuc1.BackColor = Color.White;
+            restockTableuc1.Location = new Point(150, 424);
+            restockTableuc1.Name = "restockTableuc1";
+            restockTableuc1.Padding = new Padding(25);
+            restockTableuc1.Size = new Size(1380, 647);
+            restockTableuc1.TabIndex = 24;
+            // 
+            // pnlMainContent
+            // 
+            pnlMainContent.AllowDrop = true;
+            pnlMainContent.AutoScroll = true;
+            pnlMainContent.Controls.Add(vScrollBar1);
+            pnlMainContent.Controls.Add(guna2HtmlLabel2);
+            pnlMainContent.Controls.Add(btnFilterAll);
+            pnlMainContent.Controls.Add(btnFilterLow);
+            pnlMainContent.Controls.Add(btnFilterEmpty);
+            pnlMainContent.Controls.Add(btnFilterWell);
+            pnlMainContent.Controls.Add(LowStockItems);
+            pnlMainContent.Controls.Add(EmptyItems);
+            pnlMainContent.Controls.Add(WellStockedItems);
+            pnlMainContent.Controls.Add(btnRefresh);
+            pnlMainContent.Controls.Add(guna2HtmlLabel1);
+            pnlMainContent.Controls.Add(restockTableuc1);
+            pnlMainContent.Controls.Add(cmbFilter);
+            pnlMainContent.Controls.Add(guna2ImageButton1);
+            pnlMainContent.CustomizableEdges = customizableEdges6;
+            pnlMainContent.Dock = DockStyle.Fill;
+            pnlMainContent.Location = new Point(0, 0);
+            pnlMainContent.Name = "pnlMainContent";
+            pnlMainContent.ShadowDecoration.CustomizableEdges = customizableEdges7;
+            pnlMainContent.Size = new Size(1600, 900);
+            pnlMainContent.TabIndex = 25;
+            // 
+            // vScrollBar1
+            // 
+            vScrollBar1.Location = new Point(1575, 0);
+            vScrollBar1.Name = "vScrollBar1";
+            vScrollBar1.Size = new Size(25, 900);
+            vScrollBar1.TabIndex = 25;
             // 
             // RestockPage
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(sfDataGrid1);
-            Controls.Add(guna2ImageButton1);
-            Controls.Add(cmbFilter);
-            Controls.Add(guna2HtmlLabel2);
-            Controls.Add(guna2HtmlLabel1);
-            Controls.Add(btnRefresh);
-            Controls.Add(WellStockedItems);
-            Controls.Add(EmptyItems);
-            Controls.Add(LowStockItems);
-            Controls.Add(btnFilterWell);
-            Controls.Add(btnFilterEmpty);
-            Controls.Add(btnFilterLow);
-            Controls.Add(btnFilterAll);
+            BackColor = Color.White;
+            Controls.Add(pnlMainContent);
             Name = "RestockPage";
             Size = new Size(1600, 900);
             Load += RestockPage_Load;
-            ((System.ComponentModel.ISupportInitialize)sfDataGrid1).EndInit();
+            pnlMainContent.ResumeLayout(false);
+            pnlMainContent.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -277,6 +294,8 @@
         private Components.StatusCardUC WellStockedItems;
         private Guna.UI2.WinForms.Guna2ComboBox cmbFilter;
         private Guna.UI2.WinForms.Guna2ImageButton guna2ImageButton1;
-        private Syncfusion.WinForms.DataGrid.SfDataGrid sfDataGrid1;
+        private Table.RestockTableUC restockTableuc1;
+        private Guna.UI2.WinForms.Guna2Panel pnlMainContent;
+        private VScrollBar vScrollBar1;
     }
 }

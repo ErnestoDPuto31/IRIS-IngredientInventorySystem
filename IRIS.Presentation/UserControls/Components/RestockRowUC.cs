@@ -1,13 +1,14 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
+using System.Reflection; 
 using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 
 namespace IRIS.Presentation.UserControls.Table
 {
-    public class RestockRowUC : UserControl
+    public partial class RestockRowUC : UserControl
     {
         // -------------------------------------------------------------------------
         // UI & CONTROLS
@@ -45,7 +46,7 @@ namespace IRIS.Presentation.UserControls.Table
             _btnRestock = new Button
             {
                 Text = "Restock",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Font = new Font("Poppins", 9F, FontStyle.Bold),
                 BackColor = _cTextPurple,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -94,10 +95,13 @@ namespace IRIS.Presentation.UserControls.Table
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            // Safe accessors (in case Ingredient is null, though it shouldn't be if Included)
+            // Safe accessors 
             string ingName = Data.Ingredient?.Name ?? "Unknown";
             string ingUnit = Data.Ingredient?.Unit ?? "units";
-            string ingCat = Data.Ingredient?.Category.ToString() ?? "Uncategorized"; // Enum to String
+
+            // --- UPDATED: Safely parse Enum display name ---
+            string ingCat = Data.Ingredient != null ? GetEnumDisplayName(Data.Ingredient.Category) : "Uncategorized";
+
             decimal currentStock = Data.Ingredient?.CurrentStock ?? 0;
             decimal minStock = Data.Ingredient?.MinimumStock ?? 0;
 
@@ -109,38 +113,41 @@ namespace IRIS.Presentation.UserControls.Table
                     g.FillRectangle(accent, 0, 0, 4, this.Height);
             }
 
-            using (Font fBold = new Font("Segoe UI", 10F, FontStyle.Bold))
-            using (Font fReg = new Font("Segoe UI", 10F))
+            using (Font fBold = new Font("Poppins", 10F, FontStyle.Bold))
+            using (Font fReg = new Font("Poppins", 10F))
             using (Pen linePen = new Pen(_cLine, 1))
             {
                 g.DrawLine(linePen, 20, this.Height - 1, this.Width - 20, this.Height - 1);
 
-                // 1. Name
                 DrawText(g, ingName, fBold, _cTextMain, 0, this.Width, StringAlignment.Near);
-
-                // 2. Category
                 DrawCategoryPill(g, ingCat, 1, this.Width);
 
-                // 3. Current Stock (Color Logic)
                 Color stockColor;
                 if (currentStock <= 0) stockColor = Color.Crimson;
                 else if (currentStock <= minStock) stockColor = _cTextOrange;
                 else stockColor = Color.ForestGreen;
 
                 DrawText(g, $"{currentStock} {ingUnit}", fBold, stockColor, 2, this.Width, StringAlignment.Center);
-
-                // 4. Minimum Threshold
                 DrawText(g, $"{minStock} {ingUnit}", fReg, _cTextMain, 3, this.Width, StringAlignment.Center);
-
-                // 5. Requested Quantity (Property name changed to QuantityRequested)
-              //  DrawText(g, $"{Data.QuantityRequested} {ingUnit}", fBold, _cTextPurple, 4, this.Width, StringAlignment.Center);
-
-                // 6. Status Pill
                 DrawStatusPill(g, 5, this.Width, currentStock, minStock);
             }
         }
 
-        // Updated to accept stock values explicitly so we don't need to look them up again
+        // --- HELPER TO EXTRACT DISPLAY NAME ---
+        private string GetEnumDisplayName(Enum enumValue)
+        {
+            FieldInfo field = enumValue.GetType().GetField(enumValue.ToString());
+            if (field != null)
+            {
+                var displayAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(field, typeof(DisplayAttribute));
+                if (displayAttribute != null)
+                {
+                    return displayAttribute.Name;
+                }
+            }
+            return enumValue.ToString();
+        }
+
         private void DrawStatusPill(Graphics g, int colIndex, int totalWidth, decimal currentStock, decimal minStock)
         {
             float colX = GetColX(colIndex, totalWidth);
@@ -149,7 +156,6 @@ namespace IRIS.Presentation.UserControls.Table
             string statusText;
             Color bg, fg;
 
-            // --- FIXED STATUS LOGIC (Using Ingredient Data) ---
             if (currentStock <= 0)
             {
                 statusText = "Empty";

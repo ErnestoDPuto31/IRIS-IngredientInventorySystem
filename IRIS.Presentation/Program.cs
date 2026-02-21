@@ -12,8 +12,7 @@ namespace IRIS.Presentation
         [STAThread]
         static void Main()
         {
-            SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1JGaF1cXmhLYVFxWmFZfVhgcl9FY1ZURmYuP1ZhSXxVdkdhWX9Yc3dQRGNcVkB9XEA=");
-            ApplicationConfiguration.Initialize();
+             ApplicationConfiguration.Initialize();
 
             // Setup DI
             var services = new ServiceCollection();

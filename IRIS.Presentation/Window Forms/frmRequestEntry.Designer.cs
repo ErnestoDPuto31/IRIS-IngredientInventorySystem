@@ -525,6 +525,7 @@
             numAddQty.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             numAddQty.Location = new Point(412, 41);
             numAddQty.Margin = new Padding(3, 4, 3, 4);
+            numAddQty.Maximum = new decimal(new int[] { 999999, 0, 0, 0 });
             numAddQty.Name = "numAddQty";
             numAddQty.ShadowDecoration.CustomizableEdges = customizableEdges8;
             numAddQty.Size = new Size(78, 45);

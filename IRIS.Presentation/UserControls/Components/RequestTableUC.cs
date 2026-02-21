@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace IRIS.Presentation.UserControls.Table
 {
-    public class RequestTableUC : UserControl
+    public partial class RequestTableUC : UserControl
     {
         public event EventHandler<int> RowActionClicked;
 
@@ -275,6 +275,11 @@ namespace IRIS.Presentation.UserControls.Table
             path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
             path.CloseFigure();
             return path;
+        }
+
+        private void InitializeComponent()
+        {
+
         }
 
         public static void EnableDoubleBuffering(Control control)
