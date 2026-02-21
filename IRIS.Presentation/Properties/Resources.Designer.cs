@@ -153,6 +153,16 @@ namespace IRIS.Presentation.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_arrow_up_24 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-arrow-up-24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_arrow_up_48 {
             get {
                 object obj = ResourceManager.GetObject("icons8-arrow-up-48", resourceCulture);
@@ -173,9 +183,9 @@ namespace IRIS.Presentation.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_code_fork_48 {
+        internal static System.Drawing.Bitmap icons8_cardboard_box_100 {
             get {
-                object obj = ResourceManager.GetObject("icons8-code-fork-48", resourceCulture);
+                object obj = ResourceManager.GetObject("icons8-cardboard-box-100", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +223,9 @@ namespace IRIS.Presentation.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_history_30 {
+        internal static System.Drawing.Bitmap icons8_form_100 {
             get {
-                object obj = ResourceManager.GetObject("icons8-history-30", resourceCulture);
+                object obj = ResourceManager.GetObject("icons8-form-100", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -223,9 +233,9 @@ namespace IRIS.Presentation.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap icons8_inventory_30 {
+        internal static System.Drawing.Bitmap icons8_history_30 {
             get {
-                object obj = ResourceManager.GetObject("icons8-inventory-30", resourceCulture);
+                object obj = ResourceManager.GetObject("icons8-history-30", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -246,6 +256,16 @@ namespace IRIS.Presentation.Properties {
         internal static System.Drawing.Bitmap icons8_medium_risk_50 {
             get {
                 object obj = ResourceManager.GetObject("icons8-medium-risk-50", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_open_box_100 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-open-box-100", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -336,16 +356,6 @@ namespace IRIS.Presentation.Properties {
         internal static System.Drawing.Bitmap icons8_user_24 {
             get {
                 object obj = ResourceManager.GetObject("icons8-user-24", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap icons8_windows_defragmenter_32 {
-            get {
-                object obj = ResourceManager.GetObject("icons8-windows-defragmenter-32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

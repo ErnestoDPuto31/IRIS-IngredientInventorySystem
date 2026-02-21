@@ -61,5 +61,11 @@ namespace IRIS.Presentation.Presenters
             var data = _service.GetFilteredRestockList(_currentCategory, _currentStatus);
             _view.DisplayRestockList(data.ToList());
         }
+
+        public void ProcessRestock(int ingredientId, decimal amount)
+        {
+            _service.ProcessRestock(ingredientId, amount);
+            RefreshData();
+        }
     }
 }

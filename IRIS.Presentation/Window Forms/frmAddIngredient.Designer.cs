@@ -60,6 +60,7 @@
             label6 = new Label();
             btnAddIngredient = new Guna.UI2.WinForms.Guna2GradientButton();
             btnCancel = new Guna.UI2.WinForms.Guna2GradientButton();
+            lblError = new Label();
             ((System.ComponentModel.ISupportInitialize)numCurrentStock).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numMinimumThreshold).BeginInit();
             SuspendLayout();
@@ -325,11 +326,24 @@
             btnCancel.TabIndex = 14;
             btnCancel.Text = "Cancel";
             // 
+            // lblError
+            // 
+            lblError.AutoSize = true;
+            lblError.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblError.ForeColor = Color.Red;
+            lblError.Location = new Point(54, 520);
+            lblError.Name = "lblError";
+            lblError.Size = new Size(206, 30);
+            lblError.TabIndex = 15;
+            lblError.Text = "Error: jwiajdoiawodha";
+            lblError.Visible = false;
+            // 
             // frmAddIngredient
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(600, 700);
+            Controls.Add(lblError);
             Controls.Add(btnCancel);
             Controls.Add(btnAddIngredient);
             Controls.Add(cmbUnit);
@@ -373,5 +387,6 @@
         private Guna.UI2.WinForms.Guna2NumericUpDown numMinimumThreshold;
         private Label label5;
         private Guna.UI2.WinForms.Guna2GradientButton btnCancel;
+        private Label lblError;
     }
 }

@@ -277,10 +277,6 @@ namespace IRIS.Presentation.UserControls.Table
             return path;
         }
 
-        private void InitializeComponent()
-        {
-
-        }
 
         public static void EnableDoubleBuffering(Control control)
         {

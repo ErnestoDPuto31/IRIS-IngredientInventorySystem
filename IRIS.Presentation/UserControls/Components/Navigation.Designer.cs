@@ -157,7 +157,7 @@ namespace IRIS.Presentation.UserControls
             btnRestock.FillColor = Color.Transparent;
             btnRestock.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnRestock.ForeColor = Color.White;
-            btnRestock.Image = Properties.Resources.icons8_windows_defragmenter_32;
+            btnRestock.Image = Properties.Resources.icons8_open_box_100;
             btnRestock.ImageSize = new Size(30, 30);
             btnRestock.Location = new Point(0, 0);
             btnRestock.Name = "btnRestock";
@@ -250,7 +250,7 @@ namespace IRIS.Presentation.UserControls
             btnRequests.FillColor = Color.Transparent;
             btnRequests.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnRequests.ForeColor = Color.White;
-            btnRequests.Image = Properties.Resources.icons8_code_fork_48;
+            btnRequests.Image = Properties.Resources.icons8_form_100;
             btnRequests.ImageSize = new Size(30, 30);
             btnRequests.Location = new Point(0, 0);
             btnRequests.Name = "btnRequests";
@@ -281,7 +281,7 @@ namespace IRIS.Presentation.UserControls
             btnInventory.FillColor = Color.Transparent;
             btnInventory.Font = new Font("Poppins", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnInventory.ForeColor = Color.White;
-            btnInventory.Image = Properties.Resources.icons8_inventory_30;
+            btnInventory.Image = Properties.Resources.icons8_cardboard_box_100;
             btnInventory.ImageSize = new Size(30, 30);
             btnInventory.Location = new Point(0, 0);
             btnInventory.Name = "btnInventory";

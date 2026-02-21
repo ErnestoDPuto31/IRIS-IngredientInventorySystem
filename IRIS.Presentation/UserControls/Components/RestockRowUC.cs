@@ -104,6 +104,7 @@ namespace IRIS.Presentation.UserControls.Table
 
             decimal currentStock = Data.Ingredient?.CurrentStock ?? 0;
             decimal minStock = Data.Ingredient?.MinimumStock ?? 0;
+            decimal suggestedStock = Data.SuggestedRestockQuantity;
 
             if (_isHovered)
             {
@@ -129,6 +130,9 @@ namespace IRIS.Presentation.UserControls.Table
 
                 DrawText(g, $"{currentStock} {ingUnit}", fBold, stockColor, 2, this.Width, StringAlignment.Center);
                 DrawText(g, $"{minStock} {ingUnit}", fReg, _cTextMain, 3, this.Width, StringAlignment.Center);
+                string suggestedText = suggestedStock > 0 ? $"{suggestedStock} {ingUnit}" : "-";
+                DrawText(g, suggestedText, fBold, _cTextPurple, 4, this.Width, StringAlignment.Center);
+
                 DrawStatusPill(g, 5, this.Width, currentStock, minStock);
             }
         }

@@ -28,6 +28,7 @@ namespace IRIS.Presentation.UserControls.Table
         // Data State
         private IRestockService _restockService;
         private List<Restock> _allData = new List<Restock>();
+        public event EventHandler<Restock> RestockRequested;
 
         // -------------------------------------------------------------------------
         // 2. UI CONTROLS
@@ -230,14 +231,7 @@ namespace IRIS.Presentation.UserControls.Table
 
         private void HandleRestock(Restock data)
         {
-            string name = data.Ingredient?.Name ?? "Item";
-            string input = Microsoft.VisualBasic.Interaction.InputBox($"Restock amount for {name}:", "Restock Inventory", "0");
-
-            if (decimal.TryParse(input, out decimal amt) && amt > 0)
-            {
-                _restockService.ProcessRestock(data.RestockId, amt);
-                LoadData();
-            }
+            RestockRequested?.Invoke(this, data);
         }
 
         // -------------------------------------------------------------------------

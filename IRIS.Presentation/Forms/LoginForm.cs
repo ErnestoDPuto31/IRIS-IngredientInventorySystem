@@ -83,7 +83,7 @@ namespace IRIS.Presentation
 
                         if (result != DialogResult.OK)
                         {
-                            return; 
+                            return;
                         }
                     }
                 }
@@ -110,7 +110,7 @@ namespace IRIS.Presentation
                 {
                     if (loggedOutUser.SessionToken == UserSession.CurrentSessionToken)
                     {
-                        loggedOutUser.SessionToken = null; 
+                        loggedOutUser.SessionToken = null;
                         _context.SaveChanges();
                     }
                 }
@@ -132,6 +132,11 @@ namespace IRIS.Presentation
         {
             lblError.Visible = true;
             lblError.Text = message;
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

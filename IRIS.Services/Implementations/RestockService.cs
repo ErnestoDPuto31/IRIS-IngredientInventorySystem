@@ -29,35 +29,29 @@ namespace IRIS.Services.Implementations
 
         public IEnumerable<Restock> GetFilteredRestockList(string category, string status)
         {
-            var query = _context.Ingredients.AsQueryable();
+            var query = _context.Restocks.Include(r => r.Ingredient).AsQueryable();
+
             if (!string.IsNullOrEmpty(category) && category != "All" && category != "All Categories")
             {
                 if (Enum.TryParse<Categories>(category, true, out var catEnum))
                 {
-                    query = query.Where(i => i.Category == catEnum);
+                    query = query.Where(r => r.Ingredient.Category == catEnum);
                 }
             }
 
             switch (status)
             {
                 case "Low":
-                    query = query.Where(i => i.CurrentStock > 0 && i.CurrentStock <= i.MinimumStock);
+                    query = query.Where(r => r.Ingredient.CurrentStock > 0 && r.Ingredient.CurrentStock <= r.Ingredient.MinimumStock);
                     break;
                 case "Empty":
-                    query = query.Where(i => i.CurrentStock <= 0);
+                    query = query.Where(r => r.Ingredient.CurrentStock <= 0);
                     break;
                 case "Well":
-                    query = query.Where(i => i.CurrentStock > i.MinimumStock);
+                    query = query.Where(r => r.Ingredient.CurrentStock > r.Ingredient.MinimumStock);
                     break;
             }
-            return query.ToList().Select(i => new Restock
-            {
-                IngredientId = i.IngredientId,
-                Ingredient = i,
-            //    SuggestedRestockQuantity = (i.MinimumStock - i.CurrentStock) > 0 ? (i.MinimumStock - i.CurrentStock) : 0,
-                Status = i.CurrentStock <= 0 ? StockStatus.Empty :
-                         (i.CurrentStock <= i.MinimumStock ? StockStatus.LowStock : StockStatus.WellStocked)
-            }).ToList();
+            return query.ToList();
         }
 
         public int GetCountByStatus(string statusType)
@@ -96,23 +90,26 @@ namespace IRIS.Services.Implementations
             {
                 var existingRestock = _context.Restocks
                     .FirstOrDefault(r => r.IngredientId == ing.IngredientId);
-                // Your logic: Empty vs LowStock
+
                 var currentStatus = ing.CurrentStock <= 0 ? StockStatus.Empty : StockStatus.LowStock;
+
+                decimal deficit = ing.MinimumStock - ing.CurrentStock;
+                decimal suggestedQty = deficit > 0 ? Math.Ceiling(deficit * 1.2m) : 0;
 
                 if (existingRestock == null)
                 {
                     var newRestock = new Restock
                     {
                         IngredientId = ing.IngredientId,
-                     //   SuggestedRestockQuantity = ing.MinimumStock - ing.CurrentStock,
-                        Status = currentStatus
+                        Status = currentStatus,
+                        SuggestedRestockQuantity = suggestedQty 
                     };
                     _context.Restocks.Add(newRestock);
                 }
                 else
                 {
-                 //   existingRestock.SuggestedRestockQuantity = ing.MinimumStock - ing.CurrentStock;
                     existingRestock.Status = currentStatus;
+                    existingRestock.SuggestedRestockQuantity = suggestedQty; 
                 }
             }
             var resolvedRestocks = _context.Restocks
@@ -130,28 +127,31 @@ namespace IRIS.Services.Implementations
             OnInventoryUpdated?.Invoke();
         }
 
-        public void ProcessRestock(int id, decimal amount)
+        public void ProcessRestock(int ingredientId, decimal amount)
         {
-            var restockItem = _context.Restocks.Find(id);
-            if (restockItem != null)
-            {
-                var ingredient = _context.Ingredients.Find(restockItem.IngredientId);
-                if (ingredient != null)
-                {
-                    ingredient.CurrentStock += amount;
-                    ingredient.UpdatedAt = DateTime.Now;
+            var ingredient = _context.Ingredients.Find(ingredientId);
 
+            if (ingredient != null)
+            {
+                ingredient.CurrentStock += amount;
+                ingredient.UpdatedAt = DateTime.Now;
+
+                var pendingRestock = _context.Restocks.FirstOrDefault(r => r.IngredientId == ingredientId);
+
+                if (pendingRestock != null)
+                {
                     if (ingredient.CurrentStock > ingredient.MinimumStock)
                     {
-                        _context.Restocks.Remove(restockItem);
+                        _context.Restocks.Remove(pendingRestock);
                     }
                     else
                     {
-                  
-                  //      restockItem.SuggestedRestockQuantity = ingredient.MinimumStock - ingredient.CurrentStock;
-                        restockItem.Status = ingredient.CurrentStock <= 0 ? StockStatus.Empty : StockStatus.LowStock;
+                        pendingRestock.Status = ingredient.CurrentStock <= 0 ? StockStatus.Empty : StockStatus.LowStock;
+                        decimal deficit = ingredient.MinimumStock - ingredient.CurrentStock;
+                        pendingRestock.SuggestedRestockQuantity = deficit > 0 ? Math.Ceiling(deficit * 1.2m) : 0;
                     }
                 }
+
                 _context.SaveChanges();
                 OnInventoryUpdated?.Invoke();
             }

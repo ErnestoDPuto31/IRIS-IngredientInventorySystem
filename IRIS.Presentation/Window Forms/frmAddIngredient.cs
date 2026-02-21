@@ -1,58 +1,61 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.ComponentModel.DataAnnotations;
-using System.Windows.Forms;
-using IRIS.Domain.Entities;
+﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
+using IRIS.Services.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace IRIS.Presentation.Window_Forms
 {
     public partial class frmAddIngredient : Form
     {
         public Ingredient NewIngredient { get; private set; }
+        private readonly IIngredientService _service;
         private int _ingredientId = 0;
 
-        public frmAddIngredient()
+        public frmAddIngredient(IIngredientService service)
         {
             InitializeComponent();
+            _service = service;
 
             lblIngredientTitle.Text = "Add Ingredient";
             btnAddIngredient.Text = "Add Ingredient";
 
-            var categoryList = Enum.GetValues(typeof(Categories))
-                .Cast<Categories>()
-                .Select(c => new
-                {
-                    Value = c,
-                    Display = GetEnumDisplayName(c) 
-                })
-                .ToList();
-
-            cmbCategory.DataSource = categoryList;
-            cmbCategory.DisplayMember = "Display"; 
-            cmbCategory.ValueMember = "Value";     
-
+            LoadCategoryDropdown();
             SetupFormDefaults();
         }
 
-        public frmAddIngredient(Ingredient ingredientToEdit) : this()
+        public frmAddIngredient(IIngredientService service, Ingredient ingredientToEdit) : this(service)
         {
+            _ingredientId = ingredientToEdit.IngredientId;
+
             lblIngredientTitle.Text = "Update Ingredient";
             btnAddIngredient.Text = "Save Changes";
-
-            _ingredientId = ingredientToEdit.IngredientId;
 
             txtIngredientName.Text = ingredientToEdit.Name;
             numCurrentStock.Value = ingredientToEdit.CurrentStock;
             numMinimumThreshold.Value = ingredientToEdit.MinimumStock;
-
             cmbCategory.SelectedValue = ingredientToEdit.Category;
 
             if (cmbUnit.Items.Contains(ingredientToEdit.Unit))
                 cmbUnit.SelectedItem = ingredientToEdit.Unit;
             else
                 cmbUnit.Text = ingredientToEdit.Unit;
+        }
+
+        private void LoadCategoryDropdown()
+        {
+            var categoryList = Enum.GetValues(typeof(Categories))
+                .Cast<Categories>()
+                .Select(c => new
+                {
+                    Value = c,
+                    Display = GetEnumDisplayName(c)
+                })
+                .ToList();
+
+            cmbCategory.DataSource = categoryList;
+            cmbCategory.DisplayMember = "Display";
+            cmbCategory.ValueMember = "Value";
         }
 
         private void SetupFormDefaults()
@@ -64,34 +67,57 @@ namespace IRIS.Presentation.Window_Forms
             btnCancel.Click += (s, e) => { this.DialogResult = DialogResult.Cancel; this.Close(); };
         }
 
+        private (bool IsValid, string ErrorMessage) ValidateIngredient(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return (false, "Ingredient name cannot be empty.");
+
+            if (char.IsLower(name[0]))
+                return (false, "Please start with an uppercase letter (e.g., 'Tomato').");
+
+            var letters = name.Where(char.IsLetter).ToList();
+            if (letters.Count > 1 && letters.All(char.IsUpper))
+                return (false, "Ingredient name cannot be ALL CAPS.");
+
+            var existing = _service.GetAllIngredients();
+            bool isDuplicate = existing.Any(i =>
+                i.Name.Equals(name, StringComparison.OrdinalIgnoreCase) &&
+                i.IngredientId != _ingredientId);
+
+            if (isDuplicate)
+                return (false, "An ingredient with this name already exists.");
+
+            return (true, string.Empty);
+        }
+
         private void btnAddIngredient_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtIngredientName.Text))
+            string cleanName = txtIngredientName.Text.Trim();
+
+            var validation = ValidateIngredient(cleanName);
+            if (!validation.IsValid)
             {
-                MessageBox.Show("Please enter an ingredient name.", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                lblError.Text = validation.ErrorMessage;
+                lblError.Visible = true;
+                return; 
             }
 
-            Categories selectedCategory = Categories.Produce; // Default fallback
-            if (cmbCategory.SelectedValue is Categories cat)
-            {
-                selectedCategory = cat;
-            }
+            lblError.Visible = false;
+
+            Categories selectedCategory = (cmbCategory.SelectedValue is Categories cat)
+                ? cat : Categories.Produce;
 
             NewIngredient = new Ingredient
             {
                 IngredientId = _ingredientId,
-                Name = txtIngredientName.Text.Trim(),
-                Category = selectedCategory, 
+                Name = cleanName,
+                Category = selectedCategory,
                 Unit = cmbUnit.SelectedItem?.ToString() ?? cmbUnit.Text,
                 CurrentStock = numCurrentStock.Value,
                 MinimumStock = numMinimumThreshold.Value,
-
-                CreatedAt = _ingredientId == 0 ? DateTime.Now : DateTime.MinValue, 
+                CreatedAt = _ingredientId == 0 ? DateTime.Now : DateTime.MinValue,
                 UpdatedAt = DateTime.Now
             };
-
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -107,7 +133,7 @@ namespace IRIS.Presentation.Window_Forms
                     return displayAttribute.Name;
                 }
             }
-            return enumValue.ToString(); 
+            return enumValue.ToString();
         }
     }
 }

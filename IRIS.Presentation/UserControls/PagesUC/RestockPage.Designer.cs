@@ -37,10 +37,6 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            btnFilterAll = new IRIS.Presentation.UserControls.Components.PillButton();
-            btnFilterLow = new IRIS.Presentation.UserControls.Components.PillButton();
-            btnFilterEmpty = new IRIS.Presentation.UserControls.Components.PillButton();
-            btnFilterWell = new IRIS.Presentation.UserControls.Components.PillButton();
             LowStockItems = new IRIS.Presentation.UserControls.Components.StatusCardUC();
             btnRefresh = new Guna.UI2.WinForms.Guna2Button();
             EmptyItems = new IRIS.Presentation.UserControls.Components.StatusCardUC();
@@ -73,66 +69,6 @@
             guna2HtmlLabel2.Size = new Size(629, 42);
             guna2HtmlLabel2.TabIndex = 5;
             guna2HtmlLabel2.Text = "Manage restocking for low and empty inventory items";
-            // 
-            // btnFilterAll
-            // 
-            btnFilterAll.BackColor = Color.White;
-            btnFilterAll.FlatAppearance.BorderSize = 0;
-            btnFilterAll.FlatStyle = FlatStyle.Flat;
-            btnFilterAll.Font = new Font("Poppins", 9F);
-            btnFilterAll.ForeColor = Color.Black;
-            btnFilterAll.Location = new Point(617, 370);
-            btnFilterAll.Name = "btnFilterAll";
-            btnFilterAll.Size = new Size(100, 36);
-            btnFilterAll.TabIndex = 10;
-            btnFilterAll.Text = "All Status";
-            btnFilterAll.UseVisualStyleBackColor = false;
-            btnFilterAll.Click += btnFilterAll_Click;
-            // 
-            // btnFilterLow
-            // 
-            btnFilterLow.BackColor = Color.White;
-            btnFilterLow.FlatAppearance.BorderSize = 0;
-            btnFilterLow.FlatStyle = FlatStyle.Flat;
-            btnFilterLow.Font = new Font("Poppins", 9F);
-            btnFilterLow.ForeColor = Color.Black;
-            btnFilterLow.Location = new Point(723, 370);
-            btnFilterLow.Name = "btnFilterLow";
-            btnFilterLow.Size = new Size(100, 36);
-            btnFilterLow.TabIndex = 11;
-            btnFilterLow.Text = "Low Stock";
-            btnFilterLow.UseVisualStyleBackColor = false;
-            btnFilterLow.Click += btnFilterLow_Click;
-            // 
-            // btnFilterEmpty
-            // 
-            btnFilterEmpty.BackColor = Color.White;
-            btnFilterEmpty.FlatAppearance.BorderSize = 0;
-            btnFilterEmpty.FlatStyle = FlatStyle.Flat;
-            btnFilterEmpty.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnFilterEmpty.ForeColor = Color.Black;
-            btnFilterEmpty.Location = new Point(829, 370);
-            btnFilterEmpty.Name = "btnFilterEmpty";
-            btnFilterEmpty.Size = new Size(100, 36);
-            btnFilterEmpty.TabIndex = 12;
-            btnFilterEmpty.Text = "Empty";
-            btnFilterEmpty.UseVisualStyleBackColor = false;
-            btnFilterEmpty.Click += btnFilterEmpty_Click;
-            // 
-            // btnFilterWell
-            // 
-            btnFilterWell.BackColor = Color.White;
-            btnFilterWell.FlatAppearance.BorderSize = 0;
-            btnFilterWell.FlatStyle = FlatStyle.Flat;
-            btnFilterWell.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnFilterWell.ForeColor = Color.Black;
-            btnFilterWell.Location = new Point(935, 370);
-            btnFilterWell.Name = "btnFilterWell";
-            btnFilterWell.Size = new Size(124, 36);
-            btnFilterWell.TabIndex = 13;
-            btnFilterWell.Text = "Well Stocked";
-            btnFilterWell.UseVisualStyleBackColor = false;
-            btnFilterWell.Click += btnFilterWell_Click;
             // 
             // LowStockItems
             // 
@@ -239,10 +175,6 @@
             pnlMainContent.AutoScroll = true;
             pnlMainContent.Controls.Add(vScrollBar1);
             pnlMainContent.Controls.Add(guna2HtmlLabel2);
-            pnlMainContent.Controls.Add(btnFilterAll);
-            pnlMainContent.Controls.Add(btnFilterLow);
-            pnlMainContent.Controls.Add(btnFilterEmpty);
-            pnlMainContent.Controls.Add(btnFilterWell);
             pnlMainContent.Controls.Add(LowStockItems);
             pnlMainContent.Controls.Add(EmptyItems);
             pnlMainContent.Controls.Add(WellStockedItems);
@@ -283,11 +215,6 @@
         #endregion
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
-        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel3;
-        private Components.PillButton btnFilterAll;
-        private Components.PillButton btnFilterLow;
-        private Components.PillButton btnFilterEmpty;
-        private Components.PillButton btnFilterWell;
         private Components.StatusCardUC LowStockItems;
         private Guna.UI2.WinForms.Guna2Button btnRefresh;
         private Components.StatusCardUC EmptyItems;

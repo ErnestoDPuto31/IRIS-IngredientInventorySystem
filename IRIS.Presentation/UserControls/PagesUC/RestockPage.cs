@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Reflection;
-using System.ComponentModel.DataAnnotations;
-using System.Windows.Forms;
-using IRIS.Domain.Entities;
+﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.Presenters;
 using IRIS.Presentation.UserControls.Components;
+using IRIS.Presentation.Window_Forms;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace IRIS.Presentation.UserControls.PagesUC
 {
@@ -20,34 +21,33 @@ namespace IRIS.Presentation.UserControls.PagesUC
         {
             InitializeComponent();
 
+            
             LowStockItems.TypeOfCard = CardType.LowStockItems;
             EmptyItems.TypeOfCard = CardType.EmptyItems;
             WellStockedItems.TypeOfCard = CardType.WellStockedItems;
 
             var service = ServiceFactory.GetRestockService();
             _presenter = new RestockPresenter(this, service);
+            _presenter.RefreshData();
 
-            SetupIndigoScrollBar();
+            restockTableuc1.RestockRequested += RestockTableuc1_RestockRequested;
         }
 
-        private void SetupIndigoScrollBar()
+        private void RestockTableuc1_RestockRequested(object sender, Restock restockItem)
         {
-            pnlMainContent.AutoScroll = false;
-            pnlMainContent.HorizontalScroll.Maximum = 0;
-            pnlMainContent.HorizontalScroll.Visible = false;
-            pnlMainContent.AutoScroll = true;
-
-            var vScroll = new Guna.UI2.WinForms.Guna2VScrollBar
+            using (var popup = new frmRestockIngredient(restockItem.Ingredient))
             {
-                BindingContainer = pnlMainContent,
-                ThumbColor = Color.Indigo,
-                HoverState = { ThumbColor = Color.DarkViolet },
-                BorderRadius = 4,
-                Width = 10,
-                FillColor = Color.Transparent,
-                Margin = new Padding(0, 5, 2, 5)
-            };
+                if (popup.ShowDialog() == DialogResult.OK)
+                {
+                   
+                    _presenter.ProcessRestock(restockItem.IngredientId, popup.RestockQuantity);
+
+                    MessageBox.Show($"{restockItem.Ingredient.Name} stock has been updated!",
+                                    "Restock Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
         }
+
 
         private void RestockPage_Load(object sender, EventArgs e)
         {
@@ -154,43 +154,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
 
             _presenter.FilterByCategory(rawCategoryName);
-        }
-
-        private void UpdateButtonSelection(object sender)
-        {
-            var clickedButton = sender as PillButton;
-            if (clickedButton == null) return;
-
-            btnFilterAll.IsSelected = false;
-            btnFilterLow.IsSelected = false;
-            btnFilterEmpty.IsSelected = false;
-            btnFilterWell.IsSelected = false;
-
-            clickedButton.IsSelected = true;
-        }
-
-        private void btnFilterAll_Click(object sender, EventArgs e)
-        {
-            _presenter.FilterByStatus("All");
-            UpdateButtonSelection(sender);
-        }
-
-        private void btnFilterLow_Click(object sender, EventArgs e)
-        {
-            _presenter.FilterByStatus("Low");
-            UpdateButtonSelection(sender);
-        }
-
-        private void btnFilterEmpty_Click(object sender, EventArgs e)
-        {
-            _presenter.FilterByStatus("Empty");
-            UpdateButtonSelection(sender);
-        }
-
-        private void btnFilterWell_Click(object sender, EventArgs e)
-        {
-            _presenter.FilterByStatus("Well");
-            UpdateButtonSelection(sender);
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)

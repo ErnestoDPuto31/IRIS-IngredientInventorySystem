@@ -52,9 +52,19 @@ namespace IRIS.Services.Implementations
         {
             var query = _context.Ingredients.AsNoTracking().AsQueryable();
 
-            // ... (Search and Category filtering logic remains the same) ...
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(i => i.Name.Contains(searchTerm));
+            }
 
-            // --- SORTING WITH ENUM ---
+            if (!string.IsNullOrEmpty(category) && category != "All Categories")
+            {
+                if (Enum.TryParse<Categories>(category, out var catEnum))
+                {
+                    query = query.Where(i => i.Category == catEnum);
+                }
+            }
+
             switch (sortBy)
             {
                 case IngredientSortBy.NewestFirst:
