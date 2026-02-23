@@ -220,7 +220,7 @@ namespace IRIS.Presentation.Window_Forms
                 EncodedById = UserSession.CurrentUser.UserId,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-             //   Remarks = txtRemarks.Text.Trim() 
+             //   Remarks = txtRemarks.Text.Trim()
             };
 
             try

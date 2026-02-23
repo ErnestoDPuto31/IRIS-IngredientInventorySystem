@@ -11,13 +11,6 @@ using IRIS.Presentation.Properties;
 
 namespace IRIS.Presentation.UserControls.Components
 {
-    public enum CardType
-    {
-        EmptyItems,
-        LowStockItems,
-        WellStockedItems
-    }
-
     [DefaultEvent("IconClicked")]
     public partial class StatusCardUC : UserControl
     {

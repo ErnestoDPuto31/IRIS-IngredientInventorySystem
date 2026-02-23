@@ -164,7 +164,15 @@ namespace IRIS.Presentation.UserControls
             }
         }
 
-        private void btnReports_Click(object sender, EventArgs e) { }
+        private void btnReports_Click(object sender, EventArgs e)
+        {
+            if (this.ParentForm is MainForm main)
+            {
+                main.LoadPage(new ReportsControl());
+                if (_isExpanded) btnHamburger_Click(null, null);
+            }
+        }
+
         private void btnHistory_Click(object sender, EventArgs e) { }
         private void btnLogout_Click(object sender, EventArgs e)
         {

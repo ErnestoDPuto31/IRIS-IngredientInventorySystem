@@ -17,5 +17,15 @@ namespace IRIS.Presentation.DependencyInjection
             return new IngredientService(context);
         }
 
+        public static IRequestService GetRequestService()
+        {
+            var context = DbContextFactory.Create();
+            return new RequestService(context);
+        }
+        public static IReportsService GetReportsService()
+        {
+            var context = DbContextFactory.Create();
+            return new ReportsService(context);
+        }
     }
 }
