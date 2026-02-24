@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using IRIS.Domain.Entities;
-using IRIS.Domain.Enums; 
+using IRIS.Domain.Enums;
 
 namespace IRIS.Presentation.UserControls
 {
@@ -33,9 +33,8 @@ namespace IRIS.Presentation.UserControls
 
             lblIngredientName.Text = IngredientData.Name;
 
-            // Removed the hardcoded ToString() here. We handle it inside UpdateVisuals() now.
-
-            string unit = string.IsNullOrEmpty(IngredientData.Unit) ? "g" : IngredientData.Unit;
+           
+            string unit = GetEnumDisplayName(IngredientData.Unit);
 
             lblCurrentStock.Text = $"{IngredientData.CurrentStock} {unit}";
             lblMinThreshold.Text = $"{IngredientData.MinimumStock} {unit}";

@@ -64,7 +64,6 @@
             // 
             // guna2Panel1
             // 
-            guna2Panel1.BackgroundImage = Properties.Resources.image_2026_02_17_140257168_removebg_preview;
             guna2Panel1.BackgroundImageLayout = ImageLayout.Stretch;
             guna2Panel1.Controls.Add(btnCancel);
             guna2Panel1.Controls.Add(btnSave);
@@ -134,7 +133,7 @@
             btnSave.PressedColor = Color.DarkSlateBlue;
             btnSave.ShadowDecoration.CustomizableEdges = customizableEdges4;
             btnSave.Size = new Size(128, 41);
-            btnSave.TabIndex = 8;
+            btnSave.TabIndex = 3;
             btnSave.Text = "SAVE";
             btnSave.Click += btnSave_Click;
             // 
@@ -194,7 +193,7 @@
             txtConfirmPassword.SelectedText = "";
             txtConfirmPassword.ShadowDecoration.CustomizableEdges = customizableEdges6;
             txtConfirmPassword.Size = new Size(332, 39);
-            txtConfirmPassword.TabIndex = 5;
+            txtConfirmPassword.TabIndex = 2;
             txtConfirmPassword.UseSystemPasswordChar = true;
             // 
             // guna2HtmlLabel4
@@ -232,7 +231,7 @@
             txtNewPassword.SelectedText = "";
             txtNewPassword.ShadowDecoration.CustomizableEdges = customizableEdges8;
             txtNewPassword.Size = new Size(332, 39);
-            txtNewPassword.TabIndex = 3;
+            txtNewPassword.TabIndex = 1;
             txtNewPassword.UseSystemPasswordChar = true;
             // 
             // guna2HtmlLabel3

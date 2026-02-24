@@ -2,32 +2,28 @@
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Reflection; 
+using System.Reflection;
 using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
+using System.Windows.Forms;
 
 namespace IRIS.Presentation.UserControls.Table
 {
     public partial class RestockRowUC : UserControl
     {
-        // -------------------------------------------------------------------------
-        // UI & CONTROLS
-        // -------------------------------------------------------------------------
+
 
         public Restock Data { get; private set; }
         public event EventHandler<Restock> RestockClicked;
 
         private Button _btnRestock;
         private bool _isHovered = false;
-        // Columns: Name, Category, Stock, Min, Request Qty, Status, Action
         private readonly float[] _colWeights = { 0.18f, 0.12f, 0.14f, 0.14f, 0.16f, 0.10f, 0.16f };
 
         private readonly Color _cTextMain = Color.FromArgb(50, 50, 50);
         private readonly Color _cTextOrange = Color.FromArgb(230, 140, 20);
         private readonly Color _cTextPurple = Color.FromArgb(75, 0, 130);
         private readonly Color _cHoverBg = Color.FromArgb(252, 250, 255);
-        private Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart bunifuBarChart1;
-        private System.ComponentModel.IContainer components;
         private readonly Color _cLine = Color.FromArgb(240, 240, 250);
 
         public RestockRowUC(Restock item)
@@ -53,7 +49,7 @@ namespace IRIS.Presentation.UserControls.Table
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(90, 32),
-                Cursor = Cursors.IBeam
+                Cursor = Cursors.Hand 
             };
             _btnRestock.FlatAppearance.BorderSize = 0;
             UpdateButtonShape();
@@ -98,11 +94,9 @@ namespace IRIS.Presentation.UserControls.Table
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            // Safe accessors 
-            string ingName = Data.Ingredient?.Name ?? "Unknown";
-            string ingUnit = Data.Ingredient?.Unit ?? "units";
 
-            // --- UPDATED: Safely parse Enum display name ---
+            string ingName = Data.Ingredient?.Name ?? "Unknown";
+            string ingUnit = Data.Ingredient != null ? GetEnumDisplayName(Data.Ingredient.Unit) : "units";
             string ingCat = Data.Ingredient != null ? GetEnumDisplayName(Data.Ingredient.Category) : "Uncategorized";
 
             decimal currentStock = Data.Ingredient?.CurrentStock ?? 0;
@@ -133,6 +127,7 @@ namespace IRIS.Presentation.UserControls.Table
 
                 DrawText(g, $"{currentStock} {ingUnit}", fBold, stockColor, 2, this.Width, StringAlignment.Center);
                 DrawText(g, $"{minStock} {ingUnit}", fReg, _cTextMain, 3, this.Width, StringAlignment.Center);
+
                 string suggestedText = suggestedStock > 0 ? $"{suggestedStock} {ingUnit}" : "-";
                 DrawText(g, suggestedText, fBold, _cTextPurple, 4, this.Width, StringAlignment.Center);
 
@@ -140,7 +135,6 @@ namespace IRIS.Presentation.UserControls.Table
             }
         }
 
-        // --- HELPER TO EXTRACT DISPLAY NAME ---
         private string GetEnumDisplayName(Enum enumValue)
         {
             FieldInfo field = enumValue.GetType().GetField(enumValue.ToString());
@@ -199,10 +193,6 @@ namespace IRIS.Presentation.UserControls.Table
             }
         }
 
-        // -------------------------------------------------------------------------
-        // BACKEND: LOGIC & CALCULATIONS
-        // -------------------------------------------------------------------------
-
         private void DrawCategoryPill(Graphics g, string text, int colIndex, int totalWidth)
         {
             float colX = GetColX(colIndex, totalWidth);
@@ -251,11 +241,6 @@ namespace IRIS.Presentation.UserControls.Table
             for (int i = 0; i < 6; i++) startX += this.Width * _colWeights[i];
             float colW = this.Width * _colWeights[6];
             _btnRestock.Location = new Point((int)(startX + (colW - _btnRestock.Width) / 2), (this.Height - _btnRestock.Height) / 2);
-        }
-
-        private void InitializeComponent()
-        {
-
         }
 
         private float GetColX(int index, int totalWidth)

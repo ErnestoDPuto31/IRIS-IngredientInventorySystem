@@ -4,9 +4,6 @@ using IRIS.Infrastructure.Data;
 using IRIS.Services.Interfaces;
 using IRIS.Domain.Helpers;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IRIS.Services.Implementations
 {
@@ -19,7 +16,6 @@ namespace IRIS.Services.Implementations
             _context = context;
         }
 
-        // --- CARDS ---
         public int GetTotalIngredients() => _context.Ingredients.Count();
         public int GetTotalRequests() => _context.Requests.Count();
         public int GetTotalTransactions() => _context.Requests.Count(r => r.Status == RequestStatus.Released);
@@ -32,11 +28,9 @@ namespace IRIS.Services.Implementations
             return Math.Round((double)approved / total * 100, 1);
         }
 
-        // --- CHARTS (NEW LOGIC) ---
 
         public Dictionary<string, double> GetInventoryStats()
         {
-            // Logic: Compare CurrentStock vs MinimumStock
             var empty = _context.Ingredients.Count(i => i.CurrentStock <= 0);
             var low = _context.Ingredients.Count(i => i.CurrentStock > 0 && i.CurrentStock < i.MinimumStock);
             var full = _context.Ingredients.Count(i => i.CurrentStock >= i.MinimumStock);
@@ -51,7 +45,6 @@ namespace IRIS.Services.Implementations
 
         public Dictionary<string, double> GetRequestStats()
         {
-            // Group by Status Enum
             return _context.Requests
                 .GroupBy(r => r.Status)
                 .Select(g => new { Status = g.Key, Count = g.Count() })
@@ -60,26 +53,23 @@ namespace IRIS.Services.Implementations
 
         public Dictionary<string, double> GetCategoryStats()
         {
-            // STEP 1: Bring the grouped data into C# memory
             var rawStats = _context.Ingredients
                 .GroupBy(i => i.Category)
                 .Select(g => new { Cat = g.Key, Count = g.Count() })
                 .ToList();
 
-            // STEP 2: Since Cat is definitely an enum, just call your helper directly!
             return rawStats.ToDictionary(
                 x => x.Cat.GetDisplayName(),
                 x => (double)x.Count
             );
         }
 
-        // --- NEW: Table Implementation ---
         public List<Request> GetRecentTransactions()
         {
             return _context.Requests
                 .AsNoTracking()
-                .Include(r => r.EncodedBy) // Corrected: Use 'EncodedBy' navigation property
-                .OrderByDescending(r => r.CreatedAt) // Corrected: Use 'CreatedAt'
+                .Include(r => r.EncodedBy)
+                .OrderByDescending(r => r.CreatedAt)
                 .Take(10)
                 .ToList();
         }
@@ -93,24 +83,22 @@ namespace IRIS.Services.Implementations
                 .AsEnumerable()
                 .Select(i => new IRIS.Domain.Entities.LowStockItem(
                     i.Name ?? "Unknown",
-                    i.Category.ToString(), 
+                    i.Category.GetDisplayName(), 
                     (float)i.CurrentStock,
                     (float)i.MinimumStock,
-                    i.Unit ?? "pcs"
+                    i.Unit.GetDisplayName() 
                 ))
                 .ToList();
         }
 
         public List<TopIngredientItem> GetTopUsedIngredients(int count = 5)
         {
-            // We are now querying RequestDetails to see what people are asking for
             var topUsed = _context.Set<RequestDetails>()
                 .AsNoTracking()
                 .GroupBy(req => req.IngredientId)
                 .Select(group => new
                 {
                     IngredientId = group.Key,
-                    // Summing up the RequestedQty from all requests
                     TotalUsedAmount = group.Sum(r => r.RequestedQty)
                 })
                 .OrderByDescending(x => x.TotalUsedAmount)
@@ -118,14 +106,15 @@ namespace IRIS.Services.Implementations
                 .Join(_context.Ingredients,
                       req => req.IngredientId,
                       ingredient => ingredient.IngredientId,
-                      (req, ingredient) => new TopIngredientItem
-                      {
-                          Name = ingredient.Name ?? "Unknown",
-                          Category = ingredient.Category.ToString(),
-                          // We still put it in the "TotalUsed" property so it matches your UI table
-                          TotalUsed = req.TotalUsedAmount,
-                          Unit = ingredient.Unit ?? "pcs"
-                      })
+                      (req, ingredient) => new { req, ingredient }) 
+                .AsEnumerable()
+                .Select(x => new TopIngredientItem
+                {
+                    Name = x.ingredient.Name ?? "Unknown",
+                    Category = x.ingredient.Category.GetDisplayName(), 
+                    TotalUsed = x.req.TotalUsedAmount,
+                    Unit = x.ingredient.Unit.GetDisplayName() 
+                })
                 .ToList();
 
             return topUsed;

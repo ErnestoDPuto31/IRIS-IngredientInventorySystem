@@ -9,10 +9,12 @@ namespace IRIS.Services.Implementations
     public class IngredientService : IIngredientService
     {
         private readonly IrisDbContext _context;
+        private readonly IInventoryLogService _logService; 
 
-        public IngredientService(IrisDbContext context)
+        public IngredientService(IrisDbContext context, IInventoryLogService logService)
         {
             _context = context;
+            _logService = logService;
         }
         public IEnumerable<Ingredient> GetAllIngredients() => _context.Ingredients.AsNoTracking().ToList();
 
@@ -20,15 +22,17 @@ namespace IRIS.Services.Implementations
         {
             _context.Ingredients.Add(ingredient);
             _context.SaveChanges();
+            _logService.LogTransaction(ingredient.IngredientId, "Added", ingredient.CurrentStock, 0, ingredient.CurrentStock);
+
             return ingredient.IngredientId;
         }
 
         public void UpdateIngredient(Ingredient ingredient)
         {
-            var local = _context.Ingredients
-                .Local
-                .FirstOrDefault(entry => entry.IngredientId == ingredient.IngredientId);
+            var oldIngredient = _context.Ingredients.AsNoTracking().FirstOrDefault(i => i.IngredientId == ingredient.IngredientId);
+            decimal oldStock = oldIngredient != null ? oldIngredient.CurrentStock : 0;
 
+            var local = _context.Ingredients.Local.FirstOrDefault(entry => entry.IngredientId == ingredient.IngredientId);
             if (local != null)
             {
                 _context.Entry(local).State = EntityState.Detached;
@@ -36,6 +40,12 @@ namespace IRIS.Services.Implementations
 
             _context.Ingredients.Update(ingredient);
             _context.SaveChanges();
+
+            decimal quantityChanged = ingredient.CurrentStock - oldStock;
+            if (quantityChanged != 0)
+            {
+                _logService.LogTransaction(ingredient.IngredientId, "Updated", quantityChanged, oldStock, ingredient.CurrentStock);
+            }
         }
 
         public void DeleteIngredient(int ingredientId)
@@ -43,8 +53,11 @@ namespace IRIS.Services.Implementations
             var item = _context.Ingredients.Find(ingredientId);
             if (item != null)
             {
+                decimal stockBeforeDelete = item.CurrentStock;
+
                 _context.Ingredients.Remove(item);
                 _context.SaveChanges();
+                _logService.LogTransaction(ingredientId, "Removed", -stockBeforeDelete, stockBeforeDelete, 0);
             }
         }
 

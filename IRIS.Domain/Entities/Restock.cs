@@ -9,8 +9,7 @@ namespace IRIS.Domain.Entities
         [Key]
         public int RestockId { get; set; }
 
-        [Required]
-        public int IngredientId { get; set; }
+        [Required] public int IngredientId { get; set; }
 
         [ForeignKey("IngredientId")]
         public virtual Ingredient Ingredient { get; set; }

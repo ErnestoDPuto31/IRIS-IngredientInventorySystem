@@ -1,12 +1,10 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
-using IRIS.Infrastructure.Data;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.Interfaces;
 using IRIS.Presentation.Presenters;
 using IRIS.Presentation.UserControls;
 using IRIS.Presentation.Window_Forms;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -16,7 +14,7 @@ namespace IRIS.Presentation.Forms
     {
         private FlowLayoutPanel _ingredientsGrid;
         private InventoryPresenter _presenter;
-        private System.Windows.Forms.Timer _searchTimer; // ADD THIS
+        private System.Windows.Forms.Timer _searchTimer; 
 
         private const int CARD_MARGIN = 10;
         private const int SCROLLBAR_OFFSET = 25;
@@ -52,8 +50,8 @@ namespace IRIS.Presentation.Forms
                 }
 
                 cmbCategory.DataSource = new BindingSource(categoryList, null);
-                cmbCategory.DisplayMember = "Key";   // What the user sees ("Dairy & Oils")
-                cmbCategory.ValueMember = "Value"; // What the code uses ("DairyAndOils")
+                cmbCategory.DisplayMember = "Key";   
+                cmbCategory.ValueMember = "Value"; 
             }
 
             if (cmbSortIngredients != null)

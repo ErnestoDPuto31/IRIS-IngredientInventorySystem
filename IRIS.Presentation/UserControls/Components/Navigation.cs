@@ -173,7 +173,13 @@ namespace IRIS.Presentation.UserControls
             }
         }
 
-        private void btnHistory_Click(object sender, EventArgs e) { }
+        private void btnHistory_Click(object sender, EventArgs e) {
+            if (this.ParentForm is MainForm main)
+            {
+                main.LoadPage(new HistoryControl());
+                if (_isExpanded) btnHamburger_Click(null, null);
+            }
+        }
         private void btnLogout_Click(object sender, EventArgs e)
         {
             DialogResult result = System.Windows.Forms.MessageBox.Show("Are you sure you want to log out?", "Logout",

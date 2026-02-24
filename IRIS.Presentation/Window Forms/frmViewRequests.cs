@@ -1,6 +1,8 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using IRIS.Services.Implementations;
+using System.ComponentModel.DataAnnotations; 
+using System.Reflection; 
 
 namespace IRIS.Presentation.Window_Forms
 {
@@ -48,8 +50,6 @@ namespace IRIS.Presentation.Window_Forms
                 lblFaculty.Text = _currentRequest.FacultyName;
                 lblDateOfUse.Text = _currentRequest.DateOfUse.ToString("MM/dd/yyyy");
                 lblStudentCount.Text = _currentRequest.StudentCount.ToString();
-   //             lblRecipeCosting.Text = _currentRequest.RecipeCosting.ToString("N2");
-        //        lblAllowedQuantity.Text = _currentRequest.TotalAllowedQty.ToString("N2");
 
                 string submitterName = _currentRequest.EncodedBy != null ? _currentRequest.EncodedBy.Username : "Unknown";
                 string submitDate = _currentRequest.CreatedAt.ToString("MMM dd, yyyy");
@@ -62,7 +62,9 @@ namespace IRIS.Presentation.Window_Forms
                 foreach (var item in _currentRequest.RequestItems)
                 {
                     string name = item.Ingredient?.Name ?? "Item";
-                    string unit = item.Ingredient?.Unit ?? "";
+
+                    string unit = item.Ingredient != null ? GetEnumDisplayName(item.Ingredient.Unit) : "";
+
                     gridItems.Rows.Add(name, $"{item.RequestedQty} {unit}");
                 }
 
@@ -105,7 +107,6 @@ namespace IRIS.Presentation.Window_Forms
 
         private void UpdateStatusUI(RequestStatus status)
         {
-            // 1. Setup Badge Colors (Keep existing logic)
             Color bg, fg;
             string statusText = status.ToString().ToUpper();
 
@@ -123,13 +124,12 @@ namespace IRIS.Presentation.Window_Forms
                     bg = Color.FromArgb(227, 242, 253);
                     fg = Color.FromArgb(33, 150, 243);
                     break;
-                default: // Pending
+                default:
                     bg = Color.FromArgb(255, 248, 225);
                     fg = Color.FromArgb(255, 143, 0);
                     break;
             }
 
-            // 2. Apply Badge Styles (Keep existing logic)
             lblStatusBadge.Text = statusText;
             lblStatusBadge.FillColor = bg;
             lblStatusBadge.ForeColor = fg;
@@ -138,7 +138,6 @@ namespace IRIS.Presentation.Window_Forms
             lblStatusBadge.DisabledState.ForeColor = fg;
             lblStatusBadge.DisabledState.BorderColor = bg;
 
-            // 3. Determine User Roles (Keep existing logic)
             UserRole currentUserRole = UserSession.CurrentUser.Role;
 
             if (currentUserRole == UserRole.OfficeStaff)
@@ -229,5 +228,19 @@ namespace IRIS.Presentation.Window_Forms
 
         private void btnClose_Click(object sender, EventArgs e) => this.Close();
         private void btnExitForm_Click(object sender, EventArgs e) => this.Close();
+
+        private string GetEnumDisplayName(Enum enumValue)
+        {
+            FieldInfo field = enumValue.GetType().GetField(enumValue.ToString());
+            if (field != null)
+            {
+                var displayAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(field, typeof(DisplayAttribute));
+                if (displayAttribute != null)
+                {
+                    return displayAttribute.Name;
+                }
+            }
+            return enumValue.ToString();
+        }
     }
 }
