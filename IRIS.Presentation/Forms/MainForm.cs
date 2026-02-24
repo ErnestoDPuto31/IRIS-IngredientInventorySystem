@@ -1,17 +1,29 @@
 ﻿using IRIS.Domain.Entities;
-
+using IRIS.Presentation.UserControls;
+using IRIS.Services.Implementations;
+using IRIS.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Timer = System.Windows.Forms.Timer;
 namespace IRIS.Presentation.Forms
 {
     public partial class MainForm : Form
     {
         private System.Windows.Forms.Timer _clockTimer;
-
         public MainForm()
         {
             InitializeComponent();
             SetupUserDisplay();
             SetupClock();
+            // 1. Ask your global Program to hand you the secure service
+            // 1. Ask your global Program to hand you the secure service using the native method
+            var requestService = (IRequestService)Program.Services.GetService(typeof(IRequestService));
 
+            // 2. Pass it into the navigation panel!
+            navigationPanel1.InitializeService(requestService);
+            System.Windows.Forms.Timer badgeTimer = new Timer();
+            badgeTimer.Interval = 3000;
+            badgeTimer.Tick += (s, e) => navigationPanel1.RefreshBadgeCount();
+            badgeTimer.Start();
         }
 
         private void SetupUserDisplay()

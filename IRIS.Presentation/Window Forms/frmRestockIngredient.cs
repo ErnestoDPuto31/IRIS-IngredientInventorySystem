@@ -1,4 +1,6 @@
-﻿using IRIS.Domain.Entities;
+﻿using System;
+using System.Windows.Forms;
+using IRIS.Domain.Entities;
 
 namespace IRIS.Presentation.Window_Forms
 {
@@ -10,12 +12,18 @@ namespace IRIS.Presentation.Window_Forms
         private readonly Ingredient _ingredient;
         private readonly string _unit;
 
-        public frmRestockIngredient(Ingredient ingredient)
+        // ---> 1. Create a variable to hold the number we passed in <---
+        private readonly decimal _suggestedQty;
+
+        public frmRestockIngredient(Ingredient ingredient, decimal suggestedQty)
         {
             InitializeComponent();
 
             _ingredient = ingredient;
             _unit = string.IsNullOrWhiteSpace(ingredient.Unit) ? "units" : ingredient.Unit.Trim();
+
+            // ---> 2. Save it here! <---
+            _suggestedQty = suggestedQty;
 
             SetupFormLogic();
         }
@@ -26,21 +34,17 @@ namespace IRIS.Presentation.Window_Forms
 
             lblCurrentValue.Text = $"{_ingredient.CurrentStock:0.##} {_unit}";
             lblMinValue.Text = $"{_ingredient.MinimumStock:0.##} {_unit}";
-
             label4.Text = $"Restock Quantity ({_unit})";
+            lblSuggestedValue.Text = $"{_suggestedQty:0.##} {_unit}";
 
-            decimal deficit = _ingredient.MinimumStock - _ingredient.CurrentStock;
-            decimal suggestion = 0;
-
-            if (deficit > 0)
+            if (_suggestedQty > 0 && _suggestedQty <= numQuantity.Maximum)
             {
-                suggestion = Math.Ceiling(deficit * 1.2m);
+                numQuantity.Value = _suggestedQty;
             }
-
-            lblSuggestedValue.Text = $"{suggestion:0.##} {_unit}";
-            if (suggestion > 0 && suggestion <= numQuantity.Maximum)
+            else if (_suggestedQty > numQuantity.Maximum)
             {
-                numQuantity.Value = suggestion;
+                // Safety catch just in case it's huge
+                numQuantity.Value = numQuantity.Maximum;
             }
             else
             {
@@ -54,7 +58,7 @@ namespace IRIS.Presentation.Window_Forms
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
             {
-                e.Handled = true; 
+                e.Handled = true;
             }
 
             if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
@@ -91,6 +95,5 @@ namespace IRIS.Presentation.Window_Forms
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
-
     }
 }

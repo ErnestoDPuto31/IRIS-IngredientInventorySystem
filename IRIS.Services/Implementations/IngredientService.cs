@@ -48,6 +48,7 @@ namespace IRIS.Services.Implementations
             }
         }
 
+
         public IEnumerable<Ingredient> GetFilteredIngredients(string searchTerm, string category, IngredientSortBy sortBy)
         {
             var query = _context.Ingredients.AsNoTracking().AsQueryable();

@@ -9,6 +9,7 @@ namespace IRIS.Services.Interfaces
         List<Request> GetAllRequests();
 
         Request GetRequestById(int id);
+        int GetPendingRequestCount();
         void UpdateRequestStatus(int requestId, RequestStatus newStatus, string remarks, int currentUserId);
         void CreateRequest(Request newRequest, List<RequestDetails> items);
     }

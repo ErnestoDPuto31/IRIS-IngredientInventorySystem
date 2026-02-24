@@ -1,6 +1,8 @@
+using IRIS.Infrastructure.Data;
+using IRIS.Services.Implementations;
+using IRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using IRIS.Infrastructure.Data;
 using Syncfusion.Licensing;
 
 namespace IRIS.Presentation
@@ -26,7 +28,7 @@ namespace IRIS.Presentation
                     warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)
                 )
             );
-
+            services.AddScoped<IRequestService, RequestService>();
             Services = services.BuildServiceProvider();
 
             // Seed database safely

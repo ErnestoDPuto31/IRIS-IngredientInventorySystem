@@ -200,7 +200,7 @@ namespace IRIS.Presentation.UserControls.Table
         }
 
         // -------------------------------------------------------------------------
-        // BACKEND: LOGIC & CALCULATIONS
+        //  LOGIC & CALCULATIONS
         // -------------------------------------------------------------------------
 
         private void DrawCategoryPill(Graphics g, string text, int colIndex, int totalWidth)

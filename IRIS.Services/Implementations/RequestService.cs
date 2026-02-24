@@ -14,7 +14,11 @@ namespace IRIS.Services.Implementations
         {
             _context = context;
         }
-
+        public int GetPendingRequestCount()
+        {
+            // Uses your RequestStatus enum!
+            return _context.Requests.Count(r => r.Status == RequestStatus.Pending);
+        }
         public Request GetRequestById(int id)
         {
             return _context.Requests
@@ -25,6 +29,7 @@ namespace IRIS.Services.Implementations
                     .ThenInclude(a => a.Approver)
                 .FirstOrDefault(r => r.RequestId == id);
         }
+
 
         public List<Request> GetAllRequests()
         {

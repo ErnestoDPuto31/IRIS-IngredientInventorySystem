@@ -2,7 +2,7 @@
 using IRIS.Domain.Enums;
 using IRIS.Infrastructure.Data;
 using IRIS.Services.Interfaces;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +24,8 @@ namespace IRIS.Services.Implementations
         {
             return _context.Restocks
                 .Include(r => r.Ingredient)
+                // ---> NEW: Orders perfectly by stock amount (Empty -> Low -> Well Stocked)
+                .OrderBy(r => r.Ingredient.CurrentStock)
                 .ToList();
         }
 
@@ -51,7 +53,9 @@ namespace IRIS.Services.Implementations
                     query = query.Where(r => r.Ingredient.CurrentStock > r.Ingredient.MinimumStock);
                     break;
             }
-            return query.ToList();
+
+            // ---> NEW: Keeps filters sorted properly
+            return query.OrderBy(r => r.Ingredient.CurrentStock).ToList();
         }
 
         public int GetCountByStatus(string statusType)
@@ -68,33 +72,41 @@ namespace IRIS.Services.Implementations
                     return 0;
             }
         }
+
         public IEnumerable<Restock> SearchRestockList(string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return GetRestockList();
 
-            // FIX: Search inside the linked Ingredient entity
             return _context.Restocks
                 .Include(r => r.Ingredient)
                 .Where(r => r.Ingredient.Name.Contains(searchTerm))
+                // ---> NEW: Keeps search results sorted properly
+                .OrderBy(r => r.Ingredient.CurrentStock)
                 .ToList();
         }
 
         public void RefreshRestockData()
         {
-            var lowStockIngredients = _context.Ingredients
-                .Where(i => i.CurrentStock <= i.MinimumStock)
-                .ToList();
+            // ---> NEW: Fetch ALL ingredients, not just low stock ones
+            var allIngredients = _context.Ingredients.ToList();
 
-            foreach (var ing in lowStockIngredients)
+            foreach (var ing in allIngredients)
             {
                 var existingRestock = _context.Restocks
                     .FirstOrDefault(r => r.IngredientId == ing.IngredientId);
 
-                var currentStatus = ing.CurrentStock <= 0 ? StockStatus.Empty : StockStatus.LowStock;
+                // ---> NEW: Accurately set all three statuses
+                StockStatus currentStatus;
+                if (ing.CurrentStock <= 0)
+                    currentStatus = StockStatus.Empty;
+                else if (ing.CurrentStock <= ing.MinimumStock)
+                    currentStatus = StockStatus.LowStock;
+                else
+                    currentStatus = StockStatus.WellStocked;
 
-                decimal deficit = ing.MinimumStock - ing.CurrentStock;
-                decimal suggestedQty = deficit > 0 ? Math.Ceiling(deficit * 1.2m) : 0;
+                decimal suggestedQty = ing.MinimumStock - ing.CurrentStock;
+                if (suggestedQty < 0) suggestedQty = 0;
 
                 if (existingRestock == null)
                 {
@@ -102,26 +114,18 @@ namespace IRIS.Services.Implementations
                     {
                         IngredientId = ing.IngredientId,
                         Status = currentStatus,
-                        SuggestedRestockQuantity = suggestedQty 
+                        SuggestedRestockQuantity = suggestedQty
                     };
                     _context.Restocks.Add(newRestock);
                 }
                 else
                 {
                     existingRestock.Status = currentStatus;
-                    existingRestock.SuggestedRestockQuantity = suggestedQty; 
+                    existingRestock.SuggestedRestockQuantity = suggestedQty;
                 }
             }
-            var resolvedRestocks = _context.Restocks
-                .Include(r => r.Ingredient)
-                .AsEnumerable()
-                .Where(r => r.Ingredient != null && r.Ingredient.CurrentStock > r.Ingredient.MinimumStock)
-                .ToList();
 
-            if (resolvedRestocks.Any())
-            {
-                _context.Restocks.RemoveRange(resolvedRestocks);
-            }
+            // NOTE: The code that deleted Well Stocked items was completely removed from here!
 
             _context.SaveChanges();
             OnInventoryUpdated?.Invoke();
@@ -140,15 +144,18 @@ namespace IRIS.Services.Implementations
 
                 if (pendingRestock != null)
                 {
+                    // ---> NEW: We no longer remove the item, we just update it to WellStocked!
                     if (ingredient.CurrentStock > ingredient.MinimumStock)
                     {
-                        _context.Restocks.Remove(pendingRestock);
+                        pendingRestock.Status = StockStatus.WellStocked;
+                        pendingRestock.SuggestedRestockQuantity = 0;
                     }
                     else
                     {
                         pendingRestock.Status = ingredient.CurrentStock <= 0 ? StockStatus.Empty : StockStatus.LowStock;
-                        decimal deficit = ingredient.MinimumStock - ingredient.CurrentStock;
-                        pendingRestock.SuggestedRestockQuantity = deficit > 0 ? Math.Ceiling(deficit * 1.2m) : 0;
+
+                        decimal suggestedQty = ingredient.MinimumStock - ingredient.CurrentStock;
+                        pendingRestock.SuggestedRestockQuantity = suggestedQty > 0 ? suggestedQty : 0;
                     }
                 }
 
@@ -159,12 +166,11 @@ namespace IRIS.Services.Implementations
 
         public IEnumerable<string> GetCategories()
         {
-            // FIX: Convert the Enums to Strings for your UI
             return _context.Ingredients
                 .Select(i => i.Category)
                 .Distinct()
-                .ToList()               // Fetch Enums from DB
-                .Select(c => c.ToString()) // Convert to String in memory
+                .ToList()
+                .Select(c => c.ToString())
                 .OrderBy(c => c)
                 .ToList();
         }
