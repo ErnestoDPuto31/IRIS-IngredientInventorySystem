@@ -1,4 +1,6 @@
-﻿namespace IRIS.Presentation.UserControls.PagesUC
+﻿using IRIS.Presentation.UserControls.Components.Tables;
+
+namespace IRIS.Presentation.UserControls.PagesUC
 {
     partial class RestockPage
     {
@@ -43,7 +45,7 @@
             WellStockedItems = new IRIS.Presentation.UserControls.Components.StatusCardUC();
             cmbFilter = new Guna.UI2.WinForms.Guna2ComboBox();
             guna2ImageButton1 = new Guna.UI2.WinForms.Guna2ImageButton();
-            restockTableuc1 = new IRIS.Presentation.UserControls.Table.RestockTableUC();
+            restockTableuc1 = new IRIS.Presentation.UserControls.Components.Tables.RestockTableUC();
             pnlMainContent = new Guna.UI2.WinForms.Guna2Panel();
             vScrollBar1 = new VScrollBar();
             pnlMainContent.SuspendLayout();
@@ -221,7 +223,7 @@
         private Components.StatusCardUC WellStockedItems;
         private Guna.UI2.WinForms.Guna2ComboBox cmbFilter;
         private Guna.UI2.WinForms.Guna2ImageButton guna2ImageButton1;
-        private Table.RestockTableUC restockTableuc1;
+        private RestockTableUC restockTableuc1;
         private Guna.UI2.WinForms.Guna2Panel pnlMainContent;
         private VScrollBar vScrollBar1;
     }

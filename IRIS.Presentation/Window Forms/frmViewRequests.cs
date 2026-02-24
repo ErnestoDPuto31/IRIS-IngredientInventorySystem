@@ -13,8 +13,9 @@ namespace IRIS.Presentation.Window_Forms
         private readonly int _currentUserId;
         private Request _currentRequest;
 
-        private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243); // Blue
-        private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60); // Green
+        private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243);
+        private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60);
+        private readonly Color _cIndigo = Color.Indigo;
 
         public frmViewRequests(int requestId, RequestService requestService, int currentUserId)
         {
@@ -22,6 +23,8 @@ namespace IRIS.Presentation.Window_Forms
             _requestId = requestId;
             _requestService = requestService;
             _currentUserId = currentUserId;
+
+            gridItems.SelectionChanged += gridItems_SelectionChanged;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -34,7 +37,6 @@ namespace IRIS.Presentation.Window_Forms
         {
             base.OnShown(e);
             gridItems.ClearSelection();
-            gridItems.CurrentCell = null;
             this.ActiveControl = null;
         }
 
@@ -44,46 +46,49 @@ namespace IRIS.Presentation.Window_Forms
             {
                 _currentRequest = _requestService.GetRequestById(_requestId);
 
-                if (_currentRequest == null) { MessageBox.Show("Request not found!"); this.Close(); return; }
+                if (_currentRequest == null)
+                {
+                    MessageBox.Show("Request not found!");
+                    this.Close();
+                    return;
+                }
 
+                // Header Information
                 lblSubject.Text = _currentRequest.Subject;
                 lblFaculty.Text = _currentRequest.FacultyName;
                 lblDateOfUse.Text = _currentRequest.DateOfUse.ToString("MM/dd/yyyy");
                 lblStudentCount.Text = _currentRequest.StudentCount.ToString();
 
-                string submitterName = _currentRequest.EncodedBy != null ? _currentRequest.EncodedBy.Username : "Unknown";
+                string submitter = FormatName(_currentRequest.EncodedBy?.Username ?? "Unknown");
                 string submitDate = _currentRequest.CreatedAt.ToString("MMM dd, yyyy");
                 string submitTime = _currentRequest.CreatedAt.ToString("hh:mm tt");
-
-                lblSubmittedBy.Text = $"Submitted by <b style='color:#1976D2'>{FormatName(submitterName)}</b> on {submitDate} at {submitTime}";
+                lblSubmittedBy.Text = $"Submitted by <b style='color:#1976D2'>{submitter}</b> on {submitDate} at {submitTime}";
 
                 // Populate Grid
                 gridItems.Rows.Clear();
                 foreach (var item in _currentRequest.RequestItems)
                 {
                     string name = item.Ingredient?.Name ?? "Item";
-
                     string unit = item.Ingredient != null ? GetEnumDisplayName(item.Ingredient.Unit) : "";
-
-                    gridItems.Rows.Add(name, $"{item.RequestedQty} {unit}");
+                    gridItems.Rows.Add(name, $"{item.RequestedQty:N2} {unit}");
                 }
 
-                gridItems.ClearSelection();
+                if (gridItems.Rows.Count > 0)
+                {
+                    gridItems.Rows[0].Selected = true;
+                    UpdateDetailLabels(0);
+                }
 
                 var lastAction = _currentRequest.Approvals.OrderByDescending(a => a.ActionDate).FirstOrDefault();
-
                 if (lastAction != null)
                 {
                     txtRemarks.Text = lastAction.Remarks;
-
-                    string actionBy = lastAction.Approver?.Username ?? "Admin";
+                    string actionBy = FormatName(lastAction.Approver?.Username ?? "Admin");
                     string actionDate = lastAction.ActionDate.ToString("MMM dd, yyyy");
-                    string actionTime = lastAction.ActionDate.ToString("hh:mm tt");
                     string actionVerb = lastAction.ActionType.ToString();
-
                     string colorHex = (actionVerb == "Rejected") ? "#D32F2F" : "#388E3C";
 
-                    lblApprovedRejectedBy.Text = $"{actionVerb} by <b style='color:{colorHex}'>{FormatName(actionBy)}</b> on {actionDate} at {actionTime}";
+                    lblApprovedRejectedBy.Text = $"{actionVerb} by <b style='color:{colorHex}'>{actionBy}</b> on {actionDate}";
                     lblApprovedRejectedBy.Visible = true;
                 }
                 else
@@ -96,6 +101,30 @@ namespace IRIS.Presentation.Window_Forms
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading data: {ex.Message}");
+            }
+        }
+
+        private void gridItems_SelectionChanged(object sender, EventArgs e)
+        {
+            if (gridItems.SelectedRows.Count > 0)
+            {
+                int index = gridItems.SelectedRows[0].Index;
+                UpdateDetailLabels(index);
+            }
+        }
+
+        private void UpdateDetailLabels(int index)
+        {
+            if (_currentRequest?.RequestItems != null)
+            {
+                var detail = _currentRequest.RequestItems.ElementAtOrDefault(index);
+
+                if (detail != null)
+                {
+                    lblRecipeCosting.Text = $"{detail.PortionPerStudent:N2} units per student";
+                    lblAllowedQuantity.Text = $"{detail.AllowedQty:N2} units";
+                    lblAllowedQuantity.ForeColor = detail.IsOverLimit ? Color.Crimson : _cIndigo;
+                }
             }
         }
 
@@ -134,9 +163,10 @@ namespace IRIS.Presentation.Window_Forms
             lblStatusBadge.FillColor = bg;
             lblStatusBadge.ForeColor = fg;
             lblStatusBadge.BorderColor = bg;
+
+            // Sync disabled state colors
             lblStatusBadge.DisabledState.FillColor = bg;
             lblStatusBadge.DisabledState.ForeColor = fg;
-            lblStatusBadge.DisabledState.BorderColor = bg;
 
             UserRole currentUserRole = UserSession.CurrentUser.Role;
 
@@ -194,11 +224,11 @@ namespace IRIS.Presentation.Window_Forms
 
         private void btnApprove_Click(object sender, EventArgs e)
         {
-            bool isReleaseAction = btnApprove.Text == "Release";
-            string actionName = isReleaseAction ? "Release" : "Approve";
-            RequestStatus newStatus = isReleaseAction ? RequestStatus.Released : RequestStatus.Approved;
+            bool isRelease = btnApprove.Text == "Release";
+            RequestStatus newStatus = isRelease ? RequestStatus.Released : RequestStatus.Approved;
+            string action = isRelease ? "Release" : "Approve";
 
-            if (MessageBox.Show($"Are you sure you want to {actionName} this request?", $"Confirm {actionName}", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show($"Confirm {action}?", "Action Required", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 try
                 {
@@ -235,10 +265,7 @@ namespace IRIS.Presentation.Window_Forms
             if (field != null)
             {
                 var displayAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(field, typeof(DisplayAttribute));
-                if (displayAttribute != null)
-                {
-                    return displayAttribute.Name;
-                }
+                if (displayAttribute != null) return displayAttribute.Name;
             }
             return enumValue.ToString();
         }

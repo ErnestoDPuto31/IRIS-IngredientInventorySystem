@@ -7,7 +7,7 @@ using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using System.Windows.Forms;
 
-namespace IRIS.Presentation.UserControls.Table
+namespace IRIS.Presentation.UserControls.Components.Tables
 {
     public partial class RestockRowUC : UserControl
     {

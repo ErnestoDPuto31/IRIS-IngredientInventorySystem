@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 
-namespace IRIS.Presentation.UserControls.Table
+namespace IRIS.Presentation.UserControls.Components.Tables
 {
     public partial class RequestTableUC : UserControl
     {
