@@ -26,6 +26,8 @@ namespace IRIS.Presentation.UserControls.Table
         private readonly Color _cTextOrange = Color.FromArgb(230, 140, 20);
         private readonly Color _cTextPurple = Color.FromArgb(75, 0, 130);
         private readonly Color _cHoverBg = Color.FromArgb(252, 250, 255);
+        private Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart bunifuBarChart1;
+        private System.ComponentModel.IContainer components;
         private readonly Color _cLine = Color.FromArgb(240, 240, 250);
 
         public RestockRowUC(Restock item)
@@ -62,7 +64,8 @@ namespace IRIS.Presentation.UserControls.Table
         private void SetupHoverEvents()
         {
             this.MouseEnter += (s, e) => { _isHovered = true; this.Invalidate(); };
-            this.MouseLeave += (s, e) => {
+            this.MouseLeave += (s, e) =>
+            {
                 if (!this.ClientRectangle.Contains(this.PointToClient(Control.MousePosition)))
                 {
                     _isHovered = false;
@@ -248,6 +251,11 @@ namespace IRIS.Presentation.UserControls.Table
             for (int i = 0; i < 6; i++) startX += this.Width * _colWeights[i];
             float colW = this.Width * _colWeights[6];
             _btnRestock.Location = new Point((int)(startX + (colW - _btnRestock.Width) / 2), (this.Height - _btnRestock.Height) / 2);
+        }
+
+        private void InitializeComponent()
+        {
+
         }
 
         private float GetColX(int index, int totalWidth)

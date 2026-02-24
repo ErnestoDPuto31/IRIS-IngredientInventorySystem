@@ -117,37 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="bunifuBarChart1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <metadata name="pieInventory.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="bunifuBarChart1.BackgroundColor" mimetype="application/x-microsoft.net.object.binary.base64">
+  <metadata name="pieRequests.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>175, 17</value>
+  </metadata>
+  <metadata name="barCategory.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>329, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="bunifuVScrollBar1.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFFTeXN0ZW0uRHJhd2luZywgVmVyc2lvbj00LjAuMC4wLCBDdWx0
-        dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWIwM2Y1ZjdmMTFkNTBhM2EEAQAAAIwBU3lzdGVtLkNv
-        bGxlY3Rpb25zLkdlbmVyaWMuTGlzdGAxW1tTeXN0ZW0uRHJhd2luZy5Db2xvciwgU3lzdGVtLkRyYXdp
-        bmcsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3
-        ZjExZDUwYTNhXV0DAAAABl9pdGVtcwVfc2l6ZQhfdmVyc2lvbgQAABZTeXN0ZW0uRHJhd2luZy5Db2xv
-        cltdAgAAAAgICQMAAAAAAAAAAAAAAAcDAAAAAAEAAAAAAAAABBRTeXN0ZW0uRHJhd2luZy5Db2xvcgIA
-        AAAL
-</value>
-  </data>
-  <data name="bunifuBarChart1.BorderColor" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFFTeXN0ZW0uRHJhd2luZywgVmVyc2lvbj00LjAuMC4wLCBDdWx0
-        dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWIwM2Y1ZjdmMTFkNTBhM2EEAQAAAIwBU3lzdGVtLkNv
-        bGxlY3Rpb25zLkdlbmVyaWMuTGlzdGAxW1tTeXN0ZW0uRHJhd2luZy5Db2xvciwgU3lzdGVtLkRyYXdp
-        bmcsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3
-        ZjExZDUwYTNhXV0DAAAABl9pdGVtcwVfc2l6ZQhfdmVyc2lvbgQAABZTeXN0ZW0uRHJhd2luZy5Db2xv
-        cltdAgAAAAgICQMAAAAAAAAAAAAAAAcDAAAAAAEAAAAAAAAABBRTeXN0ZW0uRHJhd2luZy5Db2xvcgIA
-        AAAL
-</value>
-  </data>
-  <data name="bunifuBarChart1.Data" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAEAQAAAH9TeXN0ZW0uQ29sbGVjdGlvbnMuR2VuZXJpYy5MaXN0YDFbW1N5
-        c3RlbS5Eb3VibGUsIG1zY29ybGliLCBWZXJzaW9uPTQuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVi
-        bGljS2V5VG9rZW49Yjc3YTVjNTYxOTM0ZTA4OV1dAwAAAAZfaXRlbXMFX3NpemUIX3ZlcnNpb24HAAAG
-        CAgJAgAAAAAAAAAAAAAADwIAAAAAAAAABgs=
+        iVBORw0KGgoAAAANSUhEUgAAABQAAARlCAYAAAC5uOd6AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAMUSURBVHhe7dGxjkxhGIDhKZVKpdIlKJUuQyPR6JUKpUrh
+        JiQ6rVZU7kBFRbKWICEz6zszR2KRWPts+T7Jl/nPOf//zuzZze9OTk6uzNzb7XbPZt7N+pTl3szzWd6f
+        ubYe+7vZeHvm/cz3/el/mH3HMw/X46fNg+VbPxy2nt2c+zTzcpaX1tQ+dnfm42HL/9tut1/n/KN9bK6v
+        zsXR4dH5LY2Z68uvezBzpnf2L9N58vPdXYhpvV6CX9brC7G8wwtV0BV0BV1BV9AVdAVdQVfQFXQFXUFX
+        0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQF
+        XUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQ
+        FXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVd
+        QVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AV
+        dAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1B
+        V9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0
+        BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX
+        0BV0BV1BV9AVdAVdQVfQFXQFXUFX0BV0BV1BV9AVdAVdQVfQFXQFXUFX0G12u933dX0hluCrdc2m9W4J
+        Pl6v2bSeL+/wxiyODrfObxqf5uPWZjEXT7fb7bfDo/OZxqt9bDHXl+bG2/NG5+yb+biy5g7mxuXll86c
+        +c+fvZ9nln/q6divZsPNmRczx4djf5pnX5bQzJ312Gqz+QE/RKVFoLGbPwAAAABJRU5ErkJggg==
 </value>
   </data>
 </root>

@@ -43,15 +43,17 @@ namespace IRIS.Presentation.Forms
 
             if (cmbCategory != null)
             {
-                cmbCategory.Items.Clear();
-                cmbCategory.Items.Add("All Categories");
-                var categoryStrings = Enum.GetValues(typeof(Categories))
-                                          .Cast<Categories>()
-                                          .Select(c => GetEnumDisplayName(c))
-                                          .ToArray();
+                var categoryList = new List<KeyValuePair<string, string>>();
+                categoryList.Add(new KeyValuePair<string, string>("All Categories", "All Categories"));
 
-                cmbCategory.Items.AddRange(categoryStrings);
-                cmbCategory.SelectedIndex = 0;
+                foreach (Categories cat in Enum.GetValues(typeof(Categories)))
+                {
+                    categoryList.Add(new KeyValuePair<string, string>(GetEnumDisplayName(cat), cat.ToString()));
+                }
+
+                cmbCategory.DataSource = new BindingSource(categoryList, null);
+                cmbCategory.DisplayMember = "Key";   // What the user sees ("Dairy & Oils")
+                cmbCategory.ValueMember = "Value"; // What the code uses ("DairyAndOils")
             }
 
             if (cmbSortIngredients != null)
@@ -64,7 +66,7 @@ namespace IRIS.Presentation.Forms
                     "Name (Z-A)",
                     "Stock (Low to High)",
                     "Stock (High to Low)",
-                    "Category" 
+                    "Category"
                 });
                 cmbSortIngredients.SelectedIndex = 0;
             }
@@ -120,7 +122,9 @@ namespace IRIS.Presentation.Forms
             if (_presenter == null) return;
 
             string search = txtSearchIngredient.Text;
-            string category = cmbCategory.SelectedItem?.ToString() ?? "All Categories";
+
+            // THE FIX: Grab the SelectedValue (which holds the exact Enum string like "DairyAndOils")
+            string category = cmbCategory.SelectedValue?.ToString() ?? "All Categories";
 
             string sortString = cmbSortIngredients.SelectedItem?.ToString() ?? "Newest First";
             IngredientSortBy sortEnum = sortString switch
@@ -131,7 +135,7 @@ namespace IRIS.Presentation.Forms
                 "Stock (Low to High)" => IngredientSortBy.StockLowToHigh,
                 "Stock (High to Low)" => IngredientSortBy.StockHighToLow,
                 "Category" => IngredientSortBy.Category,
-                _ => IngredientSortBy.NewestFirst 
+                _ => IngredientSortBy.NewestFirst
             };
 
             _presenter.LoadFilteredIngredients(search, category, sortEnum.ToString());
@@ -200,7 +204,7 @@ namespace IRIS.Presentation.Forms
                 };
             }
 
-            return card; 
+            return card;
         }
 
         private void ResizeCards()
@@ -248,8 +252,8 @@ namespace IRIS.Presentation.Forms
 
         private void SearchTimer_Tick(object sender, EventArgs e)
         {
-            _searchTimer.Stop(); 
-            TriggerSearch();   
+            _searchTimer.Stop();
+            TriggerSearch();
         }
         private void cmbCategory_SelectedIndexChanged(object sender, EventArgs e) => TriggerSearch();
         private void cmbSortIngredients_SelectedIndexChanged(object sender, EventArgs e) => TriggerSearch();

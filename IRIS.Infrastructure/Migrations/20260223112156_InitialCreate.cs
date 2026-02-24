@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace IRIS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Schema : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,9 +73,9 @@ namespace IRIS.Infrastructure.Migrations
                     RestockId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IngredientId = table.Column<int>(type: "int", nullable: false),
-                    QuantityRequested = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DateRestocked = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SuggestedRestockQuantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,12 +97,12 @@ namespace IRIS.Infrastructure.Migrations
                     Subject = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     FacultyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     StudentCount = table.Column<int>(type: "int", nullable: false),
-                    RecipeCosting = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     DateOfUse = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EncodedById = table.Column<int>(type: "int", nullable: false)
+                    EncodedById = table.Column<int>(type: "int", nullable: false),
+                    Remarks = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -148,16 +148,17 @@ namespace IRIS.Infrastructure.Migrations
                 name: "RequestItems",
                 columns: table => new
                 {
-                    RequestItemId = table.Column<int>(type: "int", nullable: false)
+                    RequestDetailsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RequestId = table.Column<int>(type: "int", nullable: false),
                     IngredientId = table.Column<int>(type: "int", nullable: false),
+                    PortionPerStudent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     RequestedQty = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AllowedQty = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RequestItems", x => x.RequestItemId);
+                    table.PrimaryKey("PK_RequestItems", x => x.RequestDetailsId);
                     table.ForeignKey(
                         name: "FK_RequestItems_Ingredients_IngredientId",
                         column: x => x.IngredientId,

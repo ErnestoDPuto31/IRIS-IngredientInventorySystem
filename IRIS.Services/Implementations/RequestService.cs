@@ -2,10 +2,11 @@
 using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using IRIS.Services.Interfaces;
 
 namespace IRIS.Services.Implementations
 {
-    public class RequestService
+    public class RequestService : IRequestService
     {
         private readonly IrisDbContext _context;
 
@@ -18,7 +19,7 @@ namespace IRIS.Services.Implementations
         {
             return _context.Requests
                 .Include(r => r.RequestItems)
-                    .ThenInclude(ri => ri.Ingredient) 
+                    .ThenInclude(ri => ri.Ingredient)
                 .Include(r => r.EncodedBy)
                 .Include(r => r.Approvals)
                     .ThenInclude(a => a.Approver)
@@ -74,7 +75,7 @@ namespace IRIS.Services.Implementations
                     {
                         RequestId = requestId,
                         ApproverId = currentUserId,
-                        ActionType = newStatus, 
+                        ActionType = newStatus,
                         Remarks = remarks,
                         ActionDate = DateTime.Now
                     };
@@ -87,7 +88,7 @@ namespace IRIS.Services.Implementations
                 catch (Exception)
                 {
                     transaction.Rollback();
-                    throw; 
+                    throw;
                 }
             }
         }
@@ -102,11 +103,11 @@ namespace IRIS.Services.Implementations
                     newRequest.Status = RequestStatus.Pending;
 
                     _context.Requests.Add(newRequest);
-                    _context.SaveChanges(); 
+                    _context.SaveChanges();
 
                     foreach (var item in items)
                     {
-                        item.RequestId = newRequest.RequestId; 
+                        item.RequestId = newRequest.RequestId;
                         _context.RequestItems.Add(item);
                     }
 
