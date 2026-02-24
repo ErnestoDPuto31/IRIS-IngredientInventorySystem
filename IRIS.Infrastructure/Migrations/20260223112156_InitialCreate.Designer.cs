@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    [Migration("20260217200806_fixedschema")]
-    partial class fixedschema
+    [Migration("20260223112156_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

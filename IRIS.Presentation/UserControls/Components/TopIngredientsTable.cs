@@ -34,15 +34,10 @@ namespace IRIS.Presentation.UserControls.Components
         private void LoadDataCore(object dataSource)
         {
             dgvTopIngredients.DataSource = null; // Clear existing bindings
+
+            dgvTopIngredients.AutoGenerateColumns = true;
+
             dgvTopIngredients.DataSource = dataSource;
-
-            // Optional: If you want to rename headers explicitly, you can do it here.
-            // Example assuming your DTO has properties like "IngredientName", "Category", and "UsageCount":
-            // if (dgvTopIngredients.Columns["IngredientName"] != null)
-            //     dgvTopIngredients.Columns["IngredientName"].HeaderText = "Ingredient Name";
-
-            // if (dgvTopIngredients.Columns["UsageCount"] != null)
-            //     dgvTopIngredients.Columns["UsageCount"].HeaderText = "Times Used";
 
             dgvTopIngredients.ClearSelection();
         }

@@ -1,18 +1,17 @@
 ﻿using IRIS.Domain.Enums;
 using IRIS.Presentation.DependencyInjection;
-using IRIS.Presentation.Properties;
 using IRIS.Services.Interfaces;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Windows.Forms;
+using IRIS.Presentation.Properties; // Ensure this points to your actual resources
 
 namespace IRIS.Presentation.UserControls.Components
 {
     [DefaultEvent("IconClicked")]
-    public partial class ReportCards: UserControl
+    public partial class ReportCards : UserControl
     {
         // --- VISUAL SETTINGS ---
         private Color _accentColor = Color.Transparent;
@@ -54,9 +53,6 @@ namespace IRIS.Presentation.UserControls.Components
             }
         }
 
-        // =========================================================
-        // ADDED THIS PROPERTY (Required for ReportsControl to work)
-        // =========================================================
         [Category("IRIS Design")]
         [Description("Sets the main number displayed on the card.")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -66,20 +62,16 @@ namespace IRIS.Presentation.UserControls.Components
             set
             {
                 _numberText = value;
-                this.Invalidate(); // Redraws the card with the new number
+                this.Invalidate();
             }
         }
-        // =========================================================
 
         public ReportCards()
         {
             InitializeComponent();
-
-            // Smoother rendering
             this.DoubleBuffered = true;
             this.Size = new Size(260, 100);
             this.BackColor = Color.Transparent;
-
             UpdateCardDesign();
         }
 
@@ -87,7 +79,6 @@ namespace IRIS.Presentation.UserControls.Components
         {
             base.OnLoad(e);
 
-            // 1. SAFETY CHECK: Stop if inside Visual Studio Designer
             if (this.DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime)
             {
                 _numberText = "0";
@@ -96,120 +87,99 @@ namespace IRIS.Presentation.UserControls.Components
             }
 
             if (_reportsService == null) _reportsService = ServiceFactory.GetReportsService();
+            if (_requestService == null) _requestService = ServiceFactory.GetRequestService();
+            if (_ingredientService == null) _ingredientService = ServiceFactory.GetIngredientService();
 
-            try
-            {
-                if (_requestService == null)
-                    _requestService = ServiceFactory.GetRequestService();
-
-                if (_ingredientService == null)
-                    _ingredientService = ServiceFactory.GetIngredientService();
-
-                LoadData();
-            }
-            catch (Exception ex)
-            {
-                // Silently handle connection errors so the UI doesn't crash
-                _subtitleText = "Connection Error";
-                Console.WriteLine("Service Error: " + ex.Message);
-            }
+            LoadData();
         }
 
-        // --- DATA LOGIC ---
+        // --- DATA LOGIC (ONLY TEXT/NUMBERS HERE) ---
         public void LoadData()
         {
-            if (this.DesignMode) return;
+            if (this.DesignMode || _reportsService == null) return;
 
             try
             {
-                if (_reportsService == null) return;
-
                 switch (_cardType)
                 {
                     case CardType.TotalIngredients:
                         _numberText = _reportsService.GetTotalIngredients().ToString();
-                        _accentColor = Color.Indigo;
                         _subtitleText = "Items in inventory";
                         break;
-
                     case CardType.TotalRequests:
                         _numberText = _reportsService.GetTotalRequests().ToString();
-                        _accentColor = Color.DarkBlue;
                         _subtitleText = "All time requests";
                         break;
-
                     case CardType.TotalTransactions:
                         _numberText = _reportsService.GetTotalTransactions().ToString();
-                        _accentColor = Color.Yellow;
                         _subtitleText = "Completed movements";
                         break;
-
                     case CardType.ApprovalRate:
-                        double rate = _reportsService.GetApprovalRate();
-                        _numberText = $"{rate}%";
-                        _accentColor = Color.Green;
+                        _numberText = $"{_reportsService.GetApprovalRate()}%";
                         _subtitleText = "Request approval ratio";
                         break;
-
                     default:
                         _numberText = "0";
                         break;
                 }
-
                 this.Invalidate();
             }
             catch
             {
                 _numberText = "-";
-                _subtitleText = "Error";
+                _subtitleText = "Error loading data";
             }
         }
 
-        // --- INTERNAL DESIGN LOGIC ---
+        // --- VISUAL LOGIC (ONLY COLORS/ICONS HERE) ---
         private void UpdateCardDesign()
         {
-            try
+            switch (_cardType)
             {
-                switch (_cardType)
-                {
-                    case CardType.TotalRequests:
-                        _titleText = "Total Requests";
-                        _currentIcon = Resources.icons8_box_64;
-                        break;
-
-                    case CardType.TotalIngredients:
-                        _titleText = "Total Ingredients";
-                        _currentIcon = Resources.icons8_box_64;
-                        break;
-
-                    case CardType.LowStockItems:
-                        _titleText = "Low Stock";
-                        _currentIcon = Resources.icons8_medium_risk_50;
-                        break;
-
-                    case CardType.EmptyItems:
-                        _titleText = "Empty Items";
-                        _accentColor = Color.Crimson;
-                        _currentIcon = Resources.icons8_box_64;
-                        break;
-
-                    case CardType.WellStockedItems:
-                        _titleText = "Well Stocked";
-                        _currentIcon = Resources.icons8_arrow_up_48;
-                        break;
-
-                    default:
-                        _titleText = "Report";
-                        break;
-                }
-            }
-            catch
-            {
-                _currentIcon = null;
+                case CardType.TotalRequests:
+                    _titleText = "Total Requests";
+                    _accentColor = Color.DarkBlue;
+                    _currentIcon = Resources.document_icon;
+                    break;
+                case CardType.TotalIngredients:
+                    _titleText = "Total Ingredients";
+                    _accentColor = Color.Indigo;
+                    _currentIcon = Resources.icons8_cardboard_box_100;
+                    break;
+                case CardType.TotalTransactions:
+                    _titleText = "Total Transactions";
+                    _accentColor = Color.Yellow;
+                    _currentIcon = Resources.stocks_icon;
+                    break;
+                case CardType.ApprovalRate:
+                    _titleText = "Approval Rate";
+                    _accentColor = Color.Green;
+                    _currentIcon = Resources.check_icon;
+                    break;
+                case CardType.LowStockItems:
+                    _titleText = "Low Stock";
+                    _accentColor = Color.Orange;
+                    _currentIcon = Resources.icons8_medium_risk_50;
+                    break;
+                case CardType.EmptyItems:
+                    _titleText = "Empty Items";
+                    _accentColor = Color.Crimson;
+                    _currentIcon = Resources.icons8_box_64;
+                    break;
+                case CardType.WellStockedItems:
+                    _titleText = "Well Stocked";
+                    _accentColor = Color.LightGreen;
+                    _currentIcon = Resources.icons8_arrow_up_48;
+                    break;
+                default:
+                    _titleText = "Report";
+                    _accentColor = Color.Gray;
+                    _currentIcon = null;
+                    break;
             }
         }
 
-        // --- PAINTING (The Visuals) ---
+        // --- PAINTING ---
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -249,11 +219,18 @@ namespace IRIS.Presentation.UserControls.Components
             using (Brush subBrush = new SolidBrush(Color.Gray))
                 g.DrawString(_subtitleText, subFont, subBrush, textLeftPadding, 95);
 
+            int iconSize = 40;
+            _iconRect = new Rectangle(this.Width - iconSize - 15, 15, iconSize, iconSize);
+
             if (_currentIcon != null)
             {
-                int iconSize = 40;
-                _iconRect = new Rectangle(this.Width - iconSize - 15, 15, iconSize, iconSize);
                 g.DrawImage(_currentIcon, _iconRect);
+            }
+            else
+            {
+                // Fallback debug square if image is still null
+                g.FillRectangle(Brushes.Red, _iconRect);
+                g.DrawString("NULL", new Font("Segoe UI", 8), Brushes.White, _iconRect.X, _iconRect.Y + 10);
             }
         }
 

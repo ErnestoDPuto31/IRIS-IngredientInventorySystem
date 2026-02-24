@@ -27,12 +27,11 @@ namespace IRIS.Presentation.UserControls.PagesUC
             SetupCards();
             LoadCharts();
             LoadTable();
-            // Fetch the top 5 ingredients
-            var topIngredients = _reportsService.GetTopUsedIngredients(5);
 
-            // Pass them into your UI control
+            var topIngredients = _reportsService.GetTopUsedIngredients(5);
             topIngredientsControl.LoadData(topIngredients);
-            // The Off-Screen Push
+            // ---------------------------------
+
             pnlMain.Dock = DockStyle.None;
             pnlMain.Size = new Size(this.Width + 25, this.Height);
             pnlMain.Location = new Point(0, 0);

@@ -102,26 +102,28 @@ namespace IRIS.Services.Implementations
         }
 
         public List<TopIngredientItem> GetTopUsedIngredients(int count = 5)
-        {         
-            var topUsed = _context.InventoryLogs
+        {
+            // We are now querying RequestDetails to see what people are asking for
+            var topUsed = _context.Set<RequestDetails>()
                 .AsNoTracking()
-                .Where(log => log.QuantityChanged < 0) 
-                .GroupBy(log => log.IngredientId)
+                .GroupBy(req => req.IngredientId)
                 .Select(group => new
                 {
                     IngredientId = group.Key,
-                    TotalUsedAmount = Math.Abs(group.Sum(l => l.QuantityChanged))
+                    // Summing up the RequestedQty from all requests
+                    TotalUsedAmount = group.Sum(r => r.RequestedQty)
                 })
                 .OrderByDescending(x => x.TotalUsedAmount)
                 .Take(count)
                 .Join(_context.Ingredients,
-                      log => log.IngredientId,
+                      req => req.IngredientId,
                       ingredient => ingredient.IngredientId,
-                      (log, ingredient) => new TopIngredientItem
+                      (req, ingredient) => new TopIngredientItem
                       {
                           Name = ingredient.Name ?? "Unknown",
                           Category = ingredient.Category.ToString(),
-                          TotalUsed = log.TotalUsedAmount,
+                          // We still put it in the "TotalUsed" property so it matches your UI table
+                          TotalUsed = req.TotalUsedAmount,
                           Unit = ingredient.Unit ?? "pcs"
                       })
                 .ToList();

@@ -246,7 +246,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartBarCanvas.AnimationType = Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuart;
             chartBarCanvas.AutoRender = true;
             chartBarCanvas.BackColor = Color.Transparent;
-            chartBarCanvas.CanvasPadding = new Padding(0);
+            chartBarCanvas.CanvasPadding = new Padding(0, 0, 0, 50); 
             chartBarCanvas.Font = new Font("Poppins", 30F, FontStyle.Bold);
             chartBarCanvas.Labels = null;
             chartBarCanvas.LegendAlignment = Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.center;
@@ -331,7 +331,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             pieInventory.HoverBackgroundColor = Color.Empty;
             pieInventory.HoverBorderColor = Color.Empty;
             pieInventory.HoverBorderWidth = 0;
-            pieInventory.Label = "Label here";
+            pieInventory.Label = "Products";
             pieInventory.TargetCanvas = chartInventoryCanvas;
             // 
             // pieRequests
@@ -356,7 +356,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             barCategory.HoverBackgroundColor = Color.Empty;
             barCategory.HoverBorderColor = Color.Empty;
             barCategory.HoverBorderWidth = 0;
-            barCategory.Label = "Label here";
+            barCategory.Label = "Products";
             barCategory.TargetCanvas = chartBarCanvas;
             // 
             // bunifuVScrollBar1

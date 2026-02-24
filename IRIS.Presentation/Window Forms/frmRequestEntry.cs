@@ -225,8 +225,18 @@ namespace IRIS.Presentation.Window_Forms
 
             try
             {
-                // Clean Architecture: Pass the Request and the collection of items to the service
-                _requestService.CreateRequest(newRequest, _tempItems.ToList());
+                // Clean Architecture: Create a fresh list of details that ONLY contains the IDs and values.
+                // We leave the "Ingredient" navigation property completely null so EF doesn't try to save it.
+                var itemsToSave = _tempItems.Select(item => new RequestDetails
+                {
+                    IngredientId = item.IngredientId,
+                    PortionPerStudent = item.PortionPerStudent,
+                    RequestedQty = item.RequestedQty,
+                    AllowedQty = item.AllowedQty
+                }).ToList();
+
+                // Pass the clean list to the service
+                _requestService.CreateRequest(newRequest, itemsToSave);
 
                 MessageBox.Show("Request submitted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
@@ -234,7 +244,14 @@ namespace IRIS.Presentation.Window_Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error submitting request: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Unpack the exact error message from Entity Framework
+                string errorMessage = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    errorMessage += "\n\nDATABASE ERROR:\n" + ex.InnerException.Message;
+                }
+
+                MessageBox.Show(errorMessage, "Error Details", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

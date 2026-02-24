@@ -95,33 +95,40 @@ namespace IRIS.Presentation.UserControls.Components
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             float currentX = 0;
-            float totalW = pnlHeader.Width;
+
+            // THE FIX: Use GetRowWidth() instead of pnlHeader.Width
+            // This guarantees the header math exactly matches the row math!
+            float totalW = GetRowWidth();
+
             int padding = 15;
 
             using (Font f = new Font("Segoe UI", 9, FontStyle.Bold))
             using (Brush b = new SolidBrush(_headerText))
             {
                 StringFormat fmtLeft = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center };
-                StringFormat fmtRight = new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center };
                 StringFormat fmtCenter = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
                 for (int i = 0; i < _headers.Length; i++)
                 {
                     float colW = totalW * _colWeights[i];
-                    StringFormat currentFmt = (i == 0) ? fmtLeft : (i == 2 || i == 3) ? fmtRight : fmtCenter;
 
-                    RectangleF rect = new RectangleF(currentX, 0, colW, pnlHeader.Height);
-                    RectangleF textRect = rect;
+                    // Col 0 is Left, everything else is Centered
+                    StringFormat currentFmt = (i == 0) ? fmtLeft : fmtCenter;
 
-                    if (i == 0) textRect.X += padding;
-                    if (i == 2 || i == 3) textRect.Width -= 20;
+                    RectangleF textRect = new RectangleF(currentX, 0, colW, pnlHeader.Height);
+
+                    // Apply padding only to the first column (Ingredient)
+                    if (i == 0)
+                    {
+                        textRect.X += padding;
+                        textRect.Width -= padding;
+                    }
 
                     g.DrawString(_headers[i].ToUpper(), f, b, textRect, currentFmt);
                     currentX += colW;
                 }
             }
         }
-
         private void ResizeRows()
         {
             flowList.SuspendLayout();
@@ -193,8 +200,9 @@ namespace IRIS.Presentation.UserControls.Components
             using (Brush bMain = new SolidBrush(_cTextMain))
             using (Brush bSub = new SolidBrush(_cTextSub))
             {
+                // ADDED fmtCenter, REMOVED fmtRight completely
                 StringFormat fmtLeft = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center };
-                StringFormat fmtRight = new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center };
+                StringFormat fmtCenter = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
                 // COL 1: Ingredient
                 float w = totalW * _weights[0];
@@ -206,14 +214,14 @@ namespace IRIS.Presentation.UserControls.Components
                 DrawBadge(g, _data.Category, new RectangleF(currentX, 0, w, this.Height), Color.FromArgb(241, 243, 245), Color.FromArgb(73, 80, 87));
                 currentX += w;
 
-                // COL 3: Stock
+                // COL 3: Stock (Now uses fmtCenter and full width 'w')
                 w = totalW * _weights[2];
-                g.DrawString($"{_data.Stock} {_data.Unit}", fSub, bMain, new RectangleF(currentX, 0, w - 20, this.Height), fmtRight);
+                g.DrawString($"{_data.Stock} {_data.Unit}", fSub, bMain, new RectangleF(currentX, 0, w, this.Height), fmtCenter);
                 currentX += w;
 
-                // COL 4: Threshold
+                // COL 4: Threshold (Now uses fmtCenter and full width 'w')
                 w = totalW * _weights[3];
-                g.DrawString(_data.Min.ToString(), fSub, bSub, new RectangleF(currentX, 0, w - 20, this.Height), fmtRight);
+                g.DrawString(_data.Min.ToString(), fSub, bSub, new RectangleF(currentX, 0, w, this.Height), fmtCenter);
                 currentX += w;
 
                 // COL 5: Status
@@ -224,7 +232,6 @@ namespace IRIS.Presentation.UserControls.Components
                           isCritical ? Color.FromArgb(201, 36, 43) : Color.FromArgb(205, 123, 46), true);
             }
         }
-
         private void DrawBadge(Graphics g, string text, RectangleF cellRect, Color bgColor, Color textColor, bool isStatus = false)
         {
             using (Font f = new Font("Segoe UI", 8, FontStyle.Bold))
