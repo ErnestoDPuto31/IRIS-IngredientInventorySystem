@@ -1,5 +1,5 @@
 ﻿using FontAwesome.Sharp;
-using IRIS.Domain.Enums; // This is needed for your RequestStatus Enum
+using IRIS.Domain.Enums;
 using IRIS.Presentation.UserControls.Components;
 using IRIS.Services.Interfaces;
 using IRIS.Presentation.DependencyInjection;
@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace IRIS.Presentation.UserControls.PagesUC
@@ -15,12 +16,34 @@ namespace IRIS.Presentation.UserControls.PagesUC
     {
         private readonly IReportsService _reportsService;
 
+        // --- THE NUCLEAR ANTI-SMEAR OVERRIDE ---
+        // This forces Windows to double-buffer the entire UserControl and all its children.
+        // It eliminates scroll tearing, flickering, and duplicate ghosting completely.
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
+                return cp;
+            }
+        }
+
         public ReportsControl()
         {
             InitializeComponent();
             _reportsService = ServiceFactory.GetReportsService();
-        }
 
+            // 1. Remove transparency so WinForms doesn't get confused when scrolling
+            chartInventoryCanvas.BackColor = Color.White;
+            chartRequestsCanvas.BackColor = Color.White;
+            chartBarCanvas.BackColor = Color.White;
+
+            // 2. Enable Double Buffering on the main panel just in case
+            typeof(Panel).InvokeMember("DoubleBuffered",
+                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+                null, pnlMain, new object[] { true });
+        }
 
         private void ReportsControl_Load(object sender, EventArgs e)
         {
@@ -37,14 +60,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
             pnlMain.Location = new Point(0, 0);
             pnlMain.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
-            // --- NEW FIXES FOR THE "LITTLE" SCROLLBAR ---
-
             bunifuVScrollBar1.Dock = DockStyle.Right;
-
             bunifuVScrollBar1.Maximum = pnlMain.DisplayRectangle.Height;
-
             bunifuVScrollBar1.LargeChange = pnlMain.ClientSize.Height;
-
             bunifuVScrollBar1.BringToFront();
 
             // Wire up events
@@ -64,9 +82,13 @@ namespace IRIS.Presentation.UserControls.PagesUC
             {
                 pnlMain.AutoScrollPosition = new Point(0, e.Value);
             }
+
+            // Refresh forces an immediate repaint of everything, no trailing allowed
+            pnlMain.Refresh();
         }
 
-        private void PnlMain_MouseWheel(object sender, MouseEventArgs e) {
+        private void PnlMain_MouseWheel(object sender, MouseEventArgs e)
+        {
             bunifuVScrollBar1.Maximum = pnlMain.VerticalScroll.Maximum;
             bunifuVScrollBar1.LargeChange = pnlMain.VerticalScroll.LargeChange;
 
@@ -81,6 +103,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
             {
                 bunifuVScrollBar1.Value = currentScroll;
             }
+
+            // Refresh forces an immediate repaint of everything, no trailing allowed
+            pnlMain.Refresh();
         }
 
         private void LoadTable()
@@ -99,6 +124,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 MessageBox.Show("Error loading low stock: " + ex.Message);
             }
         }
+
         private void SetupCards()
         {
             ConfigureCard(TotalIngredientsCard, CardType.TotalIngredients,
@@ -134,17 +160,22 @@ namespace IRIS.Presentation.UserControls.PagesUC
         {
             try
             {
+                // Removed the padding that was chopping the charts in half!
+                chartInventoryCanvas.ShowXAxis = false;
+                chartInventoryCanvas.ShowYAxis = false;
+
+                chartRequestsCanvas.ShowXAxis = false;
+                chartRequestsCanvas.ShowYAxis = false;
+
                 // --- 1. INVENTORY CHART ---
                 var invStats = _reportsService.GetInventoryStats();
 
-                // Debugging Check: If database is empty, graph stays empty
                 if (invStats.Any())
                 {
                     chartInventoryCanvas.Labels = invStats.Keys.ToArray();
                     pieInventory.Data = invStats.Values.ToList();
                     pieInventory.BackgroundColor = new List<Color> { Color.Crimson, Color.Gold, Color.SeaGreen };
 
-                    // *** THE FIX: Force the canvas to render ***
                     chartInventoryCanvas.Update();
                 }
 
@@ -165,9 +196,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
                         string statusKey = item.Key;
 
                         if (string.Equals(statusKey, nameof(RequestStatus.Pending), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.Gold);
+                            reqColors.Add(Color.DarkOrange);
                         else if (string.Equals(statusKey, nameof(RequestStatus.Approved), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.SeaGreen);
+                            reqColors.Add(Color.DodgerBlue);
                         else if (string.Equals(statusKey, nameof(RequestStatus.Released), StringComparison.OrdinalIgnoreCase))
                             reqColors.Add(Color.DarkBlue);
                         else if (string.Equals(statusKey, nameof(RequestStatus.Rejected), StringComparison.OrdinalIgnoreCase))
@@ -180,7 +211,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     pieRequests.Data = reqData;
                     pieRequests.BackgroundColor = reqColors;
 
-                    // *** THE FIX: Force the canvas to render ***
                     chartRequestsCanvas.Update();
                 }
 
@@ -191,13 +221,11 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 {
                     var catStats = rawStats.ToDictionary(k => k.Key, v => (double)v.Value);
 
-                    // Your thin-bar logic
                     int minimumSlots = 25;
                     if (catStats.Count < minimumSlots)
                     {
                         while (catStats.Count < minimumSlots)
                         {
-                            // Ensure unique keys for the spacing
                             catStats.Add(new string(' ', catStats.Count + 1), 0.0);
                         }
                     }
@@ -209,7 +237,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     for (int i = 0; i < catStats.Count; i++) barColors.Add(Color.Indigo);
                     barCategory.BackgroundColor = barColors;
 
-                    // *** THE FIX: Force the canvas to render ***
                     chartBarCanvas.Update();
                 }
             }

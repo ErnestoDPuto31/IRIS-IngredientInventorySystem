@@ -126,7 +126,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartInventoryCanvas.AnimationType = Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuart;
             chartInventoryCanvas.AutoRender = true;
             chartInventoryCanvas.BackColor = Color.Transparent;
-            chartInventoryCanvas.CanvasPadding = new Padding(0);
+            chartInventoryCanvas.CanvasPadding = new Padding(20, 20, 20, 85);
             chartInventoryCanvas.Font = new Font("Poppins", 30F, FontStyle.Bold);
             chartInventoryCanvas.Labels = null;
             chartInventoryCanvas.LegendAlignment = Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.center;
@@ -140,8 +140,12 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartInventoryCanvas.Location = new Point(138, 386);
             chartInventoryCanvas.Margin = new Padding(5);
             chartInventoryCanvas.Name = "chartInventoryCanvas";
-            chartInventoryCanvas.ShowXAxis = true;
-            chartInventoryCanvas.ShowYAxis = true;
+            chartInventoryCanvas.ShowXAxis = false;
+            chartInventoryCanvas.ShowYAxis = false;
+            chartInventoryCanvas.XAxesDrawTicks = false;
+            chartInventoryCanvas.XAxesGridLines = false;
+            chartInventoryCanvas.YAxesDrawTicks = false;
+            chartInventoryCanvas.YAxesGridLines = false;
             chartInventoryCanvas.Size = new Size(850, 450);
             chartInventoryCanvas.TabIndex = 6;
             chartInventoryCanvas.Title = "Inventory Status Distribution";
@@ -154,31 +158,27 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartInventoryCanvas.TooltipMode = Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipModeOptions.nearest;
             chartInventoryCanvas.TooltipsEnabled = true;
             chartInventoryCanvas.XAxesBeginAtZero = true;
-            chartInventoryCanvas.XAxesDrawTicks = true;
             chartInventoryCanvas.XAxesFont = new Font("Segoe UI", 12F);
             chartInventoryCanvas.XAxesForeColor = SystemColors.ControlText;
-            chartInventoryCanvas.XAxesGridColor = Color.FromArgb(100, 0, 0, 0);
-            chartInventoryCanvas.XAxesGridLines = true;
+            chartInventoryCanvas.XAxesGridColor = Color.Transparent;
             chartInventoryCanvas.XAxesLabel = "";
             chartInventoryCanvas.XAxesLabelFont = new Font("Segoe UI", 12F);
             chartInventoryCanvas.XAxesLabelForeColor = SystemColors.ControlText;
-            chartInventoryCanvas.XAxesLineWidth = 1;
+            chartInventoryCanvas.XAxesLineWidth = 0;
             chartInventoryCanvas.XAxesStacked = false;
-            chartInventoryCanvas.XAxesZeroLineColor = Color.FromArgb(100, 0, 0, 0);
-            chartInventoryCanvas.XAxesZeroLineWidth = 1;
+            chartInventoryCanvas.XAxesZeroLineColor = Color.Transparent;
+            chartInventoryCanvas.XAxesZeroLineWidth = 0;
             chartInventoryCanvas.YAxesBeginAtZero = true;
-            chartInventoryCanvas.YAxesDrawTicks = true;
             chartInventoryCanvas.YAxesFont = new Font("Segoe UI", 12F);
             chartInventoryCanvas.YAxesForeColor = SystemColors.ControlText;
-            chartInventoryCanvas.YAxesGridColor = Color.FromArgb(100, 0, 0, 0);
-            chartInventoryCanvas.YAxesGridLines = true;
+            chartInventoryCanvas.YAxesGridColor = Color.Transparent;
             chartInventoryCanvas.YAxesLabel = "";
             chartInventoryCanvas.YAxesLabelFont = new Font("Segoe UI", 12F);
             chartInventoryCanvas.YAxesLabelForeColor = SystemColors.ControlText;
-            chartInventoryCanvas.YAxesLineWidth = 1;
+            chartInventoryCanvas.YAxesLineWidth = 0;
             chartInventoryCanvas.YAxesStacked = false;
-            chartInventoryCanvas.YAxesZeroLineColor = Color.FromArgb(100, 0, 0, 0);
-            chartInventoryCanvas.YAxesZeroLineWidth = 1;
+            chartInventoryCanvas.YAxesZeroLineColor = Color.Transparent;
+            chartInventoryCanvas.YAxesZeroLineWidth = 0;
             // 
             // chartRequestsCanvas
             // 
@@ -186,7 +186,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartRequestsCanvas.AnimationType = Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuart;
             chartRequestsCanvas.AutoRender = true;
             chartRequestsCanvas.BackColor = Color.Transparent;
-            chartRequestsCanvas.CanvasPadding = new Padding(0);
+            chartRequestsCanvas.CanvasPadding = new Padding(20, 20, 20, 85);
             chartRequestsCanvas.Font = new Font("Poppins", 30F, FontStyle.Bold);
             chartRequestsCanvas.Labels = null;
             chartRequestsCanvas.LegendAlignment = Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.center;
@@ -200,8 +200,12 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartRequestsCanvas.Location = new Point(1013, 386);
             chartRequestsCanvas.Margin = new Padding(5);
             chartRequestsCanvas.Name = "chartRequestsCanvas";
-            chartRequestsCanvas.ShowXAxis = true;
-            chartRequestsCanvas.ShowYAxis = true;
+            chartRequestsCanvas.ShowXAxis = false;
+            chartRequestsCanvas.ShowYAxis = false;
+            chartRequestsCanvas.XAxesDrawTicks = false;
+            chartRequestsCanvas.XAxesGridLines = false;
+            chartRequestsCanvas.YAxesDrawTicks = false;
+            chartRequestsCanvas.YAxesGridLines = false;
             chartRequestsCanvas.Size = new Size(850, 450);
             chartRequestsCanvas.TabIndex = 7;
             chartRequestsCanvas.Title = "Request Status Distribution";
@@ -214,31 +218,27 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartRequestsCanvas.TooltipMode = Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipModeOptions.nearest;
             chartRequestsCanvas.TooltipsEnabled = true;
             chartRequestsCanvas.XAxesBeginAtZero = true;
-            chartRequestsCanvas.XAxesDrawTicks = true;
             chartRequestsCanvas.XAxesFont = new Font("Segoe UI", 12F);
             chartRequestsCanvas.XAxesForeColor = SystemColors.ControlText;
-            chartRequestsCanvas.XAxesGridColor = Color.FromArgb(100, 0, 0, 0);
-            chartRequestsCanvas.XAxesGridLines = true;
+            chartRequestsCanvas.XAxesGridColor = Color.Transparent;
             chartRequestsCanvas.XAxesLabel = "";
             chartRequestsCanvas.XAxesLabelFont = new Font("Segoe UI", 12F);
             chartRequestsCanvas.XAxesLabelForeColor = SystemColors.ControlText;
-            chartRequestsCanvas.XAxesLineWidth = 1;
+            chartRequestsCanvas.XAxesLineWidth = 0;
             chartRequestsCanvas.XAxesStacked = false;
-            chartRequestsCanvas.XAxesZeroLineColor = Color.FromArgb(100, 0, 0, 0);
-            chartRequestsCanvas.XAxesZeroLineWidth = 1;
+            chartRequestsCanvas.XAxesZeroLineColor = Color.Transparent;
+            chartRequestsCanvas.XAxesZeroLineWidth = 0;
             chartRequestsCanvas.YAxesBeginAtZero = true;
-            chartRequestsCanvas.YAxesDrawTicks = true;
             chartRequestsCanvas.YAxesFont = new Font("Segoe UI", 12F);
             chartRequestsCanvas.YAxesForeColor = SystemColors.ControlText;
-            chartRequestsCanvas.YAxesGridColor = Color.FromArgb(100, 0, 0, 0);
-            chartRequestsCanvas.YAxesGridLines = true;
+            chartRequestsCanvas.YAxesGridColor = Color.Transparent;
             chartRequestsCanvas.YAxesLabel = "";
             chartRequestsCanvas.YAxesLabelFont = new Font("Segoe UI", 12F);
             chartRequestsCanvas.YAxesLabelForeColor = SystemColors.ControlText;
-            chartRequestsCanvas.YAxesLineWidth = 1;
+            chartRequestsCanvas.YAxesLineWidth = 0;
             chartRequestsCanvas.YAxesStacked = false;
-            chartRequestsCanvas.YAxesZeroLineColor = Color.FromArgb(100, 0, 0, 0);
-            chartRequestsCanvas.YAxesZeroLineWidth = 1;
+            chartRequestsCanvas.YAxesZeroLineColor = Color.Transparent;
+            chartRequestsCanvas.YAxesZeroLineWidth = 0;
             // 
             // chartBarCanvas
             // 
@@ -246,7 +246,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartBarCanvas.AnimationType = Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuart;
             chartBarCanvas.AutoRender = true;
             chartBarCanvas.BackColor = Color.Transparent;
-            chartBarCanvas.CanvasPadding = new Padding(0, 0, 0, 50); 
+            chartBarCanvas.CanvasPadding = new Padding(0, 0, 0, 110);
             chartBarCanvas.Font = new Font("Poppins", 30F, FontStyle.Bold);
             chartBarCanvas.Labels = null;
             chartBarCanvas.LegendAlignment = Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.center;
@@ -257,7 +257,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartBarCanvas.LegendPosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
             chartBarCanvas.LegendRevese = false;
             chartBarCanvas.LegendRTL = false;
-            chartBarCanvas.Location = new Point(137, 849);
+            chartBarCanvas.Location = new Point(133, 897);
             chartBarCanvas.Margin = new Padding(5);
             chartBarCanvas.Name = "chartBarCanvas";
             chartBarCanvas.ShowXAxis = true;
@@ -266,7 +266,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartBarCanvas.TabIndex = 8;
             chartBarCanvas.Title = "Ingredients by Category";
             chartBarCanvas.TitleLineHeight = 1.2D;
-            chartBarCanvas.TitlePadding = 10;
+            chartBarCanvas.TitlePadding = 0 ;
             chartBarCanvas.TitlePosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
             chartBarCanvas.TooltipBackgroundColor = Color.FromArgb(100, 0, 0, 0);
             chartBarCanvas.TooltipFont = new Font("Segoe UI", 12F);
@@ -304,7 +304,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // 
             lowStockControl.BackColor = Color.White;
             lowStockControl.Font = new Font("Segoe UI", 9.75F);
-            lowStockControl.Location = new Point(137, 1340);
+            lowStockControl.Location = new Point(138, 1340);
             lowStockControl.Margin = new Padding(10);
             lowStockControl.Name = "lowStockControl";
             lowStockControl.Padding = new Padding(1);
@@ -315,7 +315,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // 
             topIngredientsControl.BackColor = Color.White;
             topIngredientsControl.Font = new Font("Segoe UI", 9.75F);
-            topIngredientsControl.Location = new Point(137, 1810);
+            topIngredientsControl.Location = new Point(138, 1810);
             topIngredientsControl.Margin = new Padding(10);
             topIngredientsControl.Name = "topIngredientsControl";
             topIngredientsControl.Padding = new Padding(1);
@@ -430,8 +430,8 @@ namespace IRIS.Presentation.UserControls.PagesUC
         private Bunifu.Charts.WinForms.BunifuChartCanvas chartBarCanvas;
 
         private Components.LowStockControl lowStockControl;
-        private Components.TopIngredientsTable topIngredientsControl; // NEW Top Ingredients Table
-        private Bunifu.UI.WinForms.BunifuVScrollBar bunifuVScrollBar1; // NEW Modern Scrollbar
+        private Components.TopIngredientsTable topIngredientsControl;
+        private Bunifu.UI.WinForms.BunifuVScrollBar bunifuVScrollBar1;
 
         private Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart pieInventory;
         private Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart pieRequests;

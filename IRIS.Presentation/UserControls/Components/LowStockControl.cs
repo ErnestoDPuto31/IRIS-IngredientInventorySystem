@@ -1,9 +1,10 @@
-﻿using System;
+﻿using IRIS.Domain.Entities;
+using IRIS.Domain.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using IRIS.Domain.Entities;
 
 
 namespace IRIS.Presentation.UserControls.Components
@@ -211,7 +212,11 @@ namespace IRIS.Presentation.UserControls.Components
 
                 // COL 2: Category
                 w = totalW * _weights[1];
-                DrawBadge(g, _data.Category, new RectangleF(currentX, 0, w, this.Height), Color.FromArgb(241, 243, 245), Color.FromArgb(73, 80, 87));
+
+                // This formats the raw category name (e.g., "dairy_products") into a more user-friendly format (e.g., "Dairy Products")
+                string friendlyCategory = FormatHelper.FormatCategoryName(_data.Category);
+
+                DrawBadge(g, friendlyCategory, new RectangleF(currentX, 0, w, this.Height), Color.FromArgb(241, 243, 245), Color.FromArgb(73, 80, 87));
                 currentX += w;
 
                 // COL 3: Stock (Now uses fmtCenter and full width 'w')
