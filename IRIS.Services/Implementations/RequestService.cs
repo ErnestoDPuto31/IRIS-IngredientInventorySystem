@@ -3,6 +3,9 @@ using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using IRIS.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IRIS.Services.Implementations
 {
@@ -14,13 +17,12 @@ namespace IRIS.Services.Implementations
         {
             _context = context;
         }
-        
-        
+
         public int GetPendingRequestCount()
         {
-            // Uses your RequestStatus enum!
             return _context.Requests.Count(r => r.Status == RequestStatus.Pending);
         }
+
         public Request GetRequestById(int id)
         {
             return _context.Requests
@@ -31,7 +33,6 @@ namespace IRIS.Services.Implementations
                     .ThenInclude(a => a.Approver)
                 .FirstOrDefault(r => r.RequestId == id);
         }
-
 
         public List<Request> GetAllRequests()
         {
@@ -47,13 +48,15 @@ namespace IRIS.Services.Implementations
             {
                 try
                 {
-
                     var request = _context.Requests
                         .Include(r => r.RequestItems)
                         .ThenInclude(ri => ri.Ingredient)
                         .FirstOrDefault(r => r.RequestId == requestId);
 
                     if (request == null) throw new Exception("Request not found");
+
+                    // 1. Initialize NotificationService here to use it for stock alerts
+                    var localNotificationService = new NotificationService(_context);
 
                     if (newStatus == RequestStatus.Released && request.Status != RequestStatus.Released)
                     {
@@ -68,9 +71,21 @@ namespace IRIS.Services.Implementations
                                     throw new InvalidOperationException($"Insufficient stock for: {ingredient.Name}. Available: {ingredient.CurrentStock}, Requested: {item.RequestedQty}");
                                 }
 
+                                // Deduct the stock
                                 ingredient.CurrentStock -= item.RequestedQty;
-
                                 ingredient.UpdatedAt = DateTime.Now;
+
+                                // 2. --- NEW STOCK THRESHOLD CHECKS ---
+                                if (ingredient.CurrentStock == 0)
+                                {
+                                    // Hit exactly 0 (Critical) - passing 'true'
+                                    localNotificationService.CreateLowStockNotification(ingredient.IngredientId, ingredient.Name, true);
+                                }
+                                else if (ingredient.CurrentStock <= ingredient.MinimumStock)
+                                {
+                                    // Hit minimum threshold but not zero (Low) - passing 'false'
+                                    localNotificationService.CreateLowStockNotification(ingredient.IngredientId, ingredient.Name, false);
+                                }
                             }
                         }
                     }
@@ -88,8 +103,14 @@ namespace IRIS.Services.Implementations
                     };
 
                     _context.Approvals.Add(approval);
-
                     _context.SaveChanges();
+
+                    var user = _context.Users.FirstOrDefault(u => u.UserId == currentUserId);
+                    string actionByName = user != null ? user.Username : "System";
+
+                    // 3. Resolve the "New Request" notification
+                    localNotificationService.ResolveRequestNotification(requestId, newStatus.ToString(), actionByName);
+
                     transaction.Commit();
                 }
                 catch (Exception)

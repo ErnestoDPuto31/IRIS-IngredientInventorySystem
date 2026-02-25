@@ -1,7 +1,6 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using IRIS.Infrastructure.Data;
-
 using IRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,6 +16,21 @@ namespace IRIS.Services
         public NotificationService(IrisDbContext context)
         {
             _context = context;
+        }
+        public void CheckAllStockLevels()
+        {
+
+            // Find all ingredients where stock is at or below minimum
+            var lowIngredients = _context.Ingredients
+                                         .Where(i => i.CurrentStock <= i.MinimumStock)
+                                         .ToList();
+
+            foreach (var ingredient in lowIngredients)
+            {
+                bool isCritical = ingredient.CurrentStock == 0;
+                // This will safely create the alert (and ignore it if it already exists!)
+                CreateLowStockNotification(ingredient.IngredientId, ingredient.Name, isCritical);
+            }
         }
 
         // --- 1. FETCHING NOTIFICATIONS FOR THE UI ---
@@ -65,15 +79,39 @@ namespace IRIS.Services
 
         public int GetUnreadCountForUser(User currentUser)
         {
-            // Similar logic to above, but just counting the ones where action is NOT taken yet
-            var query = _context.SystemNotifications.Where(n => !n.IsActionTaken);
+            var query = _context.SystemNotifications.AsQueryable();
 
             if (currentUser.Role == UserRole.Dean || currentUser.Role == UserRole.AssistantDean)
                 query = query.Where(n => n.TargetRole == UserRole.Dean || n.TargetRole == UserRole.AssistantDean || n.NotificationType == "LowStock");
             else
                 query = query.Where(n => n.TargetUserId == currentUser.UserId || n.TargetRole == currentUser.Role || n.NotificationType == "LowStock");
 
+            // THE FIX: We added !n.IsActionTaken. It will ONLY count if no one has taken action!
+            query = query.Where(n => !n.IsActionTaken &&
+                                    (n.Message.Contains("Pending") ||
+                                     n.Message.Contains("New") ||
+                                     n.NotificationType == "LowStock"));
+
             return query.Count();
+        }
+        public void ResolveRequestNotification(int requestId, string newStatus, string actionBy)
+        {
+            // Find the original "New Request" notification linked to this specific request
+            var notification = _context.SystemNotifications
+                .FirstOrDefault(n => n.ReferenceId == requestId && n.NotificationType == "NewRequest" && !n.IsActionTaken);
+
+            if (notification != null)
+            {
+                // 1. Mark it as resolved so the badge ignores it
+                notification.IsActionTaken = true;
+                notification.ActionTakenByName = actionBy;
+
+                // 2. Magically change the word "New" to "Approved" or "Rejected" in the database!
+                notification.Message = notification.Message.Replace("New Request", $"{newStatus} Request");
+                notification.Message = notification.Message.Replace("Pending", newStatus);
+
+                _context.SaveChanges();
+            }
         }
 
         // --- 2. THE "TAKE ACTION" UPDATE LOGIC ---
@@ -89,19 +127,23 @@ namespace IRIS.Services
         }
 
         // --- 3. SYSTEM TRIGGERS (Call these from other services) ---
-        public void CreateLowStockNotification(int itemId, string itemName)
+        public void CreateLowStockNotification(int itemId, string itemName, bool isCritical)
         {
-            // Prevent spamming the DB if a low stock notification already exists and isn't resolved
             bool alreadyExists = _context.SystemNotifications.Any(n => n.ReferenceId == itemId && n.NotificationType == "LowStock" && !n.IsActionTaken);
             if (alreadyExists) return;
 
+            // --- NEW: Dynamic Message based on stock level ---
+            string alertMessage = isCritical
+                ? $"{itemName} is critically out of stock (0 remaining) and requires immediate restocking!"
+                : $"{itemName} is running low on stock. Please restock soon.";
+
             var notif = new SystemNotification
             {
-                NotificationType = "LowStock",
-                Message = $"{itemName} is out of stock and requires immediate restocking.",
+                NotificationType = "LowStock", // Keep as LowStock so your UI badge still counts it!
+                Message = alertMessage,
                 ReferenceId = itemId,
-                // TargetRole is null because BOTH Staff and Dean need to see this
             };
+
             _context.SystemNotifications.Add(notif);
             _context.SaveChanges();
         }
@@ -111,8 +153,8 @@ namespace IRIS.Services
             var notif = new SystemNotification
             {
                 NotificationType = "NewRequest",
-                TargetRole = UserRole.Dean, // Only Deans approve requests
-                Message = $"New Request from {facultyName} for {subject}.",
+                TargetRole = UserRole.Dean,
+                Message = $"New Request from {facultyName} for {subject}.", // "New" triggers the badge count!
                 ReferenceId = requestId
             };
             _context.SystemNotifications.Add(notif);
@@ -124,10 +166,10 @@ namespace IRIS.Services
             var notif = new SystemNotification
             {
                 NotificationType = "StatusUpdate",
-                TargetUserId = staffUserId, // Specifically targets the staff who made it
+                TargetUserId = staffUserId,
                 Message = $"Your request was marked as {newStatus}.",
                 ReferenceId = requestId,
-                IsActionTaken = true, // It's just an FYI, no action needed by staff
+                IsActionTaken = true,
                 ActionTakenByName = actionBy
             };
             _context.SystemNotifications.Add(notif);

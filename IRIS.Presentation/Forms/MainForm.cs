@@ -6,6 +6,7 @@ using IRIS.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
+using System.Linq; // Added for LINQ counting
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
@@ -14,7 +15,7 @@ namespace IRIS.Presentation.Forms
     public partial class MainForm : Form
     {
         private System.Windows.Forms.Timer _clockTimer;
-        private System.Windows.Forms.Timer _notificationTimer; // 1. Added the notification timer
+        private System.Windows.Forms.Timer _notificationTimer;
         private NotificationDropdown _dropdownPanel;
         private INotificationService _notificationService;
 
@@ -26,7 +27,6 @@ namespace IRIS.Presentation.Forms
 
             var requestService = (IRequestService)Program.Services.GetService(typeof(IRequestService));
 
-            // Pass it into the navigation panel!
             navigationPanel1.InitializeService(requestService);
             System.Windows.Forms.Timer badgeTimer = new Timer();
             badgeTimer.Interval = 3000;
@@ -35,36 +35,51 @@ namespace IRIS.Presentation.Forms
 
             _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
 
-            // Setup the Dropdown (but keep it hidden initially)
+            // --- NEW: Scan all stock levels when the dashboard loads! ---
+            _notificationService.CheckAllStockLevels();
+            // ------------------------------------------------------------
+
             _dropdownPanel = new NotificationDropdown();
             _dropdownPanel.Visible = false;
-            this.Controls.Add(_dropdownPanel);
-            _dropdownPanel.BringToFront(); // Ensure it floats on top of everything
 
-            // 2. Setup the Notification "Heartbeat" Timer for the Bell Icon
+            _dropdownPanel.NotificationClicked += DropdownPanel_NotificationClicked;
+
+            this.Controls.Add(_dropdownPanel);
+            _dropdownPanel.BringToFront();
+
             _notificationTimer = new System.Windows.Forms.Timer();
-            _notificationTimer.Interval = 5000; // Checks every 5 seconds
+            _notificationTimer.Interval = 3000;
             _notificationTimer.Tick += NotificationTimer_Tick;
             _notificationTimer.Start();
         }
 
-        // 3. The method that updates the bell icon every 5 seconds
+        private void DropdownPanel_NotificationClicked(object sender, EventArgs e)
+        {
+            // We removed the forced "Count = 0" here. 
+            // The badge number will now strictly rely on the database status!
+        }
+
         private void NotificationTimer_Tick(object sender, EventArgs e)
         {
-            // Safety check: Don't do anything if no one is logged in yet
             if (UserSession.CurrentUser == null || _notificationService == null) return;
 
             try
             {
-                // Ask the database how many UNREAD alerts this specific user has
-                int unreadCount = _notificationService.GetUnreadCountForUser(UserSession.CurrentUser);
+                // Fetch all notifications for the user
+                var notifications = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
 
-                // Update the red badge number! 
-                notificationBadge1.Count = unreadCount;
+                // --- UPDATED: Now counts "Pending", "New", AND "stock" (for low/critical stock alerts) ---
+                int pendingCount = notifications.Count(n =>
+                    n.Message.Contains("Pending", StringComparison.OrdinalIgnoreCase) ||
+                    n.Message.Contains("New", StringComparison.OrdinalIgnoreCase) ||
+                    n.Message.Contains("stock", StringComparison.OrdinalIgnoreCase));
+
+                // Set the badge count to the number of pending items!
+                notificationBadge1.Count = pendingCount;
             }
             catch
             {
-                // Silently ignore errors here so a random network blip doesn't crash your app
+                // Silently ignore errors
             }
         }
 
@@ -130,23 +145,22 @@ namespace IRIS.Presentation.Forms
 
         private void notificationBadge1_Click(object sender, EventArgs e)
         {
-            // If it's already open, close it
+            // --- NEW: Immediately clear the red number visually ---
+            notificationBadge1.Count = 0;
+
             if (_dropdownPanel.Visible)
             {
                 _dropdownPanel.Visible = false;
                 return;
             }
 
-            // Position the dropdown directly under the bell icon
             _dropdownPanel.Location = new Point(
                 notificationBadge1.Location.X - _dropdownPanel.Width + notificationBadge1.Width,
                 notificationBadge1.Location.Y + notificationBadge1.Height + 5
             );
 
-            // Fetch the real data using your Clean Architecture Service!
+            // Fetch and load notifications
             var notifications = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
-
-            // Load data and show
             _dropdownPanel.LoadNotifications(notifications);
             _dropdownPanel.Visible = true;
             _dropdownPanel.BringToFront();

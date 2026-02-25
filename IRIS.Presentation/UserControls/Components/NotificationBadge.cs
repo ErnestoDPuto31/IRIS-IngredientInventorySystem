@@ -32,11 +32,7 @@ namespace IRIS.Presentation.UserControls.Components
             InitializeComponent();
             this.DoubleBuffered = true;
             this.BackColor = Color.Transparent;
-
-            // Make the cursor look like a hand so users know it's clickable
             this.Cursor = Cursors.Hand;
-
-            // Set a good default size for the control
             this.Size = new Size(50, 50); // Made slightly larger to fit the hover expansion safely
         }
 
@@ -67,8 +63,6 @@ namespace IRIS.Presentation.UserControls.Components
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
             Image bellIcon = Properties.Resources.icons8_notification_321;
-
-            // Determine the size based on hover state (Add 6 pixels if hovering)
             int targetWidth = _isHovered ? bellIcon.Width + 6 : bellIcon.Width;
             int targetHeight = _isHovered ? bellIcon.Height + 6 : bellIcon.Height;
 
