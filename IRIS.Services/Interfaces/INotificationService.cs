@@ -6,7 +6,7 @@ namespace IRIS.Services.Interfaces
 {
     public interface INotificationService
     {
-
+        void MarkNotificationsAsRead(List<int> notificationIds);
         void CheckAllStockLevels();
         void ResolveRequestNotification(int requestId, string newStatus, string actionBy);
         List<NotificationDto> GetNotificationsForUser(User currentUser);

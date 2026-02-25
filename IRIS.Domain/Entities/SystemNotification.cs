@@ -27,7 +27,7 @@ namespace IRIS.Domain.Entities
         // --- THE "ACTION TAKEN" TRACKING ---
         public bool IsActionTaken { get; set; } = false;
         public string? ActionTakenByName { get; set; } // e.g., "Resolved by Dean Smith"
-
+        public bool IsRead { get; set; } = false; // Add this line!
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

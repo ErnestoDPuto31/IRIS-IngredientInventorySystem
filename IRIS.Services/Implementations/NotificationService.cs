@@ -17,6 +17,20 @@ namespace IRIS.Services
         {
             _context = context;
         }
+        public void MarkNotificationsAsRead(List<int> notificationIds)
+        {
+            // Using Set<SystemNotification>() is a safe way to grab the table regardless of what you named your DbSet
+            var unreadNotifications = _context.Set<SystemNotification>()
+                                              .Where(n => notificationIds.Contains(n.NotificationId) && !n.IsRead)
+                                              .ToList();
+
+            foreach (var notification in unreadNotifications)
+            {
+                notification.IsRead = true;
+            }
+
+            _context.SaveChanges();
+        }
         public void CheckAllStockLevels()
         {
 
@@ -65,15 +79,14 @@ namespace IRIS.Services
                     NotificationId = n.NotificationId,
                     Message = n.Message,
                     TimeAgo = CalculateTimeAgo(n.CreatedAt),
-                    ShowTakeActionButton = !n.IsActionTaken, // If false, show the button!
+                    ShowTakeActionButton = !n.IsActionTaken,
                     ActionTakenText = n.IsActionTaken ? $"(Resolved by {n.ActionTakenByName})" : null,
                     ReferenceId = n.ReferenceId,
+                    TargetPage = n.NotificationType == "LowStock" ? "RestockPage" : "RequestControl",
 
-                    // Tell the UI exactly which page to open when clicked
-                    TargetPage = n.NotificationType == "LowStock" ? "RestockPage" : "RequestControl"
+                    IsRead = n.IsRead // <--- THIS IS THE MAGIC LINE YOU WERE MISSING!
                 });
             }
-
             return dtos;
         }
 
@@ -82,15 +95,20 @@ namespace IRIS.Services
             var query = _context.SystemNotifications.AsQueryable();
 
             if (currentUser.Role == UserRole.Dean || currentUser.Role == UserRole.AssistantDean)
-                query = query.Where(n => n.TargetRole == UserRole.Dean || n.TargetRole == UserRole.AssistantDean || n.NotificationType == "LowStock");
+            {
+                query = query.Where(n => n.TargetRole == UserRole.Dean ||
+                                         n.TargetRole == UserRole.AssistantDean ||
+                                         n.NotificationType == "LowStock");
+            }
             else
-                query = query.Where(n => n.TargetUserId == currentUser.UserId || n.TargetRole == currentUser.Role || n.NotificationType == "LowStock");
+            {
+                query = query.Where(n => n.TargetUserId == currentUser.UserId ||
+                                         n.TargetRole == currentUser.Role ||
+                                         n.NotificationType == "LowStock");
+            }
 
-            // THE FIX: We added !n.IsActionTaken. It will ONLY count if no one has taken action!
-            query = query.Where(n => !n.IsActionTaken &&
-                                    (n.Message.Contains("Pending") ||
-                                     n.Message.Contains("New") ||
-                                     n.NotificationType == "LowStock"));
+            // THE FIX: Now we just check if it's unread! Super simple.
+            query = query.Where(n => !n.IsRead);
 
             return query.Count();
         }
