@@ -1,4 +1,5 @@
 using IRIS.Infrastructure.Data;
+using IRIS.Services;
 using IRIS.Services.Implementations;
 using IRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ namespace IRIS.Presentation
                     warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)
                 )
             );
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRequestService, RequestService>();
             Services = services.BuildServiceProvider();
 

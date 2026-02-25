@@ -1,6 +1,7 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using IRIS.Services.Implementations;
+using IRIS.Services.Interfaces;
 
 namespace IRIS.Presentation.Window_Forms
 {
@@ -10,7 +11,7 @@ namespace IRIS.Presentation.Window_Forms
         private readonly RequestService _requestService;
         private readonly int _currentUserId;
         private Request _currentRequest;
-
+        private readonly INotificationService _notificationService;
         private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243); // Blue
         private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60); // Green
 
@@ -20,6 +21,8 @@ namespace IRIS.Presentation.Window_Forms
             _requestId = requestId;
             _requestService = requestService;
             _currentUserId = currentUserId;
+            // Grab the Notification Service from your Program.cs container!
+            _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
         }
 
         protected override void OnLoad(EventArgs e)
@@ -193,6 +196,39 @@ namespace IRIS.Presentation.Window_Forms
             btnReject.Visible = false;
         }
 
+        /* private void btnApprove_Click(object sender, EventArgs e)
+         {
+             bool isReleaseAction = btnApprove.Text == "Release";
+             string actionName = isReleaseAction ? "Release" : "Approve";
+             RequestStatus newStatus = isReleaseAction ? RequestStatus.Released : RequestStatus.Approved;
+
+             if (MessageBox.Show($"Are you sure you want to {actionName} this request?", $"Confirm {actionName}", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+             {
+                 try
+                 {
+                     _requestService.UpdateRequestStatus(_requestId, newStatus, txtRemarks.Text, _currentUserId);
+                     this.DialogResult = DialogResult.OK;
+                     this.Close();
+                 }
+                 catch (Exception ex) { MessageBox.Show(ex.Message); }
+             }
+         }
+
+         private void btnReject_Click(object sender, EventArgs e)
+         {
+             if (string.IsNullOrWhiteSpace(txtRemarks.Text)) { MessageBox.Show("Remarks required."); return; }
+
+             if (MessageBox.Show("Are you sure you want to Reject this request?", "Confirm Rejection", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+             {
+                 try
+                 {
+                     _requestService.UpdateRequestStatus(_requestId, RequestStatus.Rejected, txtRemarks.Text, _currentUserId);
+                     this.DialogResult = DialogResult.OK;
+                     this.Close();
+                 }
+                 catch (Exception ex) { MessageBox.Show(ex.Message); }
+             }
+         }*/
         private void btnApprove_Click(object sender, EventArgs e)
         {
             bool isReleaseAction = btnApprove.Text == "Release";
@@ -203,27 +239,63 @@ namespace IRIS.Presentation.Window_Forms
             {
                 try
                 {
+                    // 1. Update the database
                     _requestService.UpdateRequestStatus(_requestId, newStatus, txtRemarks.Text, _currentUserId);
+
+                    // 2. TRIGGER NOTIFICATION: Alert the specific Staff member
+                    var requestInfo = _requestService.GetRequestById(_requestId);
+                    if (requestInfo != null)
+                    {
+                        _notificationService.CreateStatusUpdateNotification(
+                            _requestId,
+                            requestInfo.EncodedById, // Targets ONLY the staff who made it
+                            newStatus,
+                            UserSession.CurrentUser.Username); // Passes the Dean's name
+                    }
+
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
-                catch (Exception ex) { MessageBox.Show(ex.Message); }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
         private void btnReject_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtRemarks.Text)) { MessageBox.Show("Remarks required."); return; }
+            if (string.IsNullOrWhiteSpace(txtRemarks.Text))
+            {
+                MessageBox.Show("Remarks required.");
+                return;
+            }
 
             if (MessageBox.Show("Are you sure you want to Reject this request?", "Confirm Rejection", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 try
                 {
+                    // 1. Update the database
                     _requestService.UpdateRequestStatus(_requestId, RequestStatus.Rejected, txtRemarks.Text, _currentUserId);
+
+                    // 2. TRIGGER NOTIFICATION: Alert the specific Staff member
+                    var requestInfo = _requestService.GetRequestById(_requestId);
+                    if (requestInfo != null)
+                    {
+                        _notificationService.CreateStatusUpdateNotification(
+                            _requestId,
+                            requestInfo.EncodedById, // Targets ONLY the staff who made it
+                            RequestStatus.Rejected,
+                            UserSession.CurrentUser.Username); // Passes the Dean's name
+                    }
+
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
-                catch (Exception ex) { MessageBox.Show(ex.Message); }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 

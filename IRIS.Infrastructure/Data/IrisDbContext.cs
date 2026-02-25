@@ -18,7 +18,7 @@ namespace IRIS.Infrastructure.Data
         public DbSet<InventoryLog> InventoryLogs { get; set; }
 
         public DbSet<Restock> Restocks { get; set; }
-
+        public DbSet<SystemNotification> SystemNotifications { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder); 
