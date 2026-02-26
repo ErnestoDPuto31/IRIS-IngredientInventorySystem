@@ -1,6 +1,6 @@
-﻿namespace IRIS.Presentation.UserControls.PagesUC
+﻿namespace IRIS.Presentation.UserControls.Components
 {
-    partial class DashboardControl
+    partial class NotificationBadge
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,12 +30,12 @@
         {
             SuspendLayout();
             // 
-            // DashboardControl
+            // NotificationBadge
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Name = "DashboardControl";
-            Size = new Size(1600, 900);
+            Name = "NotificationBadge";
+            Size = new Size(32, 32);
             ResumeLayout(false);
         }
 

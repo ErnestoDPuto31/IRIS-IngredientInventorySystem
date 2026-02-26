@@ -1,6 +1,6 @@
-﻿namespace IRIS.Presentation.UserControls.PagesUC
+﻿namespace IRIS.Presentation.UserControls.Components
 {
-    partial class DashboardControl
+    partial class NotificationDropdown
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,17 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
+            flpNotifications = new FlowLayoutPanel();
             SuspendLayout();
             // 
-            // DashboardControl
+            // flpNotifications
+            // 
+            flpNotifications.AutoScroll = true;
+            flpNotifications.Dock = DockStyle.Fill;
+            flpNotifications.Location = new Point(0, 0);
+            flpNotifications.Name = "flpNotifications";
+            flpNotifications.Size = new Size(348, 448);
+            flpNotifications.TabIndex = 0;
+            // 
+            // NotificationDropdown
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Name = "DashboardControl";
-            Size = new Size(1600, 900);
+            BorderStyle = BorderStyle.FixedSingle;
+            Controls.Add(flpNotifications);
+            Name = "NotificationDropdown";
+            Size = new Size(348, 448);
             ResumeLayout(false);
         }
 
         #endregion
+
+        private FlowLayoutPanel flpNotifications;
     }
 }

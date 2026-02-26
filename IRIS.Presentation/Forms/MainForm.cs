@@ -1,10 +1,26 @@
 ﻿using IRIS.Domain.Entities;
+using IRIS.Presentation.UserControls;
+using IRIS.Presentation.UserControls.Components;
+using IRIS.Services.Implementations;
+using IRIS.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using Timer = System.Windows.Forms.Timer;
 
 namespace IRIS.Presentation.Forms
 {
     public partial class MainForm : Form
     {
         private System.Windows.Forms.Timer _clockTimer;
+        private System.Windows.Forms.Timer _notificationTimer;
+        private NotificationDropdown _dropdownPanel;
+        private INotificationService _notificationService;
+
+        // --- NEW: This gives the form a memory of what you've already seen! ---
+        private int _knownNotificationCount = 0;
 
         public MainForm()
         {
@@ -12,6 +28,58 @@ namespace IRIS.Presentation.Forms
             SetupUserDisplay();
             SetupClock();
 
+            var requestService = (IRequestService)Program.Services.GetService(typeof(IRequestService));
+
+            navigationPanel1.InitializeService(requestService);
+            System.Windows.Forms.Timer badgeTimer = new Timer();
+            badgeTimer.Interval = 3000;
+            badgeTimer.Tick += (s, e) => navigationPanel1.RefreshBadgeCount();
+            badgeTimer.Start();
+
+            _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
+
+            // Scan all stock levels when the dashboard loads
+            if (_notificationService != null)
+            {
+                _notificationService.CheckAllStockLevels();
+            }
+
+            _dropdownPanel = new NotificationDropdown();
+            _dropdownPanel.Visible = false;
+
+            _dropdownPanel.NotificationClicked += DropdownPanel_NotificationClicked;
+
+            this.Controls.Add(_dropdownPanel);
+            _dropdownPanel.BringToFront();
+
+            _notificationTimer = new System.Windows.Forms.Timer();
+            _notificationTimer.Interval = 5000;
+            _notificationTimer.Tick += NotificationTimer_Tick;
+            _notificationTimer.Start();
+        }
+
+        private void DropdownPanel_NotificationClicked(object sender, EventArgs e)
+        {
+            // Dropdown handles its own clicks now
+        }
+
+        private void NotificationTimer_Tick(object sender, EventArgs e)
+        {
+            if (UserSession.CurrentUser == null || _notificationService == null) return;
+
+            try
+            {
+                var notifications = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
+
+                // ONLY count the notifications where IsRead is strictly FALSE
+                int unreadCount = notifications.Count(n => n.IsRead == false);
+
+                notificationBadge1.Count = unreadCount;
+            }
+            catch
+            {
+                // Silently ignore errors
+            }
         }
 
         private void SetupUserDisplay()
@@ -19,13 +87,10 @@ namespace IRIS.Presentation.Forms
             if (UserSession.CurrentUser != null)
             {
                 txtRole.Text = FormatRoleName(UserSession.CurrentUser.Role);
-
                 txtRole.Enabled = false;
-
                 txtRole.DisabledState.FillColor = Color.White;
                 txtRole.DisabledState.ForeColor = Color.Indigo;
                 txtRole.DisabledState.BorderColor = Color.Indigo;
-
                 txtRole.DisabledState.PlaceholderForeColor = Color.Indigo;
             }
         }
@@ -48,7 +113,6 @@ namespace IRIS.Presentation.Forms
             _clockTimer.Interval = 30000;
             _clockTimer.Tick += (s, e) => UpdateDateTimeLabel();
             _clockTimer.Start();
-
             UpdateDateTimeLabel();
         }
 
@@ -72,6 +136,40 @@ namespace IRIS.Presentation.Forms
         private void btnExit_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void notificationBadge1_Click(object sender, EventArgs e)
+        {
+            if (UserSession.CurrentUser == null || _notificationService == null) return;
+
+            // 1. Get current notifications
+            var notifications = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
+
+            // 2. Tell the DATABASE we have read them!
+            var idsToMarkRead = notifications.Select(n => n.NotificationId).ToList();
+            if (idsToMarkRead.Any())
+            {
+                _notificationService.MarkNotificationsAsRead(idsToMarkRead);
+            }
+
+            // 3. Kill the red number instantly
+            notificationBadge1.Count = 0;
+
+            // 4. Handle the Dropdown UI
+            if (_dropdownPanel.Visible)
+            {
+                _dropdownPanel.Visible = false;
+                return;
+            }
+
+            _dropdownPanel.Location = new Point(
+                notificationBadge1.Location.X - _dropdownPanel.Width + notificationBadge1.Width,
+                notificationBadge1.Location.Y + notificationBadge1.Height + 5
+            );
+
+            _dropdownPanel.LoadNotifications(notifications);
+            _dropdownPanel.Visible = true;
+            _dropdownPanel.BringToFront();
         }
     }
 }

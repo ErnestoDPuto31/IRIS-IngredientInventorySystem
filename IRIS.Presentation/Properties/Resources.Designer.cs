@@ -283,6 +283,26 @@ namespace IRIS.Presentation.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_notification_32 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-notification-32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_notification_321 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-notification-321", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_open_box_100 {
             get {
                 object obj = ResourceManager.GetObject("icons8-open-box-100", resourceCulture);

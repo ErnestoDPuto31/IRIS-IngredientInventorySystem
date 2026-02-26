@@ -39,6 +39,7 @@
             pnlMainContent = new Panel();
             navigationPanel1 = new IRIS.Presentation.UserControls.NavigationPanel();
             pnlTop = new Guna.UI2.WinForms.Guna2Panel();
+            notificationBadge1 = new IRIS.Presentation.UserControls.Components.NotificationBadge();
             btnExit = new Guna.UI2.WinForms.Guna2ImageButton();
             lblDate = new Label();
             txtRole = new Guna.UI2.WinForms.Guna2TextBox();
@@ -75,6 +76,7 @@
             pnlTop.BackColor = Color.White;
             pnlTop.BorderColor = SystemColors.ControlDark;
             pnlTop.BorderThickness = 2;
+            pnlTop.Controls.Add(notificationBadge1);
             pnlTop.Controls.Add(btnExit);
             pnlTop.Controls.Add(lblDate);
             pnlTop.Controls.Add(txtRole);
@@ -85,6 +87,15 @@
             pnlTop.ShadowDecoration.CustomizableEdges = customizableEdges5;
             pnlTop.Size = new Size(1540, 70);
             pnlTop.TabIndex = 0;
+            // 
+            // notificationBadge1
+            // 
+            notificationBadge1.BackColor = Color.Transparent;
+            notificationBadge1.Location = new Point(1388, 3);
+            notificationBadge1.Name = "notificationBadge1";
+            notificationBadge1.Size = new Size(50, 50);
+            notificationBadge1.TabIndex = 3;
+            notificationBadge1.Click += notificationBadge1_Click;
             // 
             // btnExit
             // 
@@ -106,11 +117,11 @@
             // lblDate
             // 
             lblDate.AutoSize = true;
-            lblDate.Font = new Font("Poppins", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDate.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDate.ForeColor = SystemColors.ControlDarkDark;
             lblDate.Location = new Point(224, 19);
             lblDate.Name = "lblDate";
-            lblDate.Size = new Size(366, 36);
+            lblDate.Size = new Size(339, 25);
             lblDate.TabIndex = 1;
             lblDate.Text = "Saturday, March 31, 2006 - 10:00 PM";
             // 
@@ -126,7 +137,7 @@
             txtRole.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
             txtRole.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtRole.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtRole.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            txtRole.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtRole.ForeColor = Color.Indigo;
             txtRole.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             txtRole.Location = new Point(19, 20);
@@ -167,5 +178,6 @@
         private Label lblDate;
         private Guna.UI2.WinForms.Guna2TextBox txtRole;
         private Guna.UI2.WinForms.Guna2ImageButton btnExit;
+        private UserControls.Components.NotificationBadge notificationBadge1;
     }
 }

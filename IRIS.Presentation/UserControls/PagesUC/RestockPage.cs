@@ -35,11 +35,11 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
         private void RestockTableuc1_RestockRequested(object sender, Restock restockItem)
         {
-            using (var popup = new frmRestockIngredient(restockItem.Ingredient))
+            // ---> NEW: Pass the suggested amount as the second parameter <---
+            using (var popup = new frmRestockIngredient(restockItem.Ingredient, restockItem.SuggestedRestockQuantity))
             {
                 if (popup.ShowDialog() == DialogResult.OK)
                 {
-                   
                     _presenter.ProcessRestock(restockItem.IngredientId, popup.RestockQuantity);
 
                     MessageBox.Show($"{restockItem.Ingredient.Name} stock has been updated!",
@@ -47,7 +47,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 }
             }
         }
-
 
         private void RestockPage_Load(object sender, EventArgs e)
         {
@@ -76,12 +75,16 @@ namespace IRIS.Presentation.UserControls.PagesUC
             cmbFilter.Items.Clear();
             cmbFilter.Items.Add("All Categories");
 
-            foreach (Categories cat in Enum.GetValues(typeof(Categories)))
+            // FIX: Iterate over the actual categories passed from the database/service!
+            foreach (var rawCategoryName in categories)
             {
-                string displayName = GetEnumDisplayName(cat);
-                if (!cmbFilter.Items.Contains(displayName))
+                if (Enum.TryParse(typeof(Categories), rawCategoryName, out object parsedEnum))
                 {
-                    cmbFilter.Items.Add(displayName);
+                    string displayName = GetEnumDisplayName((Enum)parsedEnum);
+                    if (!cmbFilter.Items.Contains(displayName))
+                    {
+                        cmbFilter.Items.Add(displayName);
+                    }
                 }
             }
 
@@ -94,7 +97,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 cmbFilter.SelectedIndex = 0;
             }
 
-  
             cmbFilter.SelectedIndexChanged += cmbFilter_SelectedIndexChanged;
         }
 
