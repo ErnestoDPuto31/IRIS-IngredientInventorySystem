@@ -21,6 +21,7 @@ namespace IRIS.Presentation.Window_Forms
             btnAddIngredient.Text = "Add Ingredient";
 
             LoadCategoryDropdown();
+            LoadUnitDropdown(); 
             SetupFormDefaults();
         }
 
@@ -34,12 +35,11 @@ namespace IRIS.Presentation.Window_Forms
             txtIngredientName.Text = ingredientToEdit.Name;
             numCurrentStock.Value = ingredientToEdit.CurrentStock;
             numMinimumThreshold.Value = ingredientToEdit.MinimumStock;
+
             cmbCategory.SelectedValue = ingredientToEdit.Category;
 
-            if (cmbUnit.Items.Contains(ingredientToEdit.Unit))
-                cmbUnit.SelectedItem = ingredientToEdit.Unit;
-            else
-                cmbUnit.Text = ingredientToEdit.Unit;
+     
+            cmbUnit.SelectedValue = ingredientToEdit.Unit;
         }
 
         private void LoadCategoryDropdown()
@@ -58,8 +58,35 @@ namespace IRIS.Presentation.Window_Forms
             cmbCategory.ValueMember = "Value";
         }
 
+        private void LoadUnitDropdown()
+        {
+            var unitList = Enum.GetValues(typeof(Units))
+                .Cast<Units>()
+                .Select(u => new
+                {
+                    Value = u,
+                    Display = GetEnumDisplayName(u)
+                })
+                .ToList();
+
+            cmbUnit.DataSource = unitList;
+            cmbUnit.DisplayMember = "Display";
+            cmbUnit.ValueMember = "Value";
+        }
+
         private void SetupFormDefaults()
         {
+            numCurrentStock.DecimalPlaces = 2;
+            numCurrentStock.Increment = 0.5M;
+            numCurrentStock.Minimum = 0;
+            numCurrentStock.Maximum = 99999;
+
+            numMinimumThreshold.DecimalPlaces = 2;
+            numMinimumThreshold.Increment = 0.5M;
+            numMinimumThreshold.Minimum = 0;
+            numMinimumThreshold.Maximum = 99999;
+
+            // Dropdown defaults
             if (cmbUnit.SelectedIndex == -1 && cmbUnit.Items.Count > 0)
                 cmbUnit.SelectedIndex = 0;
 
@@ -99,7 +126,7 @@ namespace IRIS.Presentation.Window_Forms
             {
                 lblError.Text = validation.ErrorMessage;
                 lblError.Visible = true;
-                return; 
+                return;
             }
 
             lblError.Visible = false;
@@ -107,12 +134,15 @@ namespace IRIS.Presentation.Window_Forms
             Categories selectedCategory = (cmbCategory.SelectedValue is Categories cat)
                 ? cat : Categories.Produce;
 
+            Units selectedUnit = (cmbUnit.SelectedValue is Units u)
+                ? u : default;
+
             NewIngredient = new Ingredient
             {
                 IngredientId = _ingredientId,
                 Name = cleanName,
                 Category = selectedCategory,
-                Unit = cmbUnit.SelectedItem?.ToString() ?? cmbUnit.Text,
+                Unit = selectedUnit, 
                 CurrentStock = numCurrentStock.Value,
                 MinimumStock = numMinimumThreshold.Value,
                 CreatedAt = _ingredientId == 0 ? DateTime.Now : DateTime.MinValue,

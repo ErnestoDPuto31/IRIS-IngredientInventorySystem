@@ -1,4 +1,6 @@
-﻿namespace IRIS.Presentation.UserControls.PagesUC
+﻿using IRIS.Presentation.UserControls.Components.Tables;
+
+namespace IRIS.Presentation.UserControls.PagesUC
 {
     partial class RequestControl
     {
@@ -37,7 +39,7 @@
             label1 = new Label();
             label2 = new Label();
             pnlMainContent = new Guna.UI2.WinForms.Guna2Panel();
-            requestTable = new IRIS.Presentation.UserControls.Table.RequestTableUC();
+            requestTable = new IRIS.Presentation.UserControls.Components.Tables.RequestTableUC();
             btnNewRequest = new Guna.UI2.WinForms.Guna2GradientButton();
             pnlMainContent.SuspendLayout();
             SuspendLayout();
@@ -142,7 +144,7 @@
         private Label label2;
         private Guna.UI2.WinForms.Guna2Panel pnlMainContent;
         private Guna.UI2.WinForms.Guna2GradientButton btnNewRequest;
-        private UserControls.Table.RequestTableUC requestTableuc1;
-        private UserControls.Table.RequestTableUC requestTable;
+        private RequestTableUC requestTableuc1;
+        private RequestTableUC requestTable;
     }
 }

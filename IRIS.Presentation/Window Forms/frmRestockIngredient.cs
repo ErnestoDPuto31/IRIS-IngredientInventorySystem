@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 using IRIS.Domain.Entities;
+using IRIS.Domain.Enums; 
+using System.ComponentModel.DataAnnotations; 
+using System.Reflection;
 
 namespace IRIS.Presentation.Window_Forms
 {
@@ -20,7 +23,7 @@ namespace IRIS.Presentation.Window_Forms
             InitializeComponent();
 
             _ingredient = ingredient;
-            _unit = string.IsNullOrWhiteSpace(ingredient.Unit) ? "units" : ingredient.Unit.Trim();
+            _unit = GetEnumDisplayName(ingredient.Unit);
 
             // ---> 2. Save it here! <---
             _suggestedQty = suggestedQty;
@@ -69,7 +72,6 @@ namespace IRIS.Presentation.Window_Forms
 
         private void NumQuantity_ValueChanged(object sender, EventArgs e)
         {
-            // Real-time calculation of what the new stock level will be
             decimal newStock = _ingredient.CurrentStock + numQuantity.Value;
             lblNewStockText.Text = $"{newStock:0.##} {_unit}";
         }
@@ -94,6 +96,20 @@ namespace IRIS.Presentation.Window_Forms
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private string GetEnumDisplayName(Enum enumValue)
+        {
+            FieldInfo field = enumValue.GetType().GetField(enumValue.ToString());
+            if (field != null)
+            {
+                var displayAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(field, typeof(DisplayAttribute));
+                if (displayAttribute != null)
+                {
+                    return displayAttribute.Name;
+                }
+            }
+            return enumValue.ToString();
         }
     }
 }

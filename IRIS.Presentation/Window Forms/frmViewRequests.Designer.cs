@@ -310,7 +310,7 @@
             lblRecipeCosting.BackColor = Color.White;
             lblRecipeCosting.BorderThickness = 0;
             lblRecipeCosting.CustomizableEdges = customizableEdges12;
-            lblRecipeCosting.DefaultText = "100g per student";
+            lblRecipeCosting.DefaultText = "10g per student";
             lblRecipeCosting.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             lblRecipeCosting.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
             lblRecipeCosting.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);

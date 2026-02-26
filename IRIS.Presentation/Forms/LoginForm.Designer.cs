@@ -255,14 +255,14 @@ namespace IRIS.Presentation
             guna2ImageButton1.Anchor = AnchorStyles.None;
             guna2ImageButton1.BackgroundImageLayout = ImageLayout.Stretch;
             guna2ImageButton1.CheckedState.ImageSize = new Size(64, 64);
-            guna2ImageButton1.HoverState.ImageSize = new Size(200, 200);
+            guna2ImageButton1.HoverState.ImageSize = new Size(300, 300);
             guna2ImageButton1.Image = Properties.Resources.IRIS_Logo;
             guna2ImageButton1.ImageOffset = new Point(0, 0);
             guna2ImageButton1.ImageRotate = 0F;
             guna2ImageButton1.ImageSize = new Size(300, 300);
             guna2ImageButton1.Location = new Point(204, 36);
             guna2ImageButton1.Name = "guna2ImageButton1";
-            guna2ImageButton1.PressedState.ImageSize = new Size(64, 64);
+            guna2ImageButton1.PressedState.ImageSize = new Size(300, 300);
             guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges8;
             guna2ImageButton1.Size = new Size(173, 182);
             guna2ImageButton1.TabIndex = 1;

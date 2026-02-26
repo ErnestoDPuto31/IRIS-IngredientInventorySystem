@@ -2,22 +2,21 @@
 using IRIS.Domain.Enums;
 using IRIS.Infrastructure.Data;
 using IRIS.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore; 
 
 namespace IRIS.Services.Implementations
 {
     public class RestockService : IRestockService
     {
         private readonly IrisDbContext _context;
+        private readonly IInventoryLogService _logService;
 
         public event Action OnInventoryUpdated;
 
-        public RestockService(IrisDbContext context)
+        public RestockService(IrisDbContext context, IInventoryLogService logService)
         {
             _context = context;
+            _logService = logService;
         }
 
         public IEnumerable<Restock> GetRestockList()
@@ -137,6 +136,8 @@ namespace IRIS.Services.Implementations
 
             if (ingredient != null)
             {
+                decimal oldStock = ingredient.CurrentStock;
+
                 ingredient.CurrentStock += amount;
                 ingredient.UpdatedAt = DateTime.Now;
 
@@ -160,6 +161,9 @@ namespace IRIS.Services.Implementations
                 }
 
                 _context.SaveChanges();
+
+                _logService.LogTransaction(ingredientId, "Restocked", amount, oldStock, ingredient.CurrentStock);
+
                 OnInventoryUpdated?.Invoke();
             }
         }
@@ -169,8 +173,8 @@ namespace IRIS.Services.Implementations
             return _context.Ingredients
                 .Select(i => i.Category)
                 .Distinct()
-                .ToList()
-                .Select(c => c.ToString())
+                .ToList()               
+                .Select(c => c.ToString()) 
                 .OrderBy(c => c)
                 .ToList();
         }

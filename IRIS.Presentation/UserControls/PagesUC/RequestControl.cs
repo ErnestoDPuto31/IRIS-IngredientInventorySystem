@@ -22,7 +22,8 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
             _context = new IrisDbContext(optionsBuilder.Options);
             _requestService = new RequestService(_context);
-            _ingredientService = new IngredientService(_context);
+            var logService = new InventoryLogService(_context);
+            _ingredientService = new IngredientService(_context, logService);
 
             // Hide "New Request" button if not Office Staff
             if (UserSession.CurrentUser.Role != UserRole.OfficeStaff)

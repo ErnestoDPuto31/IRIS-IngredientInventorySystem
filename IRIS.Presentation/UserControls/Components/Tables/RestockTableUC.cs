@@ -12,7 +12,7 @@ using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.UserControls.Components;
 // using Guna.UI2.WinForms; // Ensure this is available
 
-namespace IRIS.Presentation.UserControls.Table
+namespace IRIS.Presentation.UserControls.Components.Tables
 {
     public partial class RestockTableUC : UserControl
     {

@@ -2,7 +2,7 @@
 using IRIS.Domain.Enums;
 using System.Drawing.Drawing2D;
 
-namespace IRIS.Presentation.UserControls.Table
+namespace IRIS.Presentation.UserControls.Components.Tables
 {
 
     public partial class RequestRowUC : UserControl

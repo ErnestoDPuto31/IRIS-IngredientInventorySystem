@@ -21,182 +21,45 @@ namespace IRIS.Presentation.Window_Forms
             _ingredientService = ingService;
             _tempItems = new BindingList<RequestDetails>();
 
-            LoadIngredients();
-            SetupGrid();
+            dtpDateOfUse.Value = DateTime.Today;
+            dtpDateOfUse.MinDate = DateTime.Today;
 
             CalculateAllowedQuantity();
             // Grab the Notification Service from your Program.cs container!
             _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
         }
 
-        private void LoadIngredients()
-        {
-            var ingredients = _ingredientService.GetAllIngredients();
-            cboIngredients.DataSource = ingredients;
-            cboIngredients.ValueMember = "IngredientId";
-            cboIngredients.FormattingEnabled = true;
-            cboIngredients.SelectedIndex = -1;
-        }
-
-        private void SetupGrid()
-        {
-            // 1. Basic Modern Settings
-            gridItems.AutoGenerateColumns = false;
-            gridItems.DataSource = _tempItems;
-            gridItems.AllowUserToAddRows = false;
-            gridItems.AllowUserToResizeRows = false;
-            gridItems.RowHeadersVisible = false;
-            gridItems.BackgroundColor = Color.White;
-            gridItems.BorderStyle = BorderStyle.None;
-            gridItems.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            gridItems.GridColor = Color.FromArgb(240, 240, 240);
-            gridItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            gridItems.MultiSelect = false;
-
-            // 2. Data Binding
-            if (gridItems.Columns["Ingreident"] != null) gridItems.Columns["Ingreident"].DataPropertyName = "Ingredient";
-            if (gridItems.Columns["Quantity"] != null) gridItems.Columns["Quantity"].DataPropertyName = "RequestedQty";
-
-            // 3. Header Styling
-            gridItems.EnableHeadersVisualStyles = false;
-            gridItems.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            gridItems.ColumnHeadersHeight = 50;
-            gridItems.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 246, 250);
-            gridItems.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
-            gridItems.ColumnHeadersDefaultCellStyle.Font = new Font("Poppins", 9f, FontStyle.Bold);
-            gridItems.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(245, 246, 250);
-
-            // 4. Row Styling
-            gridItems.DefaultCellStyle.BackColor = Color.White;
-            gridItems.DefaultCellStyle.ForeColor = Color.FromArgb(45, 52, 54);
-            gridItems.DefaultCellStyle.SelectionBackColor = Color.FromArgb(236, 240, 241);
-            gridItems.DefaultCellStyle.SelectionForeColor = Color.Black;
-            gridItems.DefaultCellStyle.Font = new Font("Poppins", 9f, FontStyle.Regular);
-            gridItems.RowTemplate.Height = 45;
-
-            // 5. Delete Button Configuration
-            if (gridItems.Columns.Contains("Delete"))
-            {
-                var deleteCol = (DataGridViewButtonColumn)gridItems.Columns["Delete"];
-                deleteCol.HeaderText = "";
-                deleteCol.Text = "Delete";
-                deleteCol.UseColumnTextForButtonValue = true;
-                deleteCol.Width = 80;
-                deleteCol.FlatStyle = FlatStyle.Flat;
-            }
-
-            // 6. EVENT HANDLERS
-            gridItems.CellFormatting += (s, e) =>
-            {
-                if (e.RowIndex < 0 || e.Value == null) return;
-
-                if (gridItems.Columns[e.ColumnIndex].Name == "Ingreident")
-                {
-                    if (e.Value is Ingredient ing)
-                    {
-                        e.Value = ing.Name;
-                        e.FormattingApplied = true;
-                    }
-                }
-
-                if (gridItems.Columns[e.ColumnIndex].Name == "Quantity")
-                {
-                    var item = gridItems.Rows[e.RowIndex].DataBoundItem as RequestDetails;
-                    if (item != null && item.Ingredient != null)
-                    {
-                        e.Value = $"{e.Value} {item.Ingredient.Unit}";
-
-                        // SHORTAGE PREVENTION UI: Color the text red if they are over the limit
-                        if (item.IsOverLimit)
-                        {
-                            e.CellStyle.ForeColor = Color.Red;
-                            e.CellStyle.SelectionForeColor = Color.Red;
-                        }
-
-                        e.FormattingApplied = true;
-                    }
-                }
-            };
-
-            gridItems.CellPainting += (s, e) =>
-            {
-                if (e.RowIndex >= 0 && gridItems.Columns[e.ColumnIndex].Name == "Delete")
-                {
-                    e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
-                    var buttonRect = new Rectangle(e.CellBounds.X + 5, e.CellBounds.Y + 8, e.CellBounds.Width - 10, e.CellBounds.Height - 16);
-                    var btnColor = Color.FromArgb(255, 235, 238);
-                    var textColor = Color.FromArgb(211, 47, 47);
-
-                    using (var brush = new SolidBrush(btnColor))
-                    {
-                        e.Graphics.FillRectangle(brush, buttonRect);
-                    }
-
-                    TextRenderer.DrawText(e.Graphics, "Delete", e.CellStyle.Font, buttonRect, textColor,
-                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-
-                    e.Handled = true;
-                }
-            };
+            btnSubmit.Enabled = false;
         }
 
         private void CalculateAllowedQuantity()
         {
-            // Update the display based on current numeric inputs
             decimal totalAllowed = numStudentCount.Value * numRecipeCosting.Value;
-            lblAllowedQtyDisplay.Text = $"{totalAllowed:N0} (Limit per Item)";
+            lblAllowedQtyDisplay.Text = $"{totalAllowed:N2} (Limit per Item)";
+
+            foreach (var item in _tempItems)
+            {
+                item.PortionPerStudent = numRecipeCosting.Value;
+                item.AllowedQty = totalAllowed;
+            }
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
+
+        private void btnAdd_Click(object sender, EventArgs e) => OpenIngredientSelector();
+        private void btnViewIngredients_Click(object sender, EventArgs e) => OpenIngredientSelector();
+
+        private void OpenIngredientSelector()
         {
-            var selectedIngredient = cboIngredients.SelectedItem as Ingredient;
-            decimal requestedQty = numAddQty.Value;
-            decimal portion = numRecipeCosting.Value;
-            decimal studentCount = numStudentCount.Value;
-
-            // Validation
-            if (selectedIngredient == null)
+            using (var selector = new frmIngredientSelector(_ingredientService, (int)numStudentCount.Value, _tempItems))
             {
-                MessageBox.Show("Please select an ingredient.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                if (selector.ShowDialog() == DialogResult.OK)
+                {
+                    CalculateAllowedQuantity();
+
+                    bool hasItems = _tempItems.Count > 0;
+                    btnSubmit.Enabled = hasItems;
+                }
             }
-            if (requestedQty <= 0)
-            {
-                MessageBox.Show("Quantity must be greater than zero.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // RATIO ALERT / SHORTAGE PREVENTION
-            decimal allowed = studentCount * portion;
-            if (requestedQty > allowed)
-            {
-                var result = MessageBox.Show(
-                    $"RATIO ALERT!\n\nBased on {studentCount} students and a portion of {portion}, " +
-                    $"the max allowed is {allowed} {selectedIngredient.Unit}.\n\n" +
-                    $"You are requesting {requestedQty}. Do you want to add it anyway? (It will be flagged for review)",
-                    "Shortage Prevention", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-                if (result == DialogResult.No) return;
-            }
-
-            if (_tempItems.Any(x => x.IngredientId == selectedIngredient.IngredientId))
-            {
-                MessageBox.Show("This ingredient is already in the list.", "Duplicate", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Add to list with Calculated AllowedQty
-            _tempItems.Add(new RequestDetails
-            {
-                IngredientId = selectedIngredient.IngredientId,
-                Ingredient = selectedIngredient,
-                PortionPerStudent = portion, // Saving the ratio used
-                RequestedQty = requestedQty,
-                AllowedQty = allowed // Saving the calculated limit
-            });
-
-            cboIngredients.SelectedIndex = -1;
-            numAddQty.Value = 0;
         }
 
         /* private void btnSubmit_Click(object sender, EventArgs e)
@@ -213,6 +76,17 @@ namespace IRIS.Presentation.Window_Forms
                  return;
              }
 
+            var newRequest = new Request
+            {
+                Subject = txtSubject.Text.Trim(),
+                FacultyName = txtFaculty.Text.Trim(),
+                DateOfUse = dtpDateOfUse.Value,
+                StudentCount = (int)numStudentCount.Value,
+                Status = RequestStatus.Pending,
+                EncodedById = UserSession.CurrentUser.UserId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+            };
              var newRequest = new Request
              {
                  Subject = txtSubject.Text.Trim(),
@@ -226,6 +100,15 @@ namespace IRIS.Presentation.Window_Forms
               //   Remarks = txtRemarks.Text.Trim()
              };
 
+            try
+            {
+                var itemsToSave = _tempItems.Select(item => new RequestDetails
+                {
+                    IngredientId = item.IngredientId,
+                    PortionPerStudent = item.PortionPerStudent,
+                    RequestedQty = item.RequestedQty,
+                    AllowedQty = item.AllowedQty
+                }).ToList();
              try
              {
                  // Clean Architecture: Create a fresh list of details that ONLY contains the IDs and values.
@@ -238,9 +121,23 @@ namespace IRIS.Presentation.Window_Forms
                      AllowedQty = item.AllowedQty
                  }).ToList();
 
+                _requestService.CreateRequest(newRequest, itemsToSave);
                  // Pass the clean list to the service
                  _requestService.CreateRequest(newRequest, itemsToSave);
 
+                MessageBox.Show("Request submitted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    errorMessage += "\n\nDATABASE ERROR:\n" + ex.InnerException.Message;
+                }
+                MessageBox.Show(errorMessage, "Error Details", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
                  MessageBox.Show("Request submitted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                  this.DialogResult = DialogResult.OK;
                  this.Close();
@@ -323,43 +220,7 @@ namespace IRIS.Presentation.Window_Forms
         private void btnExitForm_Click(object sender, EventArgs e) => this.Close();
         private void btnCancel_Click(object sender, EventArgs e) => this.Close();
 
-        private void numStudentCount_ValueChanged(object sender, EventArgs e)
-        {
-            CalculateAllowedQuantity();
-            // Optional: Update all existing items in the grid if student count changes
-            foreach (var item in _tempItems)
-            {
-                item.AllowedQty = numStudentCount.Value * item.PortionPerStudent;
-            }
-            gridItems.Refresh();
-        }
-
-        private void numRecipeCosting_ValueChanged(object sender, EventArgs e)
-        {
-            CalculateAllowedQuantity();
-        }
-
-        private void cboIngredients_Format(object sender, ListControlConvertEventArgs e)
-        {
-            if (e.ListItem is Ingredient ingredient)
-            {
-                string qty = $"{ingredient.CurrentStock:N0} {ingredient.Unit}";
-                e.Value = $"{ingredient.Name} - {qty} Avail.";
-            }
-        }
-
-        private void gridItems_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0 && gridItems.Columns[e.ColumnIndex].Name == "Delete")
-            {
-                var result = MessageBox.Show("Are you sure you want to remove this ingredient?",
-                    "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                {
-                    _tempItems.RemoveAt(e.RowIndex);
-                }
-            }
-        }
+        private void numStudentCount_ValueChanged(object sender, EventArgs e) => CalculateAllowedQuantity();
+        private void numRecipeCosting_ValueChanged(object sender, EventArgs e) => CalculateAllowedQuantity();
     }
 }
