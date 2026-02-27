@@ -1,8 +1,8 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using IRIS.Services.Implementations;
-using System.ComponentModel.DataAnnotations; 
-using System.Reflection; 
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using IRIS.Services.Interfaces;
 
 namespace IRIS.Presentation.Window_Forms
@@ -14,12 +14,10 @@ namespace IRIS.Presentation.Window_Forms
         private readonly int _currentUserId;
         private Request _currentRequest;
 
-        private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243);
-        private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60);
-        private readonly Color _cIndigo = Color.Indigo;
-        private readonly INotificationService _notificationService;
         private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243); // Blue
         private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60); // Green
+        private readonly Color _cIndigo = Color.Indigo;
+        private readonly INotificationService _notificationService;
 
         public frmViewRequests(int requestId, RequestService requestService, int currentUserId)
         {
@@ -29,6 +27,7 @@ namespace IRIS.Presentation.Window_Forms
             _currentUserId = currentUserId;
 
             gridItems.SelectionChanged += gridItems_SelectionChanged;
+
             // Grab the Notification Service from your Program.cs container!
             _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
         }
@@ -230,55 +229,6 @@ namespace IRIS.Presentation.Window_Forms
 
         private void btnApprove_Click(object sender, EventArgs e)
         {
-            bool isRelease = btnApprove.Text == "Release";
-            RequestStatus newStatus = isRelease ? RequestStatus.Released : RequestStatus.Approved;
-            string action = isRelease ? "Release" : "Approve";
-        /* private void btnApprove_Click(object sender, EventArgs e)
-         {
-             bool isReleaseAction = btnApprove.Text == "Release";
-             string actionName = isReleaseAction ? "Release" : "Approve";
-             RequestStatus newStatus = isReleaseAction ? RequestStatus.Released : RequestStatus.Approved;
-
-            if (MessageBox.Show($"Confirm {action}?", "Action Required", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                try
-                {
-                    _requestService.UpdateRequestStatus(_requestId, newStatus, txtRemarks.Text, _currentUserId);
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
-                }
-                catch (Exception ex) { MessageBox.Show(ex.Message); }
-            }
-        }
-             if (MessageBox.Show($"Are you sure you want to {actionName} this request?", $"Confirm {actionName}", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-             {
-                 try
-                 {
-                     _requestService.UpdateRequestStatus(_requestId, newStatus, txtRemarks.Text, _currentUserId);
-                     this.DialogResult = DialogResult.OK;
-                     this.Close();
-                 }
-                 catch (Exception ex) { MessageBox.Show(ex.Message); }
-             }
-         }
-
-         private void btnReject_Click(object sender, EventArgs e)
-         {
-             if (string.IsNullOrWhiteSpace(txtRemarks.Text)) { MessageBox.Show("Remarks required."); return; }
-
-             if (MessageBox.Show("Are you sure you want to Reject this request?", "Confirm Rejection", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-             {
-                 try
-                 {
-                     _requestService.UpdateRequestStatus(_requestId, RequestStatus.Rejected, txtRemarks.Text, _currentUserId);
-                     this.DialogResult = DialogResult.OK;
-                     this.Close();
-                 }
-                 catch (Exception ex) { MessageBox.Show(ex.Message); }
-             }
-         }*/
-        private void btnApprove_Click(object sender, EventArgs e)
-        {
             bool isReleaseAction = btnApprove.Text == "Release";
             string actionName = isReleaseAction ? "Release" : "Approve";
             RequestStatus newStatus = isReleaseAction ? RequestStatus.Released : RequestStatus.Approved;
@@ -348,6 +298,7 @@ namespace IRIS.Presentation.Window_Forms
         }
 
         private void btnClose_Click(object sender, EventArgs e) => this.Close();
+
         private void btnExitForm_Click(object sender, EventArgs e) => this.Close();
 
         private string GetEnumDisplayName(Enum enumValue)

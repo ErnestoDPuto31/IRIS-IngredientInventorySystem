@@ -254,7 +254,7 @@
             pnlIngredients.Location = new Point(127, 264);
             pnlIngredients.Name = "pnlIngredients";
             pnlIngredients.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            pnlIngredients.Size = new Size(1400, 560);
+            pnlIngredients.Size = new Size(1400, 753);
             pnlIngredients.TabIndex = 4;
             // 
             // scrlIngredients
@@ -265,13 +265,14 @@
             scrlIngredients.Location = new Point(1506, 264);
             scrlIngredients.Name = "scrlIngredients";
             scrlIngredients.ScrollbarSize = 21;
-            scrlIngredients.Size = new Size(21, 560);
+            scrlIngredients.Size = new Size(21, 753);
             scrlIngredients.TabIndex = 0;
             scrlIngredients.ThumbColor = Color.FromArgb(137, 65, 208);
             scrlIngredients.ThumbSize = 5F;
             // 
             // pnlMainContent
             // 
+            pnlMainContent.AutoScroll = true;
             pnlMainContent.Controls.Add(scrlIngredients);
             pnlMainContent.Controls.Add(guna2GroupBox1);
             pnlMainContent.Controls.Add(pnlIngredients);
@@ -285,7 +286,7 @@
             pnlMainContent.ShadowDecoration.CustomizableEdges = customizableEdges16;
             pnlMainContent.ShadowDecoration.Enabled = true;
             pnlMainContent.ShadowDecoration.Shadow = new Padding(10);
-            pnlMainContent.Size = new Size(1829, 1200);
+            pnlMainContent.Size = new Size(1600, 900);
             pnlMainContent.TabIndex = 5;
             // 
             // InventoryControl
@@ -295,7 +296,7 @@
             BackColor = Color.FromArgb(254, 253, 253);
             Controls.Add(pnlMainContent);
             Name = "InventoryControl";
-            Size = new Size(1829, 1200);
+            Size = new Size(1600, 900);
             Load += Inventory_Load;
             guna2GroupBox1.ResumeLayout(false);
             pnlMainContent.ResumeLayout(false);

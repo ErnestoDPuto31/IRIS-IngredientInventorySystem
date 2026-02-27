@@ -27,9 +27,7 @@ namespace IRIS.Presentation.Window_Forms
             CalculateAllowedQuantity();
             // Grab the Notification Service from your Program.cs container!
             _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
-        }
-
-            btnSubmit.Enabled = false;
+        
         }
 
         private void CalculateAllowedQuantity()

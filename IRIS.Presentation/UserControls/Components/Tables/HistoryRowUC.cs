@@ -63,18 +63,15 @@ namespace IRIS.Presentation.UserControls.Components
             using (Font fSmall = new Font("Segoe UI", 8F))
             using (Pen linePen = new Pen(_cLine, 1))
             {
-                // Bottom Separator Line
                 g.DrawLine(linePen, 20, this.Height - 1, this.Width - 20, this.Height - 1);
 
                 int w = this.Width;
-                string itemName = Data.Ingredient != null ? Data.Ingredient.Name : "Unknown Item";
+                string itemName = Data.IngredientName;
 
                 DrawText(g, itemName, fBold, _cTextMain, 0, w, StringAlignment.Near);
 
-                // Action Pill goes in column 1
                 DrawActionPill(g, 1, w);
 
-                // Format Quantity Changed (Add a + sign if positive)
                 string qtyChange = Data.QuantityChanged > 0 ? $"+{Data.QuantityChanged}" : Data.QuantityChanged.ToString();
                 Color qtyColor = Data.QuantityChanged > 0 ? Color.FromArgb(56, 142, 60) : (Data.QuantityChanged < 0 ? Color.FromArgb(211, 47, 47) : _cTextMain);
                 DrawText(g, qtyChange, fBold, qtyColor, 2, w, StringAlignment.Center);

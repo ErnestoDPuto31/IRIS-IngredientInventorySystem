@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Reflection;
-using Microsoft.EntityFrameworkCore;
+using System.Windows.Forms;
 using IRIS.Domain.Entities;
-using IRIS.Infrastructure.Data;
 
 namespace IRIS.Presentation.UserControls.Components
 {
@@ -15,15 +15,14 @@ namespace IRIS.Presentation.UserControls.Components
         private readonly Color _cBackground = Color.White;
         private readonly Color _cHoverHeader = Color.FromArgb(245, 240, 255);
 
-        // Same weights as the RowUC
         private readonly float[] _colWeights = { 0.25f, 0.15f, 0.15f, 0.10f, 0.10f, 0.25f };
         private readonly string[] _headers = { "Ingredient", "Action", "Qty Changed", "Prev Stock", "New Stock", "Date & Time" };
 
         private readonly int _borderRadius = 15;
         private int _hoveredHeaderIndex = -1;
 
-        private IrisDbContext _context;
-        private List<InventoryLog> _allData = new List<InventoryLog>();
+        // ---> NEW: Let the parent know when the user types in the search bar
+        public event EventHandler<string> OnSearchChanged;
 
         private Panel _headerPanel;
         private FlowLayoutPanel _itemsPanel;
@@ -41,43 +40,32 @@ namespace IRIS.Presentation.UserControls.Components
             InitializeLayout();
         }
 
-        protected override void OnLoad(EventArgs e)
+        // ---> FIX: Removed OnLoad and Database Context Initialization 
+
+        // ---> FIX: Now simply receives data and draws it
+        public void SetData(IEnumerable<InventoryLog> items)
         {
-            base.OnLoad(e);
-            if (!DesignMode)
+            _itemsPanel.SuspendLayout();
+
+            // Clear old rows properly to prevent memory leaks
+            foreach (Control c in _itemsPanel.Controls)
             {
-                LoadData();
+                c.Dispose();
             }
-        }
+            _itemsPanel.Controls.Clear();
 
-        private void InitializeContext()
-        {
-            _context?.Dispose();
+            int rowWidth = _itemsPanel.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
 
-            try
+            foreach (var item in items)
             {
-                var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
-                optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=IRIS_DB;Trusted_Connection=True;");
-                _context = new IrisDbContext(optionsBuilder.Options);
+                var row = new HistoryRowUC(item)
+                {
+                    Width = rowWidth
+                };
+                _itemsPanel.Controls.Add(row);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Connection Error: {ex.Message}");
-            }
-        }
 
-        public void LoadData()
-        {
-            InitializeContext();
-
-            if (_context == null) return;
-
-            var data = _context.InventoryLogs
-                .Include(log => log.Ingredient)
-                .OrderByDescending(log => log.Timestamp)
-                .ToList();
-
-            SetData(data);
+            _itemsPanel.ResumeLayout();
         }
 
         private void InitializeLayout()
@@ -87,55 +75,22 @@ namespace IRIS.Presentation.UserControls.Components
             SetupItemsGrid();
         }
 
-        public void SetData(List<InventoryLog> items)
-        {
-            _allData = items ?? new List<InventoryLog>();
-            string currentSearch = _searchBar != null ? _searchBar.SearchText : "";
-            ApplyFilter(currentSearch);
-        }
-
-        private void ApplyFilter(string query)
-        {
-            _itemsPanel.SuspendLayout();
-
-            while (_itemsPanel.Controls.Count > 0)
-            {
-                var c = _itemsPanel.Controls[0];
-                _itemsPanel.Controls.Remove(c);
-                c.Dispose();
-            }
-
-            var filtered = string.IsNullOrWhiteSpace(query)
-                ? _allData
-                : _allData.Where(x =>
-                    (x.Ingredient != null && x.Ingredient.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                    (x.ActionType != null && x.ActionType.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
-                ).ToList();
-
-            int rowWidth = _itemsPanel.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
-
-            foreach (var item in filtered)
-            {
-                var row = new HistoryRowUC(item)
-                {
-                    Width = rowWidth
-                };
-
-                _itemsPanel.Controls.Add(row);
-            }
-
-            _itemsPanel.ResumeLayout();
-        }
-
         private void SetupSearchBar()
         {
             _searchBar = new SearchBar();
             _searchBar.Location = new Point(this.Width - 365, 15);
             _searchBar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            _searchBar.SearchTextChanged += (s, searchText) => ApplyFilter(searchText);
+
+            // ---> FIX: Pass the search text up to the parent form instead of filtering locally
+            _searchBar.SearchTextChanged += (s, searchText) =>
+            {
+                OnSearchChanged?.Invoke(this, searchText);
+            };
+
             this.Controls.Add(_searchBar);
         }
 
+        // ... (Keep SetupHeaderPanel exactly the same) ...
         private void SetupHeaderPanel()
         {
             _headerPanel = new Panel
@@ -154,6 +109,7 @@ namespace IRIS.Presentation.UserControls.Components
             this.Controls.Add(_headerPanel);
         }
 
+        // ... (Keep SetupItemsGrid exactly the same) ...
         private void SetupItemsGrid()
         {
             _itemsPanel = new FlowLayoutPanel
@@ -173,6 +129,7 @@ namespace IRIS.Presentation.UserControls.Components
             this.Controls.Add(_itemsPanel);
         }
 
+        // ... (Keep OnPaint, HeaderPanel_Paint, HeaderPanel_MouseMove, ResizeRows, GetRoundedPath, EnableDoubleBuffering exactly the same) ...
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -223,9 +180,7 @@ namespace IRIS.Presentation.UserControls.Components
                             g.FillRectangle(bgBrush, currentX, 5, colW, _headerPanel.Height - 10);
                     }
 
-                    // Column 0 (Ingredient Name) is left-aligned. The rest are centered.
                     var align = (i == 0) ? fmtLeft : fmtCenter;
-
                     g.DrawString(_headers[i], font, (i == _hoveredHeaderIndex) ? bHover : bNormal, rect, align);
                     currentX += colW;
                 }

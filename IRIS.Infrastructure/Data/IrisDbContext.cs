@@ -43,7 +43,14 @@ namespace IRIS.Infrastructure.Data
 
             modelBuilder.Entity<Restock>()
                 .Property(r => r.Status)
-                .HasConversion<int>();;
+                .HasConversion<int>();
+
+            modelBuilder.Entity<InventoryLog>()
+                .HasOne(log => log.Ingredient)
+                .WithMany()
+                .HasForeignKey(log => log.IngredientId)
+                .IsRequired(false) 
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

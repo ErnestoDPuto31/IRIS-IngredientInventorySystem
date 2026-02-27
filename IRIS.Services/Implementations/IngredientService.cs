@@ -30,7 +30,9 @@ namespace IRIS.Services.Implementations
         public void UpdateIngredient(Ingredient ingredient)
         {
             var oldIngredient = _context.Ingredients.AsNoTracking().FirstOrDefault(i => i.IngredientId == ingredient.IngredientId);
-            decimal oldStock = oldIngredient != null ? oldIngredient.CurrentStock : 0;
+            if (oldIngredient == null) return;
+
+            decimal oldStock = oldIngredient.CurrentStock;
 
             var local = _context.Ingredients.Local.FirstOrDefault(entry => entry.IngredientId == ingredient.IngredientId);
             if (local != null)
@@ -42,7 +44,12 @@ namespace IRIS.Services.Implementations
             _context.SaveChanges();
 
             decimal quantityChanged = ingredient.CurrentStock - oldStock;
-            if (quantityChanged != 0)
+
+            bool detailsChanged = oldIngredient.Name != ingredient.Name ||
+                                  oldIngredient.Category != ingredient.Category ||
+                                  oldIngredient.MinimumStock != ingredient.MinimumStock;
+
+            if (quantityChanged != 0 || detailsChanged)
             {
                 _logService.LogTransaction(ingredient.IngredientId, "Updated", quantityChanged, oldStock, ingredient.CurrentStock);
             }
@@ -54,10 +61,11 @@ namespace IRIS.Services.Implementations
             if (item != null)
             {
                 decimal stockBeforeDelete = item.CurrentStock;
+                _logService.LogTransaction(ingredientId, "Removed", -stockBeforeDelete, stockBeforeDelete, 0);
 
                 _context.Ingredients.Remove(item);
                 _context.SaveChanges();
-                _logService.LogTransaction(ingredientId, "Removed", -stockBeforeDelete, stockBeforeDelete, 0);
+
             }
         }
 

@@ -8,11 +8,13 @@ namespace IRIS.Domain.Entities
         [Key]
         public int InventoryLogId { get; set; }
 
-        [Required]
-        public int IngredientId { get; set; }
+        public int? IngredientId { get; set; }
+
+        [Required, MaxLength(100)]
+        public string IngredientName { get; set; } = string.Empty;
 
         [Required, MaxLength(50)]
-        public string ActionType { get; set; } 
+        public string ActionType { get; set; }
 
         [Required]
         public decimal QuantityChanged { get; set; }
