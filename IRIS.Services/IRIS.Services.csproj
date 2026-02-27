@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="QuestPDF" Version="2026.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\IRIS.Domain\IRIS.Domain.csproj" />
     <ProjectReference Include="..\IRIS.Infrastructure\IRIS.Infrastructure.csproj" />
   </ItemGroup>
