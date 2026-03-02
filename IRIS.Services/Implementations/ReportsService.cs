@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks; // Added this!
 
 namespace IRIS.Services.Implementations
 {
@@ -20,26 +21,33 @@ namespace IRIS.Services.Implementations
         }
 
         // --- CARDS ---
-        public int GetTotalIngredients() => _context.Ingredients.Count();
-        public int GetTotalRequests() => _context.Requests.Count();
-        public int GetTotalTransactions() => _context.Requests.Count(r => r.Status == RequestStatus.Released);
+        // Notice the return type is now Task<int>
+        public async Task<int> GetTotalIngredientsAsync() => await _context.Ingredients.CountAsync();
 
-        public double GetApprovalRate()
+        public async Task<int> GetTotalRequestsAsync() => await _context.Requests.CountAsync();
+
+        public async Task<int> GetTotalTransactionsAsync() =>
+            await _context.Requests.CountAsync(r => r.Status == RequestStatus.Released);
+
+        public async Task<double> GetApprovalRateAsync()
         {
-            var total = _context.Requests.Count();
+            var total = await _context.Requests.CountAsync();
             if (total == 0) return 0.0;
-            var approved = _context.Requests.Count(r => r.Status == RequestStatus.Approved || r.Status == RequestStatus.Released);
+
+            var approved = await _context.Requests.CountAsync(r =>
+                r.Status == RequestStatus.Approved || r.Status == RequestStatus.Released);
+
             return Math.Round((double)approved / total * 100, 1);
         }
 
         // --- CHARTS (NEW LOGIC) ---
 
-        public Dictionary<string, double> GetInventoryStats()
+        public async Task<Dictionary<string, double>> GetInventoryStatsAsync()
         {
-            // Logic: Compare CurrentStock vs MinimumStock
-            var empty = _context.Ingredients.Count(i => i.CurrentStock <= 0);
-            var low = _context.Ingredients.Count(i => i.CurrentStock > 0 && i.CurrentStock < i.MinimumStock);
-            var full = _context.Ingredients.Count(i => i.CurrentStock >= i.MinimumStock);
+            // By awaiting these, they happen much faster without locking the thread
+            var empty = await _context.Ingredients.CountAsync(i => i.CurrentStock <= 0);
+            var low = await _context.Ingredients.CountAsync(i => i.CurrentStock > 0 && i.CurrentStock < i.MinimumStock);
+            var full = await _context.Ingredients.CountAsync(i => i.CurrentStock >= i.MinimumStock);
 
             return new Dictionary<string, double>
             {
@@ -49,24 +57,21 @@ namespace IRIS.Services.Implementations
             };
         }
 
-        public Dictionary<string, double> GetRequestStats()
+        public async Task<Dictionary<string, double>> GetRequestStatsAsync()
         {
-            // Group by Status Enum
-            return _context.Requests
+            return await _context.Requests
                 .GroupBy(r => r.Status)
                 .Select(g => new { Status = g.Key, Count = g.Count() })
-                .ToDictionary(x => x.Status.ToString(), x => (double)x.Count);
+                .ToDictionaryAsync(x => x.Status.ToString(), x => (double)x.Count);
         }
 
-        public Dictionary<string, double> GetCategoryStats()
+        public async Task<Dictionary<string, double>> GetCategoryStatsAsync()
         {
-            // STEP 1: Bring the grouped data into C# memory
-            var rawStats = _context.Ingredients
+            var rawStats = await _context.Ingredients
                 .GroupBy(i => i.Category)
                 .Select(g => new { Cat = g.Key, Count = g.Count() })
-                .ToList();
+                .ToListAsync();
 
-            // STEP 2: Since Cat is definitely an enum, just call your helper directly!
             return rawStats.ToDictionary(
                 x => x.Cat.GetDisplayName(),
                 x => (double)x.Count
@@ -74,26 +79,28 @@ namespace IRIS.Services.Implementations
         }
 
         // --- NEW: Table Implementation ---
-        public List<Request> GetRecentTransactions()
+        public async Task<List<Request>> GetRecentTransactionsAsync()
         {
-            return _context.Requests
+            return await _context.Requests
                 .AsNoTracking()
-                .Include(r => r.EncodedBy) // Corrected: Use 'EncodedBy' navigation property
-                .OrderByDescending(r => r.CreatedAt) // Corrected: Use 'CreatedAt'
+                .Include(r => r.EncodedBy)
+                .OrderByDescending(r => r.CreatedAt)
                 .Take(10)
-                .ToList();
+                .ToListAsync();
         }
 
-        public List<IRIS.Domain.Entities.LowStockItem> GetLowStockIngredients()
+        public async Task<List<LowStockItem>> GetLowStockIngredientsAsync()
         {
-            return _context.Ingredients
+            var lowStockDb = await _context.Ingredients
                 .AsNoTracking()
                 .Where(i => i.CurrentStock < i.MinimumStock)
                 .Select(i => new { i.Name, i.Category, i.CurrentStock, i.MinimumStock, i.Unit })
-                .AsEnumerable()
-                .Select(i => new IRIS.Domain.Entities.LowStockItem(
+                .ToListAsync();
+
+            return lowStockDb
+                .Select(i => new LowStockItem(
                     i.Name ?? "Unknown",
-                    i.Category.ToString(), 
+                    i.Category.ToString(),
                     (float)i.CurrentStock,
                     (float)i.MinimumStock,
                     i.Unit ?? "pcs"
@@ -101,16 +108,14 @@ namespace IRIS.Services.Implementations
                 .ToList();
         }
 
-        public List<TopIngredientItem> GetTopUsedIngredients(int count = 5)
+        public async Task<List<TopIngredientItem>> GetTopUsedIngredientsAsync(int count = 5)
         {
-            // We are now querying RequestDetails to see what people are asking for
-            var topUsed = _context.Set<RequestDetails>()
+            return await _context.Set<RequestDetails>()
                 .AsNoTracking()
                 .GroupBy(req => req.IngredientId)
                 .Select(group => new
                 {
                     IngredientId = group.Key,
-                    // Summing up the RequestedQty from all requests
                     TotalUsedAmount = group.Sum(r => r.RequestedQty)
                 })
                 .OrderByDescending(x => x.TotalUsedAmount)
@@ -122,13 +127,10 @@ namespace IRIS.Services.Implementations
                       {
                           Name = ingredient.Name ?? "Unknown",
                           Category = ingredient.Category.ToString(),
-                          // We still put it in the "TotalUsed" property so it matches your UI table
                           TotalUsed = req.TotalUsedAmount,
                           Unit = ingredient.Unit ?? "pcs"
                       })
-                .ToList();
-
-            return topUsed;
+                .ToListAsync();
         }
     }
 }

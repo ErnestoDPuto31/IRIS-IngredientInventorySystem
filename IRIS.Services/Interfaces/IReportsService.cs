@@ -1,22 +1,22 @@
 ﻿using IRIS.Domain.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks; 
 
 namespace IRIS.Services.Interfaces
 {
     public interface IReportsService
     {
-        // Card Data
-        int GetTotalIngredients();
-        int GetTotalRequests();
-        int GetTotalTransactions();
-        double GetApprovalRate();
+        Task<int> GetTotalIngredientsAsync();
+        Task<int> GetTotalRequestsAsync();
+        Task<int> GetTotalTransactionsAsync();
+        Task<double> GetApprovalRateAsync();
 
-        // Chart Data (Add these!)
-        Dictionary<string, double> GetInventoryStats();
-        Dictionary<string, double> GetRequestStats();
-        Dictionary<string, double> GetCategoryStats();
-        List<Request> GetRecentTransactions();
-        List<LowStockItem> GetLowStockIngredients();
-        List<TopIngredientItem> GetTopUsedIngredients(int count = 5);
+        Task<Dictionary<string, double>> GetInventoryStatsAsync();
+        Task<Dictionary<string, double>> GetRequestStatsAsync();
+        Task<Dictionary<string, double>> GetCategoryStatsAsync();
+
+        Task<List<Request>> GetRecentTransactionsAsync();
+        Task<List<LowStockItem>> GetLowStockIngredientsAsync();
+        Task<List<TopIngredientItem>> GetTopUsedIngredientsAsync(int count = 5);
     }
 }

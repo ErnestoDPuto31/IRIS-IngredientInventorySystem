@@ -5,8 +5,9 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading.Tasks; // <-- Required for async/await
 using System.Windows.Forms;
-using IRIS.Presentation.Properties; // Ensure this points to your actual resources
+using IRIS.Presentation.Properties;
 
 namespace IRIS.Presentation.UserControls.Components
 {
@@ -48,7 +49,13 @@ namespace IRIS.Presentation.UserControls.Components
             {
                 _cardType = value;
                 UpdateCardDesign();
-                if (!DesignMode) LoadData();
+
+                // Fire and forget the async load if we are running the actual app
+                if (!DesignMode)
+                {
+                    _ = LoadDataAsync();
+                }
+
                 this.Invalidate();
             }
         }
@@ -75,7 +82,8 @@ namespace IRIS.Presentation.UserControls.Components
             UpdateCardDesign();
         }
 
-        protected override void OnLoad(EventArgs e)
+        // Converted to async void so we can await the data
+        protected override async void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
@@ -90,11 +98,11 @@ namespace IRIS.Presentation.UserControls.Components
             if (_requestService == null) _requestService = ServiceFactory.GetRequestService();
             if (_ingredientService == null) _ingredientService = ServiceFactory.GetIngredientService();
 
-            LoadData();
+            await LoadDataAsync();
         }
 
-        // --- DATA LOGIC (ONLY TEXT/NUMBERS HERE) ---
-        public void LoadData()
+        // --- DATA LOGIC (NOW ASYNCHRONOUS) ---
+        public async Task LoadDataAsync()
         {
             if (this.DesignMode || _reportsService == null) return;
 
@@ -103,31 +111,38 @@ namespace IRIS.Presentation.UserControls.Components
                 switch (_cardType)
                 {
                     case CardType.TotalIngredients:
-                        _numberText = _reportsService.GetTotalIngredients().ToString();
+                        var totalIng = await _reportsService.GetTotalIngredientsAsync();
+                        _numberText = totalIng.ToString();
                         _subtitleText = "Items in inventory";
                         break;
                     case CardType.TotalRequests:
-                        _numberText = _reportsService.GetTotalRequests().ToString();
+                        var totalReq = await _reportsService.GetTotalRequestsAsync();
+                        _numberText = totalReq.ToString();
                         _subtitleText = "All time requests";
                         break;
                     case CardType.TotalTransactions:
-                        _numberText = _reportsService.GetTotalTransactions().ToString();
+                        var totalTrans = await _reportsService.GetTotalTransactionsAsync();
+                        _numberText = totalTrans.ToString();
                         _subtitleText = "Completed movements";
                         break;
                     case CardType.ApprovalRate:
-                        _numberText = $"{_reportsService.GetApprovalRate()}%";
+                        var appRate = await _reportsService.GetApprovalRateAsync();
+                        _numberText = $"{appRate}%";
                         _subtitleText = "Request approval ratio";
                         break;
                     default:
                         _numberText = "0";
                         break;
                 }
+
+                // Redraw the card now that we have the actual numbers
                 this.Invalidate();
             }
             catch
             {
                 _numberText = "-";
                 _subtitleText = "Error loading data";
+                this.Invalidate();
             }
         }
 
