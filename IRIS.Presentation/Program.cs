@@ -31,6 +31,7 @@ namespace IRIS.Presentation
             );
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRequestService, RequestService>();
+            services.AddScoped<IReportsService, ReportsService>();
             Services = services.BuildServiceProvider();
 
             // Seed database safely
