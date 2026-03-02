@@ -95,10 +95,8 @@ namespace IRIS.Services.Implementations
                 .AsNoTracking()
                 .Where(i => i.CurrentStock < i.MinimumStock)
                 .Select(i => new { i.Name, i.Category, i.CurrentStock, i.MinimumStock, i.Unit })
-                .ToListAsync();
-
-            return lowStockDb
-                .Select(i => new LowStockItem(
+                .AsEnumerable()
+                .Select(i => new IRIS.Domain.Entities.LowStockItem( 
                     i.Name ?? "Unknown",
                     i.Category.ToString(),
                     (float)i.CurrentStock,
@@ -127,6 +125,7 @@ namespace IRIS.Services.Implementations
                       {
                           Name = ingredient.Name ?? "Unknown",
                           Category = ingredient.Category.ToString(),
+                              // We still put it in the "TotalUsed" property so it matches your UI table
                           TotalUsed = req.TotalUsedAmount,
                           Unit = ingredient.Unit ?? "pcs"
                       })

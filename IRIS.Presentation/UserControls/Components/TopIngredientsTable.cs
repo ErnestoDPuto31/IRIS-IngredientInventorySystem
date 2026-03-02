@@ -14,7 +14,7 @@ namespace IRIS.Presentation.UserControls.Components
         private readonly Color cardBackground = Color.White;
         private readonly Color defaultRowColor = Color.White;
         private readonly Color alternateRowColor = Color.FromArgb(246, 248, 252);
-        private readonly Color hoverRowColor = Color.FromArgb(230, 238, 255);
+        private readonly Color hoverRowColor = Color.FromArgb(252, 250, 255); 
 
         private Label lblSubtitle;
 
@@ -116,7 +116,7 @@ namespace IRIS.Presentation.UserControls.Components
             dgvTopIngredients.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(70, 80, 100);
             dgvTopIngredients.ColumnHeadersDefaultCellStyle.Font =
                 new Font("Segoe UI Semibold", 10.5F);
-            dgvTopIngredients.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.White;
+            dgvTopIngredients.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(252, 250, 255);
             dgvTopIngredients.ColumnHeadersHeight = 48;
             dgvTopIngredients.ColumnHeadersDefaultCellStyle.Padding =
                 new Padding(12, 0, 12, 0);
