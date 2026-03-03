@@ -13,7 +13,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
         {
             if (disposing && (components != null))
             {
-               
+
             }
             components.Dispose();
             base.Dispose(disposing);
@@ -25,7 +25,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReportsControl));
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             pnlMain = new Panel();
             label1 = new Label();
             label2 = new Label();
@@ -84,7 +84,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             label2.AutoSize = true;
             label2.Font = new Font("Poppins", 13.8F);
             label2.ForeColor = SystemColors.ControlDarkDark;
-            label2.Location = new Point(106, 93);
+            label2.Location = new Point(107, 95);
             label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
             label2.Size = new Size(504, 40);
@@ -110,11 +110,11 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btnExportPDF.ColorContrastOnClick = 45;
             btnExportPDF.ColorContrastOnHover = 45;
             btnExportPDF.Cursor = Cursors.Hand;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            btnExportPDF.CustomizableEdges = borderEdges1;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            btnExportPDF.CustomizableEdges = borderEdges2;
             btnExportPDF.DialogResult = DialogResult.None;
             btnExportPDF.DisabledBorderColor = Color.FromArgb(191, 191, 191);
             btnExportPDF.DisabledFillColor = Color.Empty;
@@ -140,7 +140,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btnExportPDF.IdleIconLeftImage = null;
             btnExportPDF.IdleIconRightImage = null;
             btnExportPDF.IndicateFocus = false;
-            btnExportPDF.Location = new Point(1384, 53);
+            btnExportPDF.Location = new Point(1384, 89);
             btnExportPDF.Margin = new Padding(2);
             btnExportPDF.Name = "btnExportPDF";
             btnExportPDF.OnDisabledState.BorderColor = Color.FromArgb(191, 191, 191);
@@ -221,11 +221,11 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // 
             // chartInventoryCanvas
             // 
-            chartInventoryCanvas.AnimationDuration = 950;
+            chartInventoryCanvas.AnimationDuration = 550;
             chartInventoryCanvas.AnimationType = Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuart;
             chartInventoryCanvas.AutoRender = true;
             chartInventoryCanvas.BackColor = Color.Transparent;
-            chartInventoryCanvas.CanvasPadding = new Padding(20, 20, 20, 85);
+            chartInventoryCanvas.CanvasPadding = new Padding(60, 10, 10, 25);
             chartInventoryCanvas.Font = new Font("Poppins", 30F, FontStyle.Bold);
             chartInventoryCanvas.Labels = null;
             chartInventoryCanvas.LegendAlignment = Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.center;
@@ -281,11 +281,11 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // 
             // chartRequestsCanvas
             // 
-            chartRequestsCanvas.AnimationDuration = 950;
+            chartRequestsCanvas.AnimationDuration = 550;
             chartRequestsCanvas.AnimationType = Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuart;
             chartRequestsCanvas.AutoRender = true;
             chartRequestsCanvas.BackColor = Color.Transparent;
-            chartRequestsCanvas.CanvasPadding = new Padding(20, 20, 20, 85);
+            chartRequestsCanvas.CanvasPadding = new Padding(60, 10, 10, 25);
             chartRequestsCanvas.Font = new Font("Poppins", 30F, FontStyle.Bold);
             chartRequestsCanvas.Labels = null;
             chartRequestsCanvas.LegendAlignment = Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.center;
@@ -296,7 +296,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartRequestsCanvas.LegendPosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
             chartRequestsCanvas.LegendRevese = false;
             chartRequestsCanvas.LegendRTL = false;
-            chartRequestsCanvas.Location = new Point(825, 299);
+            chartRequestsCanvas.Location = new Point(825, 300);
             chartRequestsCanvas.Margin = new Padding(4);
             chartRequestsCanvas.Name = "chartRequestsCanvas";
             chartRequestsCanvas.ShowXAxis = false;
@@ -341,11 +341,11 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // 
             // chartBarCanvas
             // 
-            chartBarCanvas.AnimationDuration = 950;
+            chartBarCanvas.AnimationDuration = 550;
             chartBarCanvas.AnimationType = Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuart;
             chartBarCanvas.AutoRender = true;
             chartBarCanvas.BackColor = Color.Transparent;
-            chartBarCanvas.CanvasPadding = new Padding(0, 0, 0, 110);
+            chartBarCanvas.CanvasPadding = new Padding(30, 0, 30, 110);
             chartBarCanvas.Font = new Font("Poppins", 30F, FontStyle.Bold);
             chartBarCanvas.Labels = null;
             chartBarCanvas.LegendAlignment = Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.center;
@@ -356,12 +356,12 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartBarCanvas.LegendPosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
             chartBarCanvas.LegendRevese = false;
             chartBarCanvas.LegendRTL = false;
-            chartBarCanvas.Location = new Point(102, 667);
+            chartBarCanvas.Location = new Point(102, 643);
             chartBarCanvas.Margin = new Padding(4);
             chartBarCanvas.Name = "chartBarCanvas";
             chartBarCanvas.ShowXAxis = true;
             chartBarCanvas.ShowYAxis = true;
-            chartBarCanvas.Size = new Size(1379, 520);
+            chartBarCanvas.Size = new Size(1402, 520);
             chartBarCanvas.TabIndex = 8;
             chartBarCanvas.Title = "Ingredients by Category";
             chartBarCanvas.TitleLineHeight = 1.2D;
@@ -403,7 +403,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // 
             lowStockControl.BackColor = Color.White;
             lowStockControl.Font = new Font("Segoe UI", 9.75F);
-            lowStockControl.Location = new Point(110, 1256);
+            lowStockControl.Location = new Point(110, 1540);
             lowStockControl.Margin = new Padding(8);
             lowStockControl.Name = "lowStockControl";
             lowStockControl.Padding = new Padding(1);
@@ -414,7 +414,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // 
             topIngredientsControl.BackColor = Color.White;
             topIngredientsControl.Font = new Font("Segoe UI", 9.75F);
-            topIngredientsControl.Location = new Point(110, 1632);
+            topIngredientsControl.Location = new Point(110, 1150);
             topIngredientsControl.Margin = new Padding(8);
             topIngredientsControl.Name = "topIngredientsControl";
             topIngredientsControl.Padding = new Padding(1);
