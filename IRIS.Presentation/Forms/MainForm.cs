@@ -120,19 +120,27 @@ namespace IRIS.Presentation.Forms
         {
             lblDate.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy - hh:mm tt");
         }
-
-        public void LoadPage(UserControl page)
+        public void LoadPage(UserControl newPage)
         {
-            if (pnlMainContent.Controls.Count > 0)
+            // Don't reload if it's the same type as current page
+            if (pnlMainContent.Controls.Count > 0 &&
+                pnlMainContent.Controls[0].GetType() == newPage.GetType())
             {
-                pnlMainContent.Controls.Clear();
+                return; // Already showing this page
             }
 
-            page.Dock = DockStyle.Fill;
-            pnlMainContent.Controls.Add(page);
-            page.BringToFront();
-        }
+            // Clear existing controls
+            while (pnlMainContent.Controls.Count > 0)
+            {
+                var oldControl = pnlMainContent.Controls[0];
+                pnlMainContent.Controls.Remove(oldControl);
 
+                oldControl?.Dispose();
+            }
+
+            newPage.Dock = DockStyle.Fill;
+            pnlMainContent.Controls.Add(newPage);
+        }
         private void btnExit_Click(object sender, EventArgs e)
         {
             this.Close();
