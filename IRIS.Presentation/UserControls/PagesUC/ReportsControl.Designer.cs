@@ -25,7 +25,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReportsControl));
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             pnlMain = new Panel();
             label1 = new Label();
             label2 = new Label();
@@ -110,11 +110,11 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btnExportPDF.ColorContrastOnClick = 45;
             btnExportPDF.ColorContrastOnHover = 45;
             btnExportPDF.Cursor = Cursors.Hand;
-            borderEdges2.BottomLeft = true;
-            borderEdges2.BottomRight = true;
-            borderEdges2.TopLeft = true;
-            borderEdges2.TopRight = true;
-            btnExportPDF.CustomizableEdges = borderEdges2;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            btnExportPDF.CustomizableEdges = borderEdges1;
             btnExportPDF.DialogResult = DialogResult.None;
             btnExportPDF.DisabledBorderColor = Color.FromArgb(191, 191, 191);
             btnExportPDF.DisabledFillColor = Color.Empty;
@@ -182,6 +182,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btnExportPDF.TextMarginLeft = 0;
             btnExportPDF.TextPadding = new Padding(0);
             btnExportPDF.UseDefaultRadiusAndThickness = true;
+            btnExportPDF.Click += btnExportPDF_Click_1;
             // 
             // TotalIngredientsCard
             // 
@@ -189,6 +190,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             TotalIngredientsCard.Location = new Point(110, 146);
             TotalIngredientsCard.Margin = new Padding(2);
             TotalIngredientsCard.Name = "TotalIngredientsCard";
+            TotalIngredientsCard.Padding = new Padding(10);
             TotalIngredientsCard.Size = new Size(330, 130);
             TotalIngredientsCard.TabIndex = 2;
             // 
@@ -198,6 +200,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             TotalRequestCard.Location = new Point(1174, 146);
             TotalRequestCard.Margin = new Padding(2);
             TotalRequestCard.Name = "TotalRequestCard";
+            TotalRequestCard.Padding = new Padding(10);
             TotalRequestCard.Size = new Size(330, 130);
             TotalRequestCard.TabIndex = 3;
             // 
@@ -207,6 +210,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             ApprovalRateCard.Location = new Point(470, 146);
             ApprovalRateCard.Margin = new Padding(2);
             ApprovalRateCard.Name = "ApprovalRateCard";
+            ApprovalRateCard.Padding = new Padding(10);
             ApprovalRateCard.Size = new Size(330, 130);
             ApprovalRateCard.TabIndex = 4;
             // 
@@ -216,6 +220,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             TotalTransactionsCard.Location = new Point(821, 146);
             TotalTransactionsCard.Margin = new Padding(2);
             TotalTransactionsCard.Name = "TotalTransactionsCard";
+            TotalTransactionsCard.Padding = new Padding(10);
             TotalTransactionsCard.Size = new Size(330, 130);
             TotalTransactionsCard.TabIndex = 5;
             // 

@@ -1,8 +1,12 @@
 ﻿using FontAwesome.Sharp;
+using IRIS.Domain.Contracts;
+using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
+using IRIS.Domain.Helpers;
+using IRIS.Presentation.DependencyInjection;
+using IRIS.Presentation.Helpers;
 using IRIS.Presentation.UserControls.Components;
 using IRIS.Services.Interfaces;
-using IRIS.Presentation.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -71,6 +75,10 @@ namespace IRIS.Presentation.UserControls.PagesUC
             {
                 _isLoading = false;
             }
+        }
+        private void btnExportPDF_Click(object sender, EventArgs e)
+        {
+          
         }
 
         private void LoadTable(IReportsService reportsService)
@@ -209,6 +217,37 @@ namespace IRIS.Presentation.UserControls.PagesUC
             {
                 MessageBox.Show("Error loading charts: " + ex.Message);
             }
+        }
+
+        private void btnExportPDF_Click_1(object sender, EventArgs e)
+        {
+            var reportsService = GetReportsService();
+            if (reportsService == null) return;
+
+            using var sfd = new SaveFileDialog
+            {
+                Filter = "PDF files (*.pdf)|*.pdf",
+                FileName = $"IRIS_Reports_{DateTime.Now:yyyyMMdd_HHmm}.pdf"
+            };
+            if (sfd.ShowDialog() != DialogResult.OK) return;
+
+            byte[]? logoPng = null;
+            try { logoPng = ExportPdf.ImageToPngBytes(IRIS.Presentation.Properties.Resources.IRIS_Logo); } catch { }
+
+            ExportPdf.ExportAndRevealInExplorer(
+                filePath: sfd.FileName,
+                exportedBy: UserSession.CurrentUser.Role.ToString(), // <-- CHANGE THIS LINE ONLY
+                totalIngredients: reportsService.GetTotalIngredients(),
+                totalRequests: reportsService.GetTotalRequests(),
+                totalTransactions: reportsService.GetTotalTransactions(),
+                approvalRate: reportsService.GetApprovalRate(),
+                inventoryStats: reportsService.GetInventoryStats(),
+                requestStats: reportsService.GetRequestStats(),
+                categoryStats: reportsService.GetCategoryStats(),
+                topIngredients: reportsService.GetTopUsedIngredients(5),
+                lowStock: reportsService.GetLowStockIngredients(),
+                irisLogoPng: logoPng
+            );
         }
     }
 }
