@@ -146,7 +146,7 @@ namespace IRIS.Presentation.UserControls.Components
                 case CardType.TotalIngredients:
                     _titleText = "Total Ingredients";
                     _accentColor = Color.FromArgb(124, 58, 237); // purple
-                    _currentIcon = Resources.icons8_cardboard_box_100;
+                    _currentIcon = Resources.total;
                     break;
 
                 case CardType.TotalRequests:

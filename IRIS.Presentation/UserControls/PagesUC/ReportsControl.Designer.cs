@@ -159,7 +159,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btnExportPDF.onHoverState.ForeColor = Color.White;
             btnExportPDF.onHoverState.IconLeftImage = null;
             btnExportPDF.onHoverState.IconRightImage = null;
-            btnExportPDF.OnIdleState.BorderColor = Color.DodgerBlue;
+            btnExportPDF.OnIdleState.BorderColor = Color.Gray;
             btnExportPDF.OnIdleState.BorderRadius = 1;
             btnExportPDF.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             btnExportPDF.OnIdleState.BorderThickness = 1;
@@ -191,7 +191,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             TotalIngredientsCard.Margin = new Padding(2);
             TotalIngredientsCard.Name = "TotalIngredientsCard";
             TotalIngredientsCard.Padding = new Padding(10);
-            TotalIngredientsCard.Size = new Size(330, 130);
+            TotalIngredientsCard.Size = new Size(330, 133);
             TotalIngredientsCard.TabIndex = 2;
             // 
             // TotalRequestCard
@@ -201,7 +201,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             TotalRequestCard.Margin = new Padding(2);
             TotalRequestCard.Name = "TotalRequestCard";
             TotalRequestCard.Padding = new Padding(10);
-            TotalRequestCard.Size = new Size(330, 130);
+            TotalRequestCard.Size = new Size(330, 133);
             TotalRequestCard.TabIndex = 3;
             // 
             // ApprovalRateCard
@@ -211,7 +211,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             ApprovalRateCard.Margin = new Padding(2);
             ApprovalRateCard.Name = "ApprovalRateCard";
             ApprovalRateCard.Padding = new Padding(10);
-            ApprovalRateCard.Size = new Size(330, 130);
+            ApprovalRateCard.Size = new Size(330, 133);
             ApprovalRateCard.TabIndex = 4;
             // 
             // TotalTransactionsCard
@@ -221,7 +221,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             TotalTransactionsCard.Margin = new Padding(2);
             TotalTransactionsCard.Name = "TotalTransactionsCard";
             TotalTransactionsCard.Padding = new Padding(10);
-            TotalTransactionsCard.Size = new Size(330, 130);
+            TotalTransactionsCard.Size = new Size(330, 133);
             TotalTransactionsCard.TabIndex = 5;
             // 
             // chartInventoryCanvas
