@@ -39,7 +39,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(components);
             pnlMainContent = new Panel();
-            navigationPanel1 = new IRIS.Presentation.UserControls.NavigationPanel();
+            navigationPanel = new IRIS.Presentation.UserControls.NavigationPanel();
             pnlTop = new Guna.UI2.WinForms.Guna2Panel();
             notificationBadge1 = new IRIS.Presentation.UserControls.Components.NotificationBadge();
             lblDate = new Label();
@@ -65,14 +65,13 @@
             pnlMainContent.Size = new Size(1600, 804);
             pnlMainContent.TabIndex = 1;
             // 
-            // navigationPanel1
+            // navigationPanel
             // 
-            navigationPanel1.BackColor = Color.Indigo;
-            navigationPanel1.Location = new Point(0, 30);
-            navigationPanel1.Margin = new Padding(5, 4, 5, 4);
-            navigationPanel1.Name = "navigationPanel1";
-            navigationPanel1.Size = new Size(59, 870);
-            navigationPanel1.TabIndex = 0;
+            navigationPanel.BackColor = Color.Indigo;
+            navigationPanel.Location = new Point(0, 0);
+            navigationPanel.Name = "navigationPanel";
+            navigationPanel.Size = new Size(60, 909);
+            navigationPanel.TabIndex = 0;
             // 
             // pnlTop
             // 
@@ -172,7 +171,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1600, 900);
-            Controls.Add(navigationPanel1);
+            Controls.Add(navigationPanel);
             Controls.Add(guna2Panel1);
             Controls.Add(pnlTop);
             Controls.Add(pnlMainContent);
@@ -191,12 +190,14 @@
 
         private Guna.UI2.WinForms.Guna2BorderlessForm guna2BorderlessForm1;
         private Panel pnlMainContent;
-        private UserControls.NavigationPanel navigationPanel1;
         private Guna.UI2.WinForms.Guna2Panel pnlTop;
         private Label lblDate;
         private Guna.UI2.WinForms.Guna2TextBox txtRole;
         private Guna.UI2.WinForms.Guna2ImageButton btnExit;
         private UserControls.Components.NotificationBadge notificationBadge1;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
+        private UserControls.NavigationPanel navigationPanel1;
+        private UserControls.NavigationPanel navigationPanel2;
+        private UserControls.NavigationPanel navigationPanel;
     }
 }

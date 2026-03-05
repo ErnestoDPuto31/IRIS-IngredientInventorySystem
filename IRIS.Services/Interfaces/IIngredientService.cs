@@ -7,6 +7,7 @@ namespace IRIS.Services.Interfaces
     public interface IIngredientService
     {
         IEnumerable<Ingredient> GetAllIngredients();
+        int GetLowStockCount();
         int AddIngredient(Ingredient ingredient);
         void UpdateIngredient(Ingredient ingredient);
         void DeleteIngredient(int ingredientId);

@@ -149,5 +149,11 @@ namespace IRIS.Services.Implementations
                 }
             }
         }
+
+        public int GetApprovedRequestCount()
+        {
+            return _context.Requests.Count(r =>
+                r.Status == RequestStatus.Approved);
+        }
     }
 }

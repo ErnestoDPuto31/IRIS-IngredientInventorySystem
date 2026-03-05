@@ -4,7 +4,6 @@ using IRIS.Services.Implementations;
 using IRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Syncfusion.Licensing;
 
 namespace IRIS.Presentation
 {
@@ -32,6 +31,8 @@ namespace IRIS.Presentation
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRequestService, RequestService>();
             services.AddScoped<IReportsService, ReportsService>();
+            services.AddScoped<IInventoryLogService, InventoryLogService>();
+            services.AddScoped<IIngredientService, IngredientService>();
             Services = services.BuildServiceProvider();
 
             // Seed database safely

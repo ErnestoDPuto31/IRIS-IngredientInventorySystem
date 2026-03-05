@@ -1,5 +1,6 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Presentation.UserControls.Components;
+using IRIS.Domain.Helpers; // <--- Added this namespace
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,7 +13,6 @@ namespace IRIS.Presentation.UserControls.Components.Tables
 {
     public partial class IngredientTableUC : UserControl
     {
-        // Fires up to the main Form when a row's Select button is clicked
         public event EventHandler<Ingredient> IngredientSelected;
 
         private readonly Color _cIndigo = Color.FromArgb(75, 0, 130);
@@ -33,7 +33,6 @@ namespace IRIS.Presentation.UserControls.Components.Tables
 
         public IngredientTableUC()
         {
-            this.Size = new Size(900, 500); // Slightly smaller default for a popup
             this.BackColor = _cBackground;
             this.Padding = new Padding(25);
             this.DoubleBuffered = true;
@@ -48,7 +47,6 @@ namespace IRIS.Presentation.UserControls.Components.Tables
             SetupItemsGrid();
         }
 
-        // The popup form will pass the data into this control
         public void SetData(List<Ingredient> items)
         {
             _allData = items ?? new List<Ingredient>();
@@ -71,7 +69,7 @@ namespace IRIS.Presentation.UserControls.Components.Tables
                 ? _allData
                 : _allData.Where(x =>
                     (x.Name != null && x.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                    (x.Category.ToString().IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                    (x.Category.GetDisplayName().IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
                 ).ToList();
 
             int rowWidth = _itemsPanel.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
@@ -83,7 +81,6 @@ namespace IRIS.Presentation.UserControls.Components.Tables
                     Width = rowWidth
                 };
 
-                // Catch the row's click and bubble it up to the Form
                 row.SelectClicked += (s, ingredient) => IngredientSelected?.Invoke(this, ingredient);
                 _itemsPanel.Controls.Add(row);
             }

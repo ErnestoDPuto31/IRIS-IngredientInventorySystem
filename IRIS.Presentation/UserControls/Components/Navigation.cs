@@ -230,7 +230,14 @@ namespace IRIS.Presentation.UserControls
         }
 
         // --- Event Handlers ---
-        private void btnDashboard_Click(object sender, EventArgs e) { }
+        private void btnDashboard_Click(object sender, EventArgs e) 
+        {
+            if (this.ParentForm is MainForm main)
+            {
+                main.LoadPage(new DashboardControl());
+                if (_isExpanded) btnHamburger_Click(null, null);
+            }
+        }
 
         private void btnInventory_Click(object sender, EventArgs e)
         {

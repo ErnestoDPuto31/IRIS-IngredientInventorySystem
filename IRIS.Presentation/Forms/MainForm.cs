@@ -1,13 +1,7 @@
 ﻿using IRIS.Domain.Entities;
-using IRIS.Presentation.UserControls;
 using IRIS.Presentation.UserControls.Components;
-using IRIS.Services.Implementations;
 using IRIS.Services.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
+using IRIS.Presentation.UserControls.PagesUC;
 using Timer = System.Windows.Forms.Timer;
 
 namespace IRIS.Presentation.Forms
@@ -19,7 +13,6 @@ namespace IRIS.Presentation.Forms
         private NotificationDropdown _dropdownPanel;
         private INotificationService _notificationService;
 
-        // --- NEW: This gives the form a memory of what you've already seen! ---
         private int _knownNotificationCount = 0;
 
         public MainForm()
@@ -30,15 +23,14 @@ namespace IRIS.Presentation.Forms
 
             var requestService = (IRequestService)Program.Services.GetService(typeof(IRequestService));
 
-            navigationPanel1.InitializeService(requestService);
+            navigationPanel.InitializeService(requestService);
             System.Windows.Forms.Timer badgeTimer = new Timer();
             badgeTimer.Interval = 3000;
-            badgeTimer.Tick += (s, e) => navigationPanel1.RefreshBadgeCount();
+            badgeTimer.Tick += (s, e) => navigationPanel.RefreshBadgeCount();
             badgeTimer.Start();
 
             _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
 
-            // Scan all stock levels when the dashboard loads
             if (_notificationService != null)
             {
                 _notificationService.CheckAllStockLevels();
@@ -56,11 +48,13 @@ namespace IRIS.Presentation.Forms
             _notificationTimer.Interval = 5000;
             _notificationTimer.Tick += NotificationTimer_Tick;
             _notificationTimer.Start();
+
+            LoadPage(new DashboardControl());
         }
 
         private void DropdownPanel_NotificationClicked(object sender, EventArgs e)
         {
-            // Dropdown handles its own clicks now
+
         }
 
         private void NotificationTimer_Tick(object sender, EventArgs e)
@@ -71,7 +65,6 @@ namespace IRIS.Presentation.Forms
             {
                 var notifications = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
 
-                // ONLY count the notifications where IsRead is strictly FALSE
                 int unreadCount = notifications.Count(n => n.IsRead == false);
 
                 notificationBadge1.Count = unreadCount;
@@ -102,7 +95,7 @@ namespace IRIS.Presentation.Forms
                 Domain.Enums.UserRole.OfficeStaff => "OFFICE STAFF",
                 Domain.Enums.UserRole.AssistantDean => "ASSISTANT DEAN",
                 Domain.Enums.UserRole.Dean => "DEAN",
-                Domain.Enums.UserRole.QA => "QA",
+                Domain.Enums.UserRole.QA => "QUALITY ASSURANCE",
                 _ => role.ToString().ToUpper()
             };
         }
@@ -122,7 +115,6 @@ namespace IRIS.Presentation.Forms
         }
         public void LoadPage(UserControl newPage)
         {
-            // Don't reload if it's the same type as current page
             if (pnlMainContent.Controls.Count > 0 &&
                 pnlMainContent.Controls[0].GetType() == newPage.GetType())
             {

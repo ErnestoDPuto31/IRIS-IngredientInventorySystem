@@ -8,6 +8,9 @@ namespace IRIS.Domain.Enums
     {
         EmptyItems,
         LowStockItems,
+        PendingRequests,
+        ApprovedRequests,
+
         WellStockedItems,
         TotalRequests,
         TotalIngredients,

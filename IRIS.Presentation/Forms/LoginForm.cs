@@ -73,10 +73,8 @@ namespace IRIS.Presentation
                     return;
                 }
 
-                // 4. Handle First Time Login
                 if (user.isFirstLogin)
                 {
-                    // Open the Change Password form and pass the user and database context to it
                     using (var changePasswordForm = new IRIS.Presentation.Forms.ChangePasswordForm(user, _context))
                     {
                         var result = changePasswordForm.ShowDialog(this);

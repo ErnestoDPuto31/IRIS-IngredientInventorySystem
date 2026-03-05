@@ -5,11 +5,6 @@ using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.Helpers;
 using IRIS.Presentation.UserControls.Components;
 using IRIS.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 using static Bunifu.UI.WinForms.BunifuButton.BunifuButton;
 
 namespace IRIS.Presentation.UserControls.PagesUC
@@ -23,7 +18,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             InitializeComponent();
             DoubleBuffered = true;
 
-            // create + style csv/pdf buttons to match your screenshot (gray idle, purple hover)
             SetupExportButtonsUI();
         }
 
@@ -75,52 +69,36 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
         }
 
-        // ==========================================
-        // EXPORT BUTTONS UI (gray idle like screenshot)
-        // ==========================================
         private void SetupExportButtonsUI()
         {
-            // make sure pnlMain exists
             if (pnlMain == null) return;
-
-            // ensure CSV exists (designer declares it but doesn't create it)
             if (btnExportCSV == null)
             {
                 btnExportCSV = new Bunifu.UI.WinForms.BunifuButton.BunifuButton
                 {
                     Name = "btnExportCSV"
                 };
-
                 pnlMain.Controls.Add(btnExportCSV);
                 btnExportCSV.BringToFront();
             }
 
-            // ---- sizing (wider so text won't cut) ----
             Size btnSize = new Size(160, 36);
             int gap = 10;
             int rightPadding = 96;
 
-            // apply size to both
             btnExportCSV.Size = btnSize;
-            if (btnExportPDF != null)
-                btnExportPDF.Size = btnSize;
+            if (btnExportPDF != null) btnExportPDF.Size = btnSize;
 
-            // ---- text ----
             btnExportCSV.ButtonText = "Export CSV";
-            if (btnExportPDF != null)
-                btnExportPDF.ButtonText = "Export PDF";
+            if (btnExportPDF != null) btnExportPDF.ButtonText = "Export PDF";
 
-            // ---- icons ----
             var purple = Color.FromArgb(124, 58, 237);
             btnExportCSV.IconLeft = IconChar.Download.ToBitmap(purple, 16);
-            if (btnExportPDF != null)
-                btnExportPDF.IconLeft = IconChar.Download.ToBitmap(purple, 16);
+            if (btnExportPDF != null) btnExportPDF.IconLeft = IconChar.Download.ToBitmap(purple, 16);
 
-            // ---- style both ----
             ApplyOutlinedExportStyle(btnExportCSV);
             ApplyOutlinedExportStyle(btnExportPDF);
 
-            // ---- positioning (anchor as a pair to the right) ----
             int top = (btnExportPDF != null) ? btnExportPDF.Top : 89;
 
             if (btnExportPDF != null)
@@ -130,17 +108,24 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
             else
             {
-                // fallback (shouldn't happen in your case)
                 btnExportCSV.Location = new Point(pnlMain.ClientSize.Width - rightPadding - (btnSize.Width * 2) - gap, top);
             }
 
-            // keep them from overlapping when the control/panel resizes
             this.SizeChanged -= ReportsControl_SizeChanged;
             this.SizeChanged += ReportsControl_SizeChanged;
-
-            // hook csv click
             btnExportCSV.Click -= btnExportCSV_Click;
             btnExportCSV.Click += btnExportCSV_Click;
+
+            if (UserSession.CurrentUser?.Role == UserRole.OfficeStaff)
+            {
+                if (btnExportCSV != null) btnExportCSV.Visible = false;
+                if (btnExportPDF != null) btnExportPDF.Visible = false;
+            }
+            else
+            {
+                if (btnExportCSV != null) btnExportCSV.Visible = true;
+                if (btnExportPDF != null) btnExportPDF.Visible = true;
+            }
         }
         private void ReportsControl_SizeChanged(object sender, EventArgs e)
         {

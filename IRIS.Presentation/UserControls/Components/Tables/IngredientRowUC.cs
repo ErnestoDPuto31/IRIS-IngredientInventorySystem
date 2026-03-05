@@ -1,8 +1,6 @@
 ﻿using IRIS.Domain.Entities;
-using System;
-using System.Drawing;
+using IRIS.Domain.Helpers; 
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace IRIS.Presentation.UserControls.Components.Tables
 {
@@ -57,7 +55,6 @@ namespace IRIS.Presentation.UserControls.Components.Tables
                 _btnSelect.Region = new Region(path);
             }
 
-            // Pass the whole Ingredient object up when clicked
             _btnSelect.Click += (s, e) => SelectClicked?.Invoke(this, Data);
             this.Controls.Add(_btnSelect);
         }
@@ -99,7 +96,9 @@ namespace IRIS.Presentation.UserControls.Components.Tables
 
                 int w = this.Width;
                 DrawText(g, Data.Name, fBold, _cTextMain, 0, w, StringAlignment.Near);
-                DrawText(g, Data.Category.ToString(), fReg, _cTextSub, 1, w, StringAlignment.Near);
+
+                DrawText(g, Data.Category.GetDisplayName(), fReg, _cTextSub, 1, w, StringAlignment.Near);
+
                 Color stockColor = Data.CurrentStock <= Data.MinimumStock ? _cWarningText : _cTextMain;
                 DrawText(g, Data.CurrentStock.ToString("N2"), fBold, stockColor, 2, w, StringAlignment.Center);
                 DrawText(g, Data.Unit.ToString(), fReg, _cTextSub, 3, w, StringAlignment.Center);

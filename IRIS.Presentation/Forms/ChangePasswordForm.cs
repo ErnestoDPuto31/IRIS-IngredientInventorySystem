@@ -55,9 +55,18 @@ namespace IRIS.Presentation.Forms
                 return;
             }
 
-            if (newPassword.Length < 6)
+            if (newPassword.Length < 8)
             {
-                ShowError("Password must be at least 6 characters long.");
+                ShowError("Password must be at least 8 characters long.");
+                return;
+            }
+
+            bool hasLetter = newPassword.Any(char.IsLetter);
+            bool hasDigit = newPassword.Any(char.IsDigit);
+
+            if (!hasLetter || !hasDigit)
+            {
+                ShowError("Password must contain at least one letter and one number.");
                 return;
             }
 
@@ -66,7 +75,7 @@ namespace IRIS.Presentation.Forms
                 var hasher = new PasswordHasher<User>();
                 _user.PasswordHash = hasher.HashPassword(_user, newPassword);
 
-                _user.isFirstLogin = false;
+                _user.isFirstLogin = false; 
 
                 _context.Users.Update(_user);
                 _context.SaveChanges();

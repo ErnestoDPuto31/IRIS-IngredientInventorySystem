@@ -140,7 +140,7 @@ namespace IRIS.Presentation.UserControls
             pnlRestock.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlRestock.Controls.Add(btnRestock);
             pnlRestock.CustomizableEdges = customizableEdges9;
-            pnlRestock.Location = new Point(3, 390);
+            pnlRestock.Location = new Point(0, 444);
             pnlRestock.Name = "pnlRestock";
             pnlRestock.ShadowDecoration.CustomizableEdges = customizableEdges10;
             pnlRestock.Size = new Size(72, 50);
@@ -171,7 +171,7 @@ namespace IRIS.Presentation.UserControls
             pnlReports.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlReports.Controls.Add(btnReports);
             pnlReports.CustomizableEdges = customizableEdges13;
-            pnlReports.Location = new Point(3, 335);
+            pnlReports.Location = new Point(0, 389);
             pnlReports.Name = "pnlReports";
             pnlReports.ShadowDecoration.CustomizableEdges = customizableEdges14;
             pnlReports.Size = new Size(72, 50);
@@ -202,7 +202,7 @@ namespace IRIS.Presentation.UserControls
             pnlHistory.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlHistory.Controls.Add(btnHistory);
             pnlHistory.CustomizableEdges = customizableEdges17;
-            pnlHistory.Location = new Point(3, 279);
+            pnlHistory.Location = new Point(0, 333);
             pnlHistory.Name = "pnlHistory";
             pnlHistory.ShadowDecoration.CustomizableEdges = customizableEdges18;
             pnlHistory.Size = new Size(72, 50);
@@ -233,7 +233,7 @@ namespace IRIS.Presentation.UserControls
             pnlRequests.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlRequests.Controls.Add(btnRequests);
             pnlRequests.CustomizableEdges = customizableEdges21;
-            pnlRequests.Location = new Point(3, 223);
+            pnlRequests.Location = new Point(0, 277);
             pnlRequests.Name = "pnlRequests";
             pnlRequests.ShadowDecoration.CustomizableEdges = customizableEdges22;
             pnlRequests.Size = new Size(72, 50);
@@ -264,7 +264,7 @@ namespace IRIS.Presentation.UserControls
             pnlInventory.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlInventory.Controls.Add(btnInventory);
             pnlInventory.CustomizableEdges = customizableEdges25;
-            pnlInventory.Location = new Point(3, 167);
+            pnlInventory.Location = new Point(0, 221);
             pnlInventory.Name = "pnlInventory";
             pnlInventory.ShadowDecoration.CustomizableEdges = customizableEdges26;
             pnlInventory.Size = new Size(72, 50);
@@ -295,7 +295,7 @@ namespace IRIS.Presentation.UserControls
             pnlDashboard.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlDashboard.Controls.Add(btnDashboard);
             pnlDashboard.CustomizableEdges = customizableEdges29;
-            pnlDashboard.Location = new Point(3, 111);
+            pnlDashboard.Location = new Point(0, 165);
             pnlDashboard.Name = "pnlDashboard";
             pnlDashboard.ShadowDecoration.CustomizableEdges = customizableEdges30;
             pnlDashboard.Size = new Size(72, 50);
