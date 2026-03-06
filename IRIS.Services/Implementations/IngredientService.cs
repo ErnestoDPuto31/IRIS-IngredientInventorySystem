@@ -105,12 +105,6 @@ namespace IRIS.Services.Implementations
                 case IngredientSortBy.NameDescending:
                     query = query.OrderByDescending(i => i.Name);
                     break;
-                case IngredientSortBy.StockLowToHigh:
-                    query = query.OrderBy(i => i.CurrentStock);
-                    break;
-                case IngredientSortBy.StockHighToLow:
-                    query = query.OrderByDescending(i => i.CurrentStock);
-                    break;
                 case IngredientSortBy.Category:
                     query = query.OrderBy(i => i.Category);
                     break;

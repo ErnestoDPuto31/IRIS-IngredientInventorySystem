@@ -1,7 +1,16 @@
-﻿using IRIS.Domain.Entities;
+﻿using Guna.UI2.WinForms;
+using IRIS.Domain.Entities;
+using IRIS.Presentation.UserControls;
 using IRIS.Presentation.UserControls.Components;
 using IRIS.Services.Interfaces;
-using IRIS.Presentation.UserControls.PagesUC;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 namespace IRIS.Presentation.Forms
@@ -13,21 +22,58 @@ namespace IRIS.Presentation.Forms
         private NotificationDropdown _dropdownPanel;
         private INotificationService _notificationService;
 
-        private int _knownNotificationCount = 0;
+        // ✅ 1. DECLARE THE NAVIGATION PANEL HERE
+        private NavigationPanel _navigationPanel;
+
+        private Panel _macTrafficHost;
+        private Label _macTitleLabel;
+        private MacTrafficLightButton _btnMacClose;
+        private MacTrafficLightButton _btnMacMinimize;
+
+        private readonly Color _topBarColor = Color.FromArgb(246, 246, 247);
 
         public MainForm()
         {
             InitializeComponent();
             SetupUserDisplay();
             SetupClock();
+            SetupMacTopBar();
 
-            var requestService = (IRequestService)Program.Services.GetService(typeof(IRequestService));
+            // Setup navigation is called here
+            SetupNavigation();
+            SetupNotifications();
 
-            navigationPanel.InitializeService(requestService);
-            System.Windows.Forms.Timer badgeTimer = new Timer();
-            badgeTimer.Interval = 3000;
-            badgeTimer.Tick += (s, e) => navigationPanel.RefreshBadgeCount();
-            badgeTimer.Start();
+            LoadPage(new DashboardControl());
+        }
+
+        private void SetupNavigation()
+        {
+            // ✅ 2. CREATE AND DOCK THE PANEL PROGRAMMATICALLY
+            _navigationPanel = new NavigationPanel();
+            _navigationPanel.Dock = DockStyle.Left;
+
+            // Add it to the form
+            this.Controls.Add(_navigationPanel);
+
+            _navigationPanel.BringToFront();
+
+            var requestService = Program.Services.GetService<IRequestService>();
+
+            if (requestService != null)
+            {
+                _navigationPanel.InitializeService(requestService);
+            }
+
+            _badgeTimer = new Timer
+            {
+                Interval = 3000
+            };
+            _badgeTimer.Tick += (s, e) =>
+            {
+                _navigationPanel?.RefreshBadgeCount();
+            };
+            _badgeTimer.Start();
+        }
 
             _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
 

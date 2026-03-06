@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             dashboardCardTotalIngredients = new IRIS.Presentation.UserControls.Components.DashboardCard();
             dashboardCardLowStock = new IRIS.Presentation.UserControls.Components.DashboardCard();
             dashboardCardPending = new IRIS.Presentation.UserControls.Components.DashboardCard();
@@ -44,6 +46,7 @@
             dashboardAlertItem2 = new IRIS.Presentation.UserControls.Components.DashboardAlertItem();
             dashboardAlertItem3 = new IRIS.Presentation.UserControls.Components.DashboardAlertItem();
             dashboardAlertItem4 = new IRIS.Presentation.UserControls.Components.DashboardAlertItem();
+            guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             flowLayoutPanelAlerts.SuspendLayout();
             SuspendLayout();
             // 
@@ -192,12 +195,23 @@
             dashboardAlertItem4.Size = new Size(1425, 75);
             dashboardAlertItem4.TabIndex = 3;
             // 
+            // guna2Panel1
+            // 
+            guna2Panel1.CustomizableEdges = customizableEdges2;
+            guna2Panel1.Dock = DockStyle.Bottom;
+            guna2Panel1.Location = new Point(0, 923);
+            guna2Panel1.Name = "guna2Panel1";
+            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges3;
+            guna2Panel1.Size = new Size(1518, 50);
+            guna2Panel1.TabIndex = 14;
+            // 
             // DashboardControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = Color.White;
+            Controls.Add(guna2Panel1);
             Controls.Add(flowLayoutPanelAlerts);
             Controls.Add(label1);
             Controls.Add(guna2ImageButton1);
@@ -211,7 +225,7 @@
             Controls.Add(dashboardCardTotalIngredients);
             Name = "DashboardControl";
             Padding = new Padding(0, 0, 40, 0);
-            Size = new Size(1516, 879);
+            Size = new Size(1558, 900);
             flowLayoutPanelAlerts.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -234,5 +248,6 @@
         private Components.DashboardAlertItem dashboardAlertItem2;
         private Components.DashboardAlertItem dashboardAlertItem3;
         private Components.DashboardAlertItem dashboardAlertItem4;
+        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
     }
 }

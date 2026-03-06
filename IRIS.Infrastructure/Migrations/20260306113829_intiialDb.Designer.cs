@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    [Migration("20260227010439_UpdateInventoryLogForHardDelete")]
-    partial class UpdateInventoryLogForHardDelete
+    [Migration("20260306113829_intiialDb")]
+    partial class intiialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

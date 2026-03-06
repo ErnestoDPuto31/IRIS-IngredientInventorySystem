@@ -35,6 +35,8 @@ namespace IRIS.Presentation.UserControls.PagesUC
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -45,9 +47,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
             WellStockedItems = new IRIS.Presentation.UserControls.Components.StatusCardUC();
             cmbFilter = new Guna.UI2.WinForms.Guna2ComboBox();
             guna2ImageButton1 = new Guna.UI2.WinForms.Guna2ImageButton();
-            restockTableuc1 = new IRIS.Presentation.UserControls.Components.Tables.RestockTableUC();
+            restockTableuc1 = new RestockTableUC();
             pnlMainContent = new Guna.UI2.WinForms.Guna2Panel();
-            vScrollBar1 = new VScrollBar();
+            guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             pnlMainContent.SuspendLayout();
             SuspendLayout();
             // 
@@ -175,7 +177,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // 
             pnlMainContent.AllowDrop = true;
             pnlMainContent.AutoScroll = true;
-            pnlMainContent.Controls.Add(vScrollBar1);
+            pnlMainContent.Controls.Add(guna2Panel1);
             pnlMainContent.Controls.Add(guna2HtmlLabel2);
             pnlMainContent.Controls.Add(LowStockItems);
             pnlMainContent.Controls.Add(EmptyItems);
@@ -185,20 +187,23 @@ namespace IRIS.Presentation.UserControls.PagesUC
             pnlMainContent.Controls.Add(restockTableuc1);
             pnlMainContent.Controls.Add(cmbFilter);
             pnlMainContent.Controls.Add(guna2ImageButton1);
-            pnlMainContent.CustomizableEdges = customizableEdges6;
+            pnlMainContent.CustomizableEdges = customizableEdges8;
             pnlMainContent.Dock = DockStyle.Fill;
             pnlMainContent.Location = new Point(0, 0);
             pnlMainContent.Name = "pnlMainContent";
-            pnlMainContent.ShadowDecoration.CustomizableEdges = customizableEdges7;
+            pnlMainContent.ShadowDecoration.CustomizableEdges = customizableEdges9;
             pnlMainContent.Size = new Size(1600, 900);
             pnlMainContent.TabIndex = 25;
             // 
-            // vScrollBar1
+            // guna2Panel1
             // 
-            vScrollBar1.Location = new Point(1575, 0);
-            vScrollBar1.Name = "vScrollBar1";
-            vScrollBar1.Size = new Size(25, 900);
-            vScrollBar1.TabIndex = 25;
+            guna2Panel1.CustomizableEdges = customizableEdges6;
+            guna2Panel1.Dock = DockStyle.Bottom;
+            guna2Panel1.Location = new Point(0, 1071);
+            guna2Panel1.Name = "guna2Panel1";
+            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges7;
+            guna2Panel1.Size = new Size(1579, 50);
+            guna2Panel1.TabIndex = 26;
             // 
             // RestockPage
             // 
@@ -225,6 +230,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
         private Guna.UI2.WinForms.Guna2ImageButton guna2ImageButton1;
         private RestockTableUC restockTableuc1;
         private Guna.UI2.WinForms.Guna2Panel pnlMainContent;
-        private VScrollBar vScrollBar1;
+        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
     }
 }

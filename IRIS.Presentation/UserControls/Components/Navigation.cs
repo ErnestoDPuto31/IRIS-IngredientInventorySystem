@@ -1,16 +1,12 @@
 ﻿using Guna.UI2.WinForms;
+using IRIS.Domain.Contracts;
 using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
+using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.Forms;
-using IRIS.Presentation.UserControls.Components;
 using IRIS.Presentation.UserControls.PagesUC;
 using IRIS.Services.Interfaces;
-using System;
-using System.Data;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 namespace IRIS.Presentation.UserControls
@@ -25,34 +21,44 @@ namespace IRIS.Presentation.UserControls
         private Timer _animTimer;
         private int _targetWidth;
 
-        // --- SERVICE & NOTIFICATION STATE ---
         private IRequestService _requestService;
         private int _requestNotificationCount = 0;
 
-        // --- NOTIFICATION BADGE TOOLS ---
         private readonly SolidBrush _badgeBrush = new SolidBrush(Color.FromArgb(0, 120, 215));
         private readonly SolidBrush _textBrush = new SolidBrush(Color.White);
         private readonly Font _badgeFont = new Font("Segoe UI", 8F, FontStyle.Bold);
+
+        private readonly IReportsService _reportsService;
+        private ReportsControl _reportsControl;
+        private Task<ReportsDashboardSummary>? _reportsPreloadTask;
 
         public NavigationPanel()
         {
             InitializeComponent();
 
-            // Attach the paint event specifically to the button to avoid layering issues
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
+
+            _reportsService = ServiceFactory.GetReportsService();
+            _reportsControl = new ReportsControl();
+
             if (btnRequests != null)
             {
                 btnRequests.Paint += btnRequests_Paint;
             }
 
-            this.DoubleBuffered = true;
-            this.Width = COLLAPSED_WIDTH;
+            DoubleBuffered = true;
+            Width = COLLAPSED_WIDTH;
 
             SetupTimer();
             InitializeNavPanels();
             ApplyCollapsedState();
+
+            PreloadReportsData();
         }
 
-        // ---> Call this from MainForm to connect the service safely!
         public void InitializeService(IRequestService requestService)
         {
             _requestService = requestService;
@@ -79,7 +85,31 @@ namespace IRIS.Presentation.UserControls
                 _requestNotificationCount = _requestService.GetPendingRequestCount();
                 if (btnRequests != null) btnRequests.Invalidate();
             }
-            catch { }
+            catch
+            {
+            }
+        }
+
+        public void RefreshReportsCache()
+        {
+            _reportsControl = new ReportsControl();
+            _reportsPreloadTask = null;
+            PreloadReportsData(true);
+        }
+
+        private void PreloadReportsData(bool force = false)
+        {
+            if (_reportsService == null)
+                return;
+
+            if (!force && _reportsPreloadTask != null && !_reportsPreloadTask.IsCanceled && !_reportsPreloadTask.IsFaulted)
+            {
+                _reportsControl.SetPreloadedTask(_reportsPreloadTask);
+                return;
+            }
+
+            _reportsPreloadTask = _reportsService.GetDashboardDataAsync(5);
+            _reportsControl.SetPreloadedTask(_reportsPreloadTask);
         }
 
         private void SetupTimer()
@@ -109,7 +139,7 @@ namespace IRIS.Presentation.UserControls
 
         private void btnHamburger_Click(object sender, EventArgs e)
         {
-            this.BringToFront();
+            BringToFront();
             _isExpanded = !_isExpanded;
             _targetWidth = _isExpanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH;
 
@@ -119,7 +149,7 @@ namespace IRIS.Presentation.UserControls
             else ApplyCollapsedState();
 
             _animTimer.Start();
-            this.Invalidate();
+            Invalidate();
         }
 
         private void AnimTimer_Tick(object sender, EventArgs e)
@@ -131,25 +161,23 @@ namespace IRIS.Presentation.UserControls
             {
                 int newWidth = (Width < _targetWidth) ? Width + step : Width - step;
                 if (Math.Abs(newWidth - _targetWidth) < step) newWidth = _targetWidth;
-                this.Width = newWidth;
+                Width = newWidth;
 
-                // Keep the button badge redrawing during the slide
                 if (btnRequests != null) btnRequests.Invalidate();
 
-                this.Invalidate();
+                Invalidate();
             }
             else
             {
                 _animTimer.Stop();
                 if (!_isExpanded)
                 {
-                    Control dimmer = this.Parent?.Controls.Find("pnlDimmer", false).FirstOrDefault();
+                    Control dimmer = Parent?.Controls.Find("pnlDimmer", false).FirstOrDefault();
                     if (dimmer != null) dimmer.Visible = false;
                 }
             }
         }
 
-        // --- NEW PAINT EVENT HANDLER (Draws ON TOP of the button) ---
         private void btnRequests_Paint(object sender, PaintEventArgs e)
         {
             bool isAuthorized = UserSession.CurrentUser != null &&
@@ -163,7 +191,6 @@ namespace IRIS.Presentation.UserControls
 
             if (!_isExpanded)
             {
-                // COLLAPSED: Small dot on top right of the button icon
                 int dotSize = 10;
                 int dotX = btnRequests.Width - 20;
                 int dotY = 10;
@@ -172,7 +199,6 @@ namespace IRIS.Presentation.UserControls
             }
             else
             {
-                // EXPANDED: Circle with number on the right side
                 int circleSize = 22;
                 int circleX = btnRequests.Width - circleSize - 15;
                 int circleY = (btnRequests.Height - circleSize) / 2;
@@ -181,7 +207,11 @@ namespace IRIS.Presentation.UserControls
 
                 string countText = _requestNotificationCount > 99 ? "99+" : _requestNotificationCount.ToString();
 
-                using (StringFormat format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                using (StringFormat format = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                })
                 {
                     RectangleF textRect = new RectangleF(circleX, circleY, circleSize, circleSize);
                     g.DrawString(countText, _badgeFont, _textBrush, textRect, format);
@@ -191,19 +221,22 @@ namespace IRIS.Presentation.UserControls
 
         private void ApplyCollapsedState()
         {
-            this.SuspendLayout();
+            SuspendLayout();
+
             foreach (var btn in GetAllNavButtons())
             {
                 btn.Text = string.Empty;
                 btn.ImageAlign = System.Windows.Forms.HorizontalAlignment.Center;
                 btn.Padding = new Padding(0);
             }
-            this.ResumeLayout();
+
+            ResumeLayout();
         }
 
         private void ApplyExpandedState()
         {
-            this.SuspendLayout();
+            SuspendLayout();
+
             foreach (var btn in GetAllNavButtons())
             {
                 string btnText = btn.Name.Replace("btn", "");
@@ -213,7 +246,8 @@ namespace IRIS.Presentation.UserControls
                 btn.TextOffset = new Point(15, 0);
                 btn.Text = btnText;
             }
-            this.ResumeLayout();
+
+            ResumeLayout();
         }
 
         private Guna2Button[] GetAllNavButtons()
@@ -229,10 +263,9 @@ namespace IRIS.Presentation.UserControls
             return buttons.ToArray();
         }
 
-        // --- Event Handlers ---
         private void btnDashboard_Click(object sender, EventArgs e) 
-        {
-            if (this.ParentForm is MainForm main)
+        { 
+            if (ParentForm is MainForm main)
             {
                 main.LoadPage(new DashboardControl());
                 if (_isExpanded) btnHamburger_Click(null, null);
@@ -241,7 +274,7 @@ namespace IRIS.Presentation.UserControls
 
         private void btnInventory_Click(object sender, EventArgs e)
         {
-            if (this.ParentForm is MainForm main)
+            if (ParentForm is MainForm main)
             {
                 main.LoadPage(new InventoryControl());
                 if (_isExpanded) btnHamburger_Click(null, null);
@@ -250,7 +283,7 @@ namespace IRIS.Presentation.UserControls
 
         private void btnRequests_Click(object sender, EventArgs e)
         {
-            if (this.ParentForm is MainForm main)
+            if (ParentForm is MainForm main)
             {
                 main.LoadPage(new RequestControl());
                 if (_isExpanded) btnHamburger_Click(null, null);
@@ -259,24 +292,36 @@ namespace IRIS.Presentation.UserControls
 
         private void btnRestock_Click(object sender, EventArgs e)
         {
-            if (this.ParentForm is MainForm main)
+            if (ParentForm is MainForm main)
             {
                 main.LoadPage(new RestockPage());
                 if (_isExpanded) btnHamburger_Click(null, null);
             }
         }
 
-        private void btnReports_Click(object sender, EventArgs e)
+        private async void btnReports_Click(object sender, EventArgs e)
         {
-            if (this.ParentForm is MainForm main)
+            if (ParentForm is MainForm main)
             {
-                main.LoadPage(new ReportsControl());
-                if (_isExpanded) btnHamburger_Click(null, null);
+                if (_reportsControl == null || _reportsControl.IsDisposed)
+                {
+                    _reportsControl = new ReportsControl();
+                    _reportsPreloadTask = null;
+                    PreloadReportsData(true);
+                }
+
+                main.LoadPage(_reportsControl);
+
+                if (_isExpanded)
+                    btnHamburger_Click(null, null);
+
+                await _reportsControl.EnsureDataLoadedAsync();
             }
         }
 
-        private void btnHistory_Click(object sender, EventArgs e) {
-            if (this.ParentForm is MainForm main)
+        private void btnHistory_Click(object sender, EventArgs e) 
+        {
+            if (ParentForm is MainForm main)
             {
                 main.LoadPage(new HistoryControl());
                 if (_isExpanded) btnHamburger_Click(null, null);
@@ -290,9 +335,9 @@ namespace IRIS.Presentation.UserControls
             if (result == DialogResult.Yes)
             {
                 UserSession.CurrentUser = null;
-                if (this.ParentForm != null)
+                if (ParentForm != null)
                 {
-                    this.ParentForm.Close();
+                    ParentForm.Close();
                 }
             }
         }

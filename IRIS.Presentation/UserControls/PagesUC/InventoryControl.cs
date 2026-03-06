@@ -14,7 +14,7 @@ namespace IRIS.Presentation.Forms
     {
         private FlowLayoutPanel _ingredientsGrid;
         private InventoryPresenter _presenter;
-        private System.Windows.Forms.Timer _searchTimer; 
+        private System.Windows.Forms.Timer _searchTimer;
 
         private const int CARD_MARGIN = 10;
         private const int SCROLLBAR_OFFSET = 25;
@@ -50,20 +50,19 @@ namespace IRIS.Presentation.Forms
                 }
 
                 cmbCategory.DataSource = new BindingSource(categoryList, null);
-                cmbCategory.DisplayMember = "Key";   
-                cmbCategory.ValueMember = "Value"; 
+                cmbCategory.DisplayMember = "Key";
+                cmbCategory.ValueMember = "Value";
             }
 
             if (cmbSortIngredients != null)
             {
                 cmbSortIngredients.Items.Clear();
+                // REMOVED: Stock (Low to High) and Stock (High to Low)
                 cmbSortIngredients.Items.AddRange(new object[] {
                     "Newest First",
                     "Oldest First",
                     "Name (A-Z)",
                     "Name (Z-A)",
-                    "Stock (Low to High)",
-                    "Stock (High to Low)",
                     "Category"
                 });
                 cmbSortIngredients.SelectedIndex = 0;
@@ -120,18 +119,16 @@ namespace IRIS.Presentation.Forms
             if (_presenter == null) return;
 
             string search = txtSearchIngredient.Text;
-
-            // THE FIX: Grab the SelectedValue (which holds the exact Enum string like "DairyAndOils")
             string category = cmbCategory.SelectedValue?.ToString() ?? "All Categories";
 
             string sortString = cmbSortIngredients.SelectedItem?.ToString() ?? "Newest First";
+
+            // REMOVED: The two stock cases from this switch statement
             IngredientSortBy sortEnum = sortString switch
             {
                 "Oldest First" => IngredientSortBy.OldestFirst,
                 "Name (A-Z)" => IngredientSortBy.NameAscending,
                 "Name (Z-A)" => IngredientSortBy.NameDescending,
-                "Stock (Low to High)" => IngredientSortBy.StockLowToHigh,
-                "Stock (High to Low)" => IngredientSortBy.StockHighToLow,
                 "Category" => IngredientSortBy.Category,
                 _ => IngredientSortBy.NewestFirst
             };
@@ -213,17 +210,13 @@ namespace IRIS.Presentation.Forms
 
             int totalWidth = _ingredientsGrid.ClientSize.Width;
             int leftPadding = _ingredientsGrid.Padding.Left;
-            // Accounting for scrollbar usually ~20px, giving it some buffer
             int usableWidth = totalWidth - SCROLLBAR_OFFSET - leftPadding;
 
             int gapBetweenCards = 15;
-            // Assume we want 4 cards per row
             int totalGapSpace = 4 * gapBetweenCards;
 
-            // Calculate width ensuring they fit
             int cardWidth = (usableWidth - totalGapSpace) / 4;
 
-            // Safety check so cards don't get too small
             if (cardWidth < 200) cardWidth = 200;
 
             foreach (Control ctrl in _ingredientsGrid.Controls)
@@ -253,6 +246,7 @@ namespace IRIS.Presentation.Forms
             _searchTimer.Stop();
             TriggerSearch();
         }
+
         private void cmbCategory_SelectedIndexChanged(object sender, EventArgs e) => TriggerSearch();
         private void cmbSortIngredients_SelectedIndexChanged(object sender, EventArgs e) => TriggerSearch();
 

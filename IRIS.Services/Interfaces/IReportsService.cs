@@ -1,7 +1,5 @@
-﻿using IRIS.Domain.Entities;
-using IRIS.Services.DTOs;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using IRIS.Domain.Contracts;
+using IRIS.Domain.Entities;
 
 namespace IRIS.Services.Interfaces
 {
@@ -19,6 +17,18 @@ namespace IRIS.Services.Interfaces
         List<LowStockItem> GetLowStockIngredients();
         List<TopIngredientItem> GetTopUsedIngredients(int count = 5);
 
-        Task<ReportsDashboardDto> GetDashboardDataAsync(int count = 5);
+        Task<ReportsDashboardSummary> GetDashboardDataAsync(int count = 5);
+        Task<int> GetTotalIngredientsAsync();
+        Task<int> GetTotalRequestsAsync();
+        Task<int> GetTotalTransactionsAsync();
+        Task<double> GetApprovalRateAsync();
+
+        Task<Dictionary<string, double>> GetInventoryStatsAsync();
+        Task<Dictionary<string, double>> GetRequestStatsAsync();
+        Task<Dictionary<string, double>> GetCategoryStatsAsync();
+
+        Task<List<Request>> GetRecentTransactionsAsync();
+        Task<List<LowStockItem>> GetLowStockIngredientsAsync();
+        Task<List<TopIngredientItem>> GetTopUsedIngredientsAsync(int count = 5);
     }
 }

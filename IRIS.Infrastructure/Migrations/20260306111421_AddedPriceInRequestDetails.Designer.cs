@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    [Migration("20260306091256_intiialDb")]
-    partial class intiialDb
+    [Migration("20260306111421_AddedPriceInRequestDetails")]
+    partial class AddedPriceInRequestDetails
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -206,6 +206,9 @@ namespace IRIS.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("RequestedQty")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("RequestDetailsId");

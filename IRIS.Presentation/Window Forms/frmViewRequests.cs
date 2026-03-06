@@ -4,6 +4,7 @@ using IRIS.Services.Implementations;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using IRIS.Services.Interfaces;
+using System.Data;
 
 namespace IRIS.Presentation.Window_Forms
 {
@@ -14,8 +15,8 @@ namespace IRIS.Presentation.Window_Forms
         private readonly int _currentUserId;
         private Request _currentRequest;
 
-        private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243); // Blue
-        private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60); // Green
+        private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243); 
+        private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60); 
         private readonly Color _cIndigo = Color.Indigo;
         private readonly INotificationService _notificationService;
 
@@ -26,10 +27,8 @@ namespace IRIS.Presentation.Window_Forms
             _requestService = requestService;
             _currentUserId = currentUserId;
 
-            gridItems.SelectionChanged += gridItems_SelectionChanged;
-
-            // Grab the Notification Service from your Program.cs container!
             _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
+            gridItems.SelectionChanged += gridItems_SelectionChanged;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -58,24 +57,36 @@ namespace IRIS.Presentation.Window_Forms
                     return;
                 }
 
-                // Header Information
+                // --- HEADER INFORMATION ---
                 lblSubject.Text = _currentRequest.Subject;
                 lblFaculty.Text = _currentRequest.FacultyName;
                 lblDateOfUse.Text = _currentRequest.DateOfUse.ToString("MM/dd/yyyy");
+
                 lblStudentCount.Text = _currentRequest.StudentCount.ToString();
+
+                lblTotalBudget.Text = $"₱ {_currentRequest.TotalBudget:N2}";
+                lblTotalPrice.Text = $"₱ {_currentRequest.TotalPrice:N2}";
+                lblTotalPrice.ForeColor = _currentRequest.TotalPrice > _currentRequest.TotalBudget ? Color.Crimson : _cIndigo;
 
                 string submitter = FormatName(_currentRequest.EncodedBy?.Username ?? "Unknown");
                 string submitDate = _currentRequest.CreatedAt.ToString("MMM dd, yyyy");
                 string submitTime = _currentRequest.CreatedAt.ToString("hh:mm tt");
                 lblSubmittedBy.Text = $"Submitted by <b style='color:#1976D2'>{submitter}</b> on {submitDate} at {submitTime}";
 
-                // Populate Grid
+                // --- POPULATE GRID ---
                 gridItems.Rows.Clear();
                 foreach (var item in _currentRequest.RequestItems)
                 {
                     string name = item.Ingredient?.Name ?? "Item";
                     string unit = item.Ingredient != null ? GetEnumDisplayName(item.Ingredient.Unit) : "";
-                    gridItems.Rows.Add(name, $"{item.RequestedQty:N2} {unit}");
+                    decimal itemSubtotal = item.RequestedQty * item.UnitPrice;
+                    gridItems.Rows.Add(
+                        name,
+                        $"{item.PortionPerStudent:N4} {unit}/stud",
+                        $"{item.RequestedQty:N2} {unit}",
+                        $"₱ {item.UnitPrice:N2}/{unit}",
+                        $"₱ {itemSubtotal:N2}"
+                    );
                 }
 
                 if (gridItems.Rows.Count > 0)
@@ -84,6 +95,7 @@ namespace IRIS.Presentation.Window_Forms
                     UpdateDetailLabels(0);
                 }
 
+                // --- APPROVAL HISTORY & STATUS ---
                 var lastAction = _currentRequest.Approvals.OrderByDescending(a => a.ActionDate).FirstOrDefault();
                 if (lastAction != null)
                 {
@@ -126,12 +138,27 @@ namespace IRIS.Presentation.Window_Forms
 
                 if (detail != null)
                 {
-                    lblRecipeCosting.Text = $"{detail.PortionPerStudent:N2} units per student";
-                    lblAllowedQuantity.Text = $"{detail.AllowedQty:N2} units";
-                    lblAllowedQuantity.ForeColor = detail.IsOverLimit ? Color.Crimson : _cIndigo;
+                    // I removed the logic that overwrites lblTotalBudget and lblTotalPrice here, 
+                    // because those labels represent the OVERALL request now.
+
+                    // If you have an item-specific warning label (like lblItemWarning), 
+                    // you can uncomment and use the below logic:
+
+                    /*
+                    if (detail.IsOverLimit)
+                    {
+                         lblItemWarning.Text = $"Warning: Requested {detail.RequestedQty:N2} but only {detail.AllowedQty:N2} allowed!";
+                         lblItemWarning.Visible = true;
+                    }
+                    else
+                    {
+                         lblItemWarning.Visible = false;
+                    }
+                    */
                 }
             }
         }
+
 
         private string FormatName(string username)
         {
@@ -164,12 +191,14 @@ namespace IRIS.Presentation.Window_Forms
                     break;
             }
 
+            // Guna2TextBox formatting for the status badge
             lblStatusBadge.Text = statusText;
             lblStatusBadge.FillColor = bg;
             lblStatusBadge.ForeColor = fg;
             lblStatusBadge.BorderColor = bg;
+            lblStatusBadge.HoverState.BorderColor = bg;
+            lblStatusBadge.FocusedState.BorderColor = bg;
 
-            // Sync disabled state colors
             lblStatusBadge.DisabledState.FillColor = bg;
             lblStatusBadge.DisabledState.ForeColor = fg;
 
@@ -237,18 +266,16 @@ namespace IRIS.Presentation.Window_Forms
             {
                 try
                 {
-                    // 1. Update the database
                     _requestService.UpdateRequestStatus(_requestId, newStatus, txtRemarks.Text, _currentUserId);
 
-                    // 2. TRIGGER NOTIFICATION: Alert the specific Staff member
                     var requestInfo = _requestService.GetRequestById(_requestId);
                     if (requestInfo != null)
                     {
                         _notificationService.CreateStatusUpdateNotification(
                             _requestId,
-                            requestInfo.EncodedById, // Targets ONLY the staff who made it
+                            requestInfo.EncodedById,
                             newStatus,
-                            UserSession.CurrentUser.Username); // Passes the Dean's name
+                            UserSession.CurrentUser.Username);
                     }
 
                     this.DialogResult = DialogResult.OK;
@@ -273,18 +300,16 @@ namespace IRIS.Presentation.Window_Forms
             {
                 try
                 {
-                    // 1. Update the database
                     _requestService.UpdateRequestStatus(_requestId, RequestStatus.Rejected, txtRemarks.Text, _currentUserId);
 
-                    // 2. TRIGGER NOTIFICATION: Alert the specific Staff member
                     var requestInfo = _requestService.GetRequestById(_requestId);
                     if (requestInfo != null)
                     {
                         _notificationService.CreateStatusUpdateNotification(
                             _requestId,
-                            requestInfo.EncodedById, // Targets ONLY the staff who made it
+                            requestInfo.EncodedById,
                             RequestStatus.Rejected,
-                            UserSession.CurrentUser.Username); // Passes the Dean's name
+                            UserSession.CurrentUser.Username);
                     }
 
                     this.DialogResult = DialogResult.OK;
