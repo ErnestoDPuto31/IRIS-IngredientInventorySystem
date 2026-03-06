@@ -228,9 +228,9 @@
             label7.ForeColor = Color.Black;
             label7.Location = new Point(423, 198);
             label7.Name = "label7";
-            label7.Size = new Size(125, 30);
+            label7.Size = new Size(160, 30);
             label7.TabIndex = 12;
-            label7.Text = "Total Budget";
+            label7.Text = "Price Per Student";
             // 
             // numStudentCount
             // 
@@ -319,7 +319,7 @@
             lblAllowedQtyDisplay.AutoSize = true;
             lblAllowedQtyDisplay.BackColor = Color.Transparent;
             lblAllowedQtyDisplay.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblAllowedQtyDisplay.Location = new Point(174, 10);
+            lblAllowedQtyDisplay.Location = new Point(132, 10);
             lblAllowedQtyDisplay.Name = "lblAllowedQtyDisplay";
             lblAllowedQtyDisplay.Size = new Size(68, 30);
             lblAllowedQtyDisplay.TabIndex = 1;
@@ -332,9 +332,9 @@
             label9.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label9.Location = new Point(16, 10);
             label9.Name = "label9";
-            label9.Size = new Size(160, 30);
+            label9.Size = new Size(123, 30);
             label9.TabIndex = 0;
-            label9.Text = "Allowed Quantity:";
+            label9.Text = "Total Budget:";
             // 
             // btnAdd
             // 

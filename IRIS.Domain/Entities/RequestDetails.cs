@@ -14,6 +14,8 @@ namespace IRIS.Domain.Entities
         public decimal RequestedQty { get; set; }
         [Required]
         public decimal AllowedQty { get; set; }
+        [Required]
+        public decimal UnitPrice { get; set; }
 
         [ForeignKey("IngredientId")] public virtual Ingredient? Ingredient { get; set; }
         [ForeignKey("RequestId")] public virtual Request? Request { get; set; }

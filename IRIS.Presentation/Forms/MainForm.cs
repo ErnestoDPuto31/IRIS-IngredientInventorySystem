@@ -1,13 +1,17 @@
 ﻿using Guna.UI2.WinForms;
 using IRIS.Domain.Entities;
+using IRIS.Presentation.UserControls;
 using IRIS.Presentation.UserControls.Components;
 using IRIS.Presentation.UserControls.PagesUC;
 using IRIS.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 namespace IRIS.Presentation.Forms
@@ -20,6 +24,9 @@ namespace IRIS.Presentation.Forms
 
         private NotificationDropdown _dropdownPanel;
         private INotificationService _notificationService;
+
+        // ✅ 1. DECLARE THE NAVIGATION PANEL HERE
+        private NavigationPanel _navigationPanel;
 
         private Panel _macTrafficHost;
         private Label _macTitleLabel;
@@ -40,6 +47,8 @@ namespace IRIS.Presentation.Forms
             SetupUserDisplay();
             SetupClock();
             SetupMacTopBar();
+
+            // Setup navigation is called here
             SetupNavigation();
             SetupNotifications();
 
@@ -48,11 +57,20 @@ namespace IRIS.Presentation.Forms
 
         private void SetupNavigation()
         {
+            // ✅ 2. CREATE AND DOCK THE PANEL PROGRAMMATICALLY
+            _navigationPanel = new NavigationPanel();
+            _navigationPanel.Dock = DockStyle.Left;
+
+            // Add it to the form
+            this.Controls.Add(_navigationPanel);
+
+            _navigationPanel.BringToFront();
+
             var requestService = Program.Services.GetService<IRequestService>();
 
-            if (navigationPanel != null && requestService != null)
+            if (requestService != null)
             {
-                navigationPanel.InitializeService(requestService);
+                _navigationPanel.InitializeService(requestService);
             }
 
             _badgeTimer = new Timer
@@ -61,7 +79,7 @@ namespace IRIS.Presentation.Forms
             };
             _badgeTimer.Tick += (s, e) =>
             {
-                navigationPanel?.RefreshBadgeCount();
+                _navigationPanel?.RefreshBadgeCount();
             };
             _badgeTimer.Start();
         }

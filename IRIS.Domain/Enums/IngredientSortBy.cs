@@ -6,8 +6,6 @@
         OldestFirst,
         NameAscending, 
         NameDescending,
-        StockLowToHigh,
-        StockHighToLow,
         Category        
     }
 }
