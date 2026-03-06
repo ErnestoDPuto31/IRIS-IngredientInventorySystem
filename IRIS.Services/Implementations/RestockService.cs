@@ -1,8 +1,11 @@
-﻿using IRIS.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using IRIS.Infrastructure.Data;
 using IRIS.Services.Interfaces;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 
 namespace IRIS.Services.Implementations
 {
@@ -23,8 +26,11 @@ namespace IRIS.Services.Implementations
         {
             return _context.Restocks
                 .Include(r => r.Ingredient)
-                // ---> NEW: Orders perfectly by stock amount (Empty -> Low -> Well Stocked)
-                .OrderBy(r => r.Ingredient.CurrentStock)
+                .AsEnumerable()
+                // ---> FIXED: Sort explicitly by the Status property
+                .OrderBy(r => r.Status == StockStatus.Empty ? 0 :
+                              r.Status == StockStatus.LowStock ? 1 : 2)
+                .ThenBy(r => r.Ingredient.CurrentStock) // Empty/Low sorted lowest to highest
                 .ToList();
         }
 
@@ -43,18 +49,23 @@ namespace IRIS.Services.Implementations
             switch (status)
             {
                 case "Low":
-                    query = query.Where(r => r.Ingredient.CurrentStock > 0 && r.Ingredient.CurrentStock <= r.Ingredient.MinimumStock);
+                    query = query.Where(r => r.Ingredient.CurrentStock > 0 && r.Ingredient.CurrentStock < r.Ingredient.MinimumStock);
                     break;
                 case "Empty":
                     query = query.Where(r => r.Ingredient.CurrentStock <= 0);
                     break;
                 case "Well":
-                    query = query.Where(r => r.Ingredient.CurrentStock > r.Ingredient.MinimumStock);
+                    query = query.Where(r => r.Ingredient.CurrentStock >= r.Ingredient.MinimumStock);
                     break;
             }
 
-            // ---> NEW: Keeps filters sorted properly
-            return query.OrderBy(r => r.Ingredient.CurrentStock).ToList();
+            return query
+                .AsEnumerable()
+                // ---> FIXED: Sort explicitly by the Status property
+                .OrderBy(r => r.Status == StockStatus.Empty ? 0 :
+                              r.Status == StockStatus.LowStock ? 1 : 2)
+                .ThenBy(r => r.Ingredient.CurrentStock)
+                .ToList();
         }
 
         public int GetCountByStatus(string statusType)
@@ -64,9 +75,9 @@ namespace IRIS.Services.Implementations
                 case "Empty":
                     return _context.Ingredients.Count(i => i.CurrentStock <= 0);
                 case "Low":
-                    return _context.Ingredients.Count(i => i.CurrentStock > 0 && i.CurrentStock <= i.MinimumStock);
+                    return _context.Ingredients.Count(i => i.CurrentStock > 0 && i.CurrentStock < i.MinimumStock);
                 case "Well":
-                    return _context.Ingredients.Count(i => i.CurrentStock > i.MinimumStock);
+                    return _context.Ingredients.Count(i => i.CurrentStock >= i.MinimumStock);
                 default:
                     return 0;
             }
@@ -80,14 +91,16 @@ namespace IRIS.Services.Implementations
             return _context.Restocks
                 .Include(r => r.Ingredient)
                 .Where(r => r.Ingredient.Name.Contains(searchTerm))
-                // ---> NEW: Keeps search results sorted properly
-                .OrderBy(r => r.Ingredient.CurrentStock)
+                .AsEnumerable()
+                // ---> FIXED: Sort explicitly by the Status property
+                .OrderBy(r => r.Status == StockStatus.Empty ? 0 :
+                              r.Status == StockStatus.LowStock ? 1 : 2)
+                .ThenBy(r => r.Ingredient.CurrentStock)
                 .ToList();
         }
 
         public void RefreshRestockData()
         {
-            // ---> NEW: Fetch ALL ingredients, not just low stock ones
             var allIngredients = _context.Ingredients.ToList();
 
             foreach (var ing in allIngredients)
@@ -95,11 +108,10 @@ namespace IRIS.Services.Implementations
                 var existingRestock = _context.Restocks
                     .FirstOrDefault(r => r.IngredientId == ing.IngredientId);
 
-                // ---> NEW: Accurately set all three statuses
                 StockStatus currentStatus;
                 if (ing.CurrentStock <= 0)
                     currentStatus = StockStatus.Empty;
-                else if (ing.CurrentStock <= ing.MinimumStock)
+                else if (ing.CurrentStock < ing.MinimumStock)
                     currentStatus = StockStatus.LowStock;
                 else
                     currentStatus = StockStatus.WellStocked;
@@ -124,8 +136,6 @@ namespace IRIS.Services.Implementations
                 }
             }
 
-            // NOTE: The code that deleted Well Stocked items was completely removed from here!
-
             _context.SaveChanges();
             OnInventoryUpdated?.Invoke();
         }
@@ -145,8 +155,7 @@ namespace IRIS.Services.Implementations
 
                 if (pendingRestock != null)
                 {
-                    // ---> NEW: We no longer remove the item, we just update it to WellStocked!
-                    if (ingredient.CurrentStock > ingredient.MinimumStock)
+                    if (ingredient.CurrentStock >= ingredient.MinimumStock)
                     {
                         pendingRestock.Status = StockStatus.WellStocked;
                         pendingRestock.SuggestedRestockQuantity = 0;
@@ -173,8 +182,8 @@ namespace IRIS.Services.Implementations
             return _context.Ingredients
                 .Select(i => i.Category)
                 .Distinct()
-                .ToList()               
-                .Select(c => c.ToString()) 
+                .ToList()
+                .Select(c => c.ToString())
                 .OrderBy(c => c)
                 .ToList();
         }

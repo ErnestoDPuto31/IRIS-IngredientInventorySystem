@@ -17,9 +17,9 @@ namespace IRIS.Services
         {
             _context = context;
         }
+
         public void MarkNotificationsAsRead(List<int> notificationIds)
         {
-            // Using Set<SystemNotification>() is a safe way to grab the table regardless of what you named your DbSet
             var unreadNotifications = _context.Set<SystemNotification>()
                                               .Where(n => notificationIds.Contains(n.NotificationId) && !n.IsRead)
                                               .ToList();
@@ -31,19 +31,46 @@ namespace IRIS.Services
 
             _context.SaveChanges();
         }
+
         public void CheckAllStockLevels()
         {
-
-            // Find all ingredients where stock is at or below minimum
+            // 1. FIX: Use strictly '<' so it perfectly matches your UI table logic
             var lowIngredients = _context.Ingredients
-                                         .Where(i => i.CurrentStock <= i.MinimumStock)
+                                         .Where(i => i.CurrentStock < i.MinimumStock)
                                          .ToList();
 
             foreach (var ingredient in lowIngredients)
             {
                 bool isCritical = ingredient.CurrentStock == 0;
-                // This will safely create the alert (and ignore it if it already exists!)
                 CreateLowStockNotification(ingredient.IngredientId, ingredient.Name, isCritical);
+            }
+
+            // 2. AUTO-CLEANUP: Find ingredients that are now well-stocked
+            var wellStockedItemIds = _context.Ingredients
+                                             .Where(i => i.CurrentStock >= i.MinimumStock)
+                                             .Select(i => i.IngredientId)
+                                             .ToList();
+
+            // Find active notifications for items that don't need them anymore
+            var staleNotifications = _context.SystemNotifications
+     .Where(n => n.NotificationType == "LowStock"
+              && !n.IsActionTaken
+              && n.ReferenceId.HasValue
+              && wellStockedItemIds.Contains(n.ReferenceId.Value))
+     .ToList();
+
+            // Mark them as resolved so they stop bothering you!
+            foreach (var notif in staleNotifications)
+            {
+                notif.IsActionTaken = true;
+                notif.IsRead = true; // Mark as read so it drops the unread count
+                notif.ActionTakenByName = "System";
+            }
+
+            // Only save if there were stale notifications to clean up
+            if (staleNotifications.Any())
+            {
+                _context.SaveChanges();
             }
         }
 
@@ -52,17 +79,14 @@ namespace IRIS.Services
         {
             var query = _context.SystemNotifications.AsQueryable();
 
-            // LOGIC CHECK: Who is looking?
             if (currentUser.Role == UserRole.Dean || currentUser.Role == UserRole.AssistantDean)
             {
-                // Deans see Dean stuff AND LowStock alerts
                 query = query.Where(n => n.TargetRole == UserRole.Dean ||
                                          n.TargetRole == UserRole.AssistantDean ||
                                          n.NotificationType == "LowStock");
             }
-            else // Assuming OfficeStaff
+            else
             {
-                // Staff see their own specific alerts AND LowStock alerts
                 query = query.Where(n => n.TargetUserId == currentUser.UserId ||
                                          n.TargetRole == currentUser.Role ||
                                          n.NotificationType == "LowStock");
@@ -70,7 +94,6 @@ namespace IRIS.Services
 
             var rawNotifications = query.OrderByDescending(n => n.CreatedAt).Take(15).ToList();
 
-            // Map to DTO
             var dtos = new List<NotificationDto>();
             foreach (var n in rawNotifications)
             {
@@ -83,8 +106,7 @@ namespace IRIS.Services
                     ActionTakenText = n.IsActionTaken ? $"(Resolved by {n.ActionTakenByName})" : null,
                     ReferenceId = n.ReferenceId,
                     TargetPage = n.NotificationType == "LowStock" ? "RestockPage" : "RequestControl",
-
-                    IsRead = n.IsRead // <--- THIS IS THE MAGIC LINE YOU WERE MISSING!
+                    IsRead = n.IsRead
                 });
             }
             return dtos;
@@ -107,24 +129,21 @@ namespace IRIS.Services
                                          n.NotificationType == "LowStock");
             }
 
-            // THE FIX: Now we just check if it's unread! Super simple.
             query = query.Where(n => !n.IsRead);
 
             return query.Count();
         }
+
         public void ResolveRequestNotification(int requestId, string newStatus, string actionBy)
         {
-            // Find the original "New Request" notification linked to this specific request
             var notification = _context.SystemNotifications
                 .FirstOrDefault(n => n.ReferenceId == requestId && n.NotificationType == "NewRequest" && !n.IsActionTaken);
 
             if (notification != null)
             {
-                // 1. Mark it as resolved so the badge ignores it
                 notification.IsActionTaken = true;
                 notification.ActionTakenByName = actionBy;
 
-                // 2. Magically change the word "New" to "Approved" or "Rejected" in the database!
                 notification.Message = notification.Message.Replace("New Request", $"{newStatus} Request");
                 notification.Message = notification.Message.Replace("Pending", newStatus);
 
@@ -144,20 +163,36 @@ namespace IRIS.Services
             }
         }
 
+        // --- NEW: THE DISMISS LOGIC ---
+        public void DismissNotification(int notificationId)
+        {
+            var notification = _context.SystemNotifications.Find(notificationId);
+            if (notification != null)
+            {
+                // Hard delete approach (Removes from DB so it never shows again):
+                _context.SystemNotifications.Remove(notification);
+
+                // ALTERNATIVE Soft Delete approach (if you added an IsHidden or IsDeleted column to your DB entity):
+                // notification.IsDeleted = true;
+                // notification.IsRead = true; 
+
+                _context.SaveChanges();
+            }
+        }
+
         // --- 3. SYSTEM TRIGGERS (Call these from other services) ---
         public void CreateLowStockNotification(int itemId, string itemName, bool isCritical)
         {
             bool alreadyExists = _context.SystemNotifications.Any(n => n.ReferenceId == itemId && n.NotificationType == "LowStock" && !n.IsActionTaken);
             if (alreadyExists) return;
 
-            // --- NEW: Dynamic Message based on stock level ---
             string alertMessage = isCritical
                 ? $"{itemName} is critically out of stock (0 remaining) and requires immediate restocking!"
                 : $"{itemName} is running low on stock. Please restock soon.";
 
             var notif = new SystemNotification
             {
-                NotificationType = "LowStock", // Keep as LowStock so your UI badge still counts it!
+                NotificationType = "LowStock",
                 Message = alertMessage,
                 ReferenceId = itemId,
             };
@@ -172,7 +207,7 @@ namespace IRIS.Services
             {
                 NotificationType = "NewRequest",
                 TargetRole = UserRole.Dean,
-                Message = $"New Request from {facultyName} for {subject}.", // "New" triggers the badge count!
+                Message = $"New Request from {facultyName} for {subject}.",
                 ReferenceId = requestId
             };
             _context.SystemNotifications.Add(notif);
