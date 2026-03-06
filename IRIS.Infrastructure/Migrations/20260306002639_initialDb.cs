@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace IRIS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,7 @@ namespace IRIS.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Category = table.Column<int>(type: "int", nullable: false),
-                    Unit = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Unit = table.Column<int>(type: "int", nullable: false),
                     CurrentStock = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     MinimumStock = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -31,20 +31,24 @@ namespace IRIS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InventoryLogs",
+                name: "SystemNotifications",
                 columns: table => new
                 {
-                    InventoryLogId = table.Column<int>(type: "int", nullable: false)
+                    NotificationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IngredientId = table.Column<int>(type: "int", nullable: false),
-                    QuantityChanged = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ActionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PerformedByUserId = table.Column<int>(type: "int", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Message = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    NotificationType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ReferenceId = table.Column<int>(type: "int", nullable: true),
+                    TargetUserId = table.Column<int>(type: "int", nullable: true),
+                    TargetRole = table.Column<int>(type: "int", nullable: true),
+                    IsActionTaken = table.Column<bool>(type: "bit", nullable: false),
+                    ActionTakenByName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InventoryLogs", x => x.InventoryLogId);
+                    table.PrimaryKey("PK_SystemNotifications", x => x.NotificationId);
                 });
 
             migrationBuilder.CreateTable(
@@ -85,6 +89,38 @@ namespace IRIS.Infrastructure.Migrations
                         column: x => x.IngredientId,
                         principalTable: "Ingredients",
                         principalColumn: "IngredientId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InventoryLogs",
+                columns: table => new
+                {
+                    InventoryLogId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IngredientId = table.Column<int>(type: "int", nullable: true),
+                    IngredientName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ActionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    QuantityChanged = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PreviousStock = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    NewStock = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PerformedByUserId = table.Column<int>(type: "int", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InventoryLogs", x => x.InventoryLogId);
+                    table.ForeignKey(
+                        name: "FK_InventoryLogs_Ingredients_IngredientId",
+                        column: x => x.IngredientId,
+                        principalTable: "Ingredients",
+                        principalColumn: "IngredientId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_InventoryLogs_Users_PerformedByUserId",
+                        column: x => x.PerformedByUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -184,6 +220,16 @@ namespace IRIS.Infrastructure.Migrations
                 column: "RequestId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InventoryLogs_IngredientId",
+                table: "InventoryLogs",
+                column: "IngredientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InventoryLogs_PerformedByUserId",
+                table: "InventoryLogs",
+                column: "PerformedByUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RequestItems_IngredientId",
                 table: "RequestItems",
                 column: "IngredientId");
@@ -218,6 +264,9 @@ namespace IRIS.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Restocks");
+
+            migrationBuilder.DropTable(
+                name: "SystemNotifications");
 
             migrationBuilder.DropTable(
                 name: "Requests");

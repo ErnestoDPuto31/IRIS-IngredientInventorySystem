@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    [Migration("20260223112156_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260306111421_AddedPriceInRequestDetails")]
+    partial class AddedPriceInRequestDetails
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,10 +82,8 @@ namespace IRIS.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("Unit")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -108,11 +106,22 @@ namespace IRIS.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("IngredientId")
+                    b.Property<int?>("IngredientId")
                         .HasColumnType("int");
+
+                    b.Property<string>("IngredientName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("NewStock")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("PerformedByUserId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("PreviousStock")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("QuantityChanged")
                         .HasColumnType("decimal(18,2)");
@@ -121,6 +130,10 @@ namespace IRIS.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("InventoryLogId");
+
+                    b.HasIndex("IngredientId");
+
+                    b.HasIndex("PerformedByUserId");
 
                     b.ToTable("InventoryLogs");
                 });
@@ -195,6 +208,9 @@ namespace IRIS.Infrastructure.Migrations
                     b.Property<decimal>("RequestedQty")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("RequestDetailsId");
 
                     b.HasIndex("IngredientId");
@@ -229,6 +245,50 @@ namespace IRIS.Infrastructure.Migrations
                     b.HasIndex("IngredientId");
 
                     b.ToTable("Restocks");
+                });
+
+            modelBuilder.Entity("IRIS.Domain.Entities.SystemNotification", b =>
+                {
+                    b.Property<int>("NotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
+
+                    b.Property<string>("ActionTakenByName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActionTaken")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("NotificationType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ReferenceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TargetRole")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TargetUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("NotificationId");
+
+                    b.ToTable("SystemNotifications");
                 });
 
             modelBuilder.Entity("IRIS.Domain.Entities.User", b =>
@@ -287,6 +347,24 @@ namespace IRIS.Infrastructure.Migrations
                     b.Navigation("Approver");
 
                     b.Navigation("Request");
+                });
+
+            modelBuilder.Entity("IRIS.Domain.Entities.InventoryLog", b =>
+                {
+                    b.HasOne("IRIS.Domain.Entities.Ingredient", "Ingredient")
+                        .WithMany()
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("IRIS.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("PerformedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ingredient");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("IRIS.Domain.Entities.Request", b =>

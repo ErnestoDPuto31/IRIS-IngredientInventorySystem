@@ -5,25 +5,25 @@
 namespace IRIS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddNotificationIsRead : Migration
+    public partial class AddedPriceInRequestDetails : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsRead",
-                table: "SystemNotifications",
-                type: "bit",
+            migrationBuilder.AddColumn<decimal>(
+                name: "UnitPrice",
+                table: "RequestItems",
+                type: "decimal(18,2)",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: 0m);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsRead",
-                table: "SystemNotifications");
+                name: "UnitPrice",
+                table: "RequestItems");
         }
     }
 }

@@ -39,14 +39,25 @@ namespace IRIS.Presentation.Window_Forms
         {
             // Total Budget = Budget Per Student * Number of Students
             _totalFinancialBudget = numStudentCount.Value * numRecipeCosting.Value;
-            lblAllowedQtyDisplay.Text = $"Total Budget: {_totalFinancialBudget:C2}";
+            lblAllowedQtyDisplay.Text = $"₱ {_totalFinancialBudget:N2}";
         }
 
         private void btnAdd_Click(object sender, EventArgs e) => OpenIngredientSelector();
-        private void btnViewIngredients_Click(object sender, EventArgs e) => OpenIngredientSelector();
 
         private void OpenIngredientSelector()
         {
+            if (numStudentCount.Value <= 0)
+            {
+                MessageBox.Show("Student count must be greater than zero.", "Invalid Student Count", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (numRecipeCosting.Value <= 0)
+            {
+                MessageBox.Show("Price Per Student must be greater than zero.", "Invalid Price", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using (var selector = new frmIngredientSelector(_ingredientService, (int)numStudentCount.Value, _totalFinancialBudget, _tempItems))
             {
                 if (selector.ShowDialog() == DialogResult.OK)
@@ -71,12 +82,21 @@ namespace IRIS.Presentation.Window_Forms
                 return;
             }
 
+            // Calculate the total actual cost of items chosen
+            decimal actualTotalPrice = _tempItems.Sum(item => item.RequestedQty * item.UnitPrice);
+
             var newRequest = new Request
             {
                 Subject = txtSubject.Text.Trim(),
                 FacultyName = txtFaculty.Text.Trim(),
                 DateOfUse = dtpDateOfUse.Value,
+
+                // StudentCount remains an int (no half students!), but the rest are now clean decimals.
                 StudentCount = (int)numStudentCount.Value,
+                TotalBudget = _totalFinancialBudget,
+                PricePerStudent = numRecipeCosting.Value,
+                TotalPrice = actualTotalPrice,
+
                 Status = RequestStatus.Pending,
                 EncodedById = UserSession.CurrentUser.UserId,
                 CreatedAt = DateTime.Now,
@@ -90,7 +110,8 @@ namespace IRIS.Presentation.Window_Forms
                     IngredientId = item.IngredientId,
                     PortionPerStudent = item.PortionPerStudent,
                     RequestedQty = item.RequestedQty,
-                    AllowedQty = item.AllowedQty
+                    AllowedQty = item.AllowedQty,
+                    UnitPrice = item.UnitPrice
                 }).ToList();
 
                 _requestService.CreateRequest(newRequest, itemsToSave);

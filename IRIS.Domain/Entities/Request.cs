@@ -11,6 +11,9 @@ namespace IRIS.Domain.Entities
         [Required, MaxLength(100)] public string? Subject { get; set; }
         [Required, MaxLength(100)] public string? FacultyName { get; set; }
         [Required] public int StudentCount { get; set; }
+        [Required] public decimal TotalBudget { get; set; }
+        [Required] public decimal TotalPrice { get; set; }
+        [Required] public decimal PricePerStudent { get; set; }
         [Required] public RequestStatus Status { get; set; } = RequestStatus.Pending;
         public DateTime DateOfUse { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

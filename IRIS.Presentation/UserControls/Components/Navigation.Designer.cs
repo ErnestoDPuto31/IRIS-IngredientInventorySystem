@@ -143,8 +143,7 @@ namespace IRIS.Presentation.UserControls
             pnlRestock.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             pnlRestock.Controls.Add(btnRestock);
             pnlRestock.CustomizableEdges = customizableEdges9;
-            pnlRestock.Location = new Point(0, 555);
-            pnlRestock.Margin = new Padding(4, 4, 4, 4);
+            pnlRestock.Location = new Point(3, 356);
             pnlRestock.Name = "pnlRestock";
             pnlRestock.ShadowDecoration.CustomizableEdges = customizableEdges10;
             pnlRestock.Size = new Size(90, 62);
