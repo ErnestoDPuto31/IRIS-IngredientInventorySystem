@@ -1,9 +1,14 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
-using IRIS.Infrastructure.Data;
-using IRIS.Services.Interfaces;
 using IRIS.Domain.Helpers;
+using IRIS.Infrastructure.Data;
+using IRIS.Services.DTOs;
+using IRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace IRIS.Services.Implementations
 {
@@ -17,17 +22,23 @@ namespace IRIS.Services.Implementations
         }
 
         public int GetTotalIngredients() => _context.Ingredients.Count();
+
         public int GetTotalRequests() => _context.Requests.Count();
-        public int GetTotalTransactions() => _context.Requests.Count(r => r.Status == RequestStatus.Released);
+
+        public int GetTotalTransactions() =>
+            _context.Requests.Count(r => r.Status == RequestStatus.Released);
 
         public double GetApprovalRate()
         {
             var total = _context.Requests.Count();
             if (total == 0) return 0.0;
-            var approved = _context.Requests.Count(r => r.Status == RequestStatus.Approved || r.Status == RequestStatus.Released);
+
+            var approved = _context.Requests.Count(r =>
+                r.Status == RequestStatus.Approved ||
+                r.Status == RequestStatus.Released);
+
             return Math.Round((double)approved / total * 100, 1);
         }
-
 
         public Dictionary<string, double> GetInventoryStats()
         {
@@ -74,19 +85,26 @@ namespace IRIS.Services.Implementations
                 .ToList();
         }
 
-        public List<IRIS.Domain.Entities.LowStockItem> GetLowStockIngredients()
+        public List<LowStockItem> GetLowStockIngredients()
         {
             return _context.Ingredients
                 .AsNoTracking()
                 .Where(i => i.CurrentStock < i.MinimumStock)
-                .Select(i => new { i.Name, i.Category, i.CurrentStock, i.MinimumStock, i.Unit })
+                .Select(i => new
+                {
+                    i.Name,
+                    i.Category,
+                    i.CurrentStock,
+                    i.MinimumStock,
+                    i.Unit
+                })
                 .AsEnumerable()
-                .Select(i => new IRIS.Domain.Entities.LowStockItem(
+                .Select(i => new LowStockItem(
                     i.Name ?? "Unknown",
-                    i.Category.GetDisplayName(), 
+                    i.Category.GetDisplayName(),
                     (float)i.CurrentStock,
                     (float)i.MinimumStock,
-                    i.Unit.GetDisplayName() 
+                    i.Unit.GetDisplayName()
                 ))
                 .ToList();
         }
@@ -106,18 +124,132 @@ namespace IRIS.Services.Implementations
                 .Join(_context.Ingredients,
                       req => req.IngredientId,
                       ingredient => ingredient.IngredientId,
-                      (req, ingredient) => new { req, ingredient }) 
+                      (req, ingredient) => new { req, ingredient })
                 .AsEnumerable()
                 .Select(x => new TopIngredientItem
                 {
                     Name = x.ingredient.Name ?? "Unknown",
-                    Category = x.ingredient.Category.GetDisplayName(), 
+                    Category = x.ingredient.Category.GetDisplayName(),
                     TotalUsed = x.req.TotalUsedAmount,
-                    Unit = x.ingredient.Unit.GetDisplayName() 
+                    Unit = x.ingredient.Unit.GetDisplayName()
                 })
                 .ToList();
 
             return topUsed;
+        }
+
+        public async Task<ReportsDashboardDto> GetDashboardDataAsync(int count = 5)
+        {
+            var dto = new ReportsDashboardDto();
+
+            dto.TotalIngredients = await _context.Ingredients.CountAsync();
+
+            dto.TotalRequests = await _context.Requests.CountAsync();
+
+            dto.TotalTransactions = await _context.Requests
+                .CountAsync(r => r.Status == RequestStatus.Released);
+
+            var approvedCount = await _context.Requests
+                .CountAsync(r =>
+                    r.Status == RequestStatus.Approved ||
+                    r.Status == RequestStatus.Released);
+
+            dto.ApprovalRate = dto.TotalRequests == 0
+                ? 0.0
+                : Math.Round((double)approvedCount / dto.TotalRequests * 100, 1);
+
+            var emptyCount = await _context.Ingredients.CountAsync(i => i.CurrentStock <= 0);
+            var lowCount = await _context.Ingredients.CountAsync(i => i.CurrentStock > 0 && i.CurrentStock < i.MinimumStock);
+            var fullCount = await _context.Ingredients.CountAsync(i => i.CurrentStock >= i.MinimumStock);
+
+            dto.InventoryStats = new Dictionary<string, double>
+            {
+                { "Empty", emptyCount },
+                { "Low Stock", lowCount },
+                { "Full Stock", fullCount }
+            };
+
+            dto.RequestStats = await _context.Requests
+                .AsNoTracking()
+                .GroupBy(r => r.Status)
+                .Select(g => new
+                {
+                    Status = g.Key.ToString(),
+                    Count = (double)g.Count()
+                })
+                .ToDictionaryAsync(x => x.Status, x => x.Count);
+
+            var rawCategoryStats = await _context.Ingredients
+                .AsNoTracking()
+                .GroupBy(i => i.Category)
+                .Select(g => new
+                {
+                    Category = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+
+            dto.CategoryStats = rawCategoryStats.ToDictionary(
+                x => x.Category.GetDisplayName(),
+                x => (double)x.Count
+            );
+
+            var lowStockRaw = await _context.Ingredients
+                .AsNoTracking()
+                .Where(i => i.CurrentStock < i.MinimumStock)
+                .Select(i => new
+                {
+                    i.Name,
+                    i.Category,
+                    i.CurrentStock,
+                    i.MinimumStock,
+                    i.Unit
+                })
+                .ToListAsync();
+
+            dto.LowStockIngredients = lowStockRaw
+                .Select(i => new LowStockItem(
+                    i.Name ?? "Unknown",
+                    i.Category.GetDisplayName(),
+                    (float)i.CurrentStock,
+                    (float)i.MinimumStock,
+                    i.Unit.GetDisplayName()
+                ))
+                .ToList();
+
+            var topUsedRaw = await _context.Set<RequestDetails>()
+                .AsNoTracking()
+                .GroupBy(req => req.IngredientId)
+                .Select(group => new
+                {
+                    IngredientId = group.Key,
+                    TotalUsedAmount = group.Sum(r => r.RequestedQty)
+                })
+                .OrderByDescending(x => x.TotalUsedAmount)
+                .Take(count)
+                .Join(_context.Ingredients.AsNoTracking(),
+                      req => req.IngredientId,
+                      ingredient => ingredient.IngredientId,
+                      (req, ingredient) => new
+                      {
+                          req.TotalUsedAmount,
+                          ingredient.Name,
+                          ingredient.Category,
+                          ingredient.Unit
+                      })
+                .ToListAsync();
+
+            dto.TopUsedIngredients = topUsedRaw
+                .Select(x => new TopIngredientItem
+                {
+                    Name = x.Name ?? "Unknown",
+                    Category = x.Category.GetDisplayName(),
+                    TotalUsed = x.TotalUsedAmount,
+                    Unit = x.Unit.GetDisplayName()
+                })
+                .ToList();
+
+            return dto;
         }
     }
 }

@@ -4,14 +4,22 @@ using IRIS.Domain.Enums;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.Helpers;
 using IRIS.Presentation.UserControls.Components;
+using IRIS.Services.DTOs;
 using IRIS.Services.Interfaces;
+using System.Drawing;
+using System.Threading.Tasks;
 using static Bunifu.UI.WinForms.BunifuButton.BunifuButton;
 
 namespace IRIS.Presentation.UserControls.PagesUC
 {
     public partial class ReportsControl : UserControl
     {
-        private bool _isLoading = false;
+        private bool _layoutReady = false;
+        private bool _isLoadingData = false;
+        private bool _dataBound = false;
+
+        private ReportsDashboardDto? _snapshot;
+        private Task<ReportsDashboardDto>? _preloadTask;
 
         public ReportsControl()
         {
@@ -35,49 +43,97 @@ namespace IRIS.Presentation.UserControls.PagesUC
             return svc;
         }
 
-        private void ReportsControl_Load(object sender, EventArgs e)
+        public void SetPreloadedTask(Task<ReportsDashboardDto> preloadTask)
         {
-            if (_isLoading) return;
+            if (_preloadTask == null)
+                _preloadTask = preloadTask;
+        }
+
+        public void ResetCachedData()
+        {
+            _snapshot = null;
+            _preloadTask = null;
+            _dataBound = false;
+            _isLoadingData = false;
+        }
+
+        public async Task EnsureDataLoadedAsync()
+        {
+            if (_dataBound || _isLoadingData)
+                return;
 
             var reportsService = GetReportsService();
-            if (reportsService == null) return;
+            if (reportsService == null)
+                return;
 
             try
             {
-                _isLoading = true;
+                _isLoadingData = true;
+                UseWaitCursor = true;
 
-                if (bunifuVScrollBar1 != null)
+                if (_snapshot == null)
                 {
-                    bunifuVScrollBar1.Visible = false;
-                    bunifuVScrollBar1.Enabled = false;
+                    if (_preloadTask == null || _preloadTask.IsCanceled || _preloadTask.IsFaulted)
+                        _preloadTask = reportsService.GetDashboardDataAsync(5);
+
+                    _snapshot = await _preloadTask;
                 }
 
-                if (pnlMain != null)
-                    pnlMain.AutoScroll = true;
-
-                SetupCards(reportsService);
-                LoadCharts(reportsService);
-                LoadTable(reportsService);
-
-                var topIngredients = reportsService.GetTopUsedIngredients(5);
-                if (topIngredientsControl != null)
-                    topIngredientsControl.LoadData(topIngredients);
+                if (!IsDisposed && _snapshot != null)
+                    BindSnapshot(_snapshot);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading reports data: " + ex.Message);
             }
             finally
             {
-                _isLoading = false;
+                UseWaitCursor = false;
+                _isLoadingData = false;
             }
+        }
+
+        private void ReportsControl_Load(object sender, EventArgs e)
+        {
+            if (_layoutReady) return;
+
+            _layoutReady = true;
+
+            if (bunifuVScrollBar1 != null)
+            {
+                bunifuVScrollBar1.Visible = false;
+                bunifuVScrollBar1.Enabled = false;
+            }
+
+            if (pnlMain != null)
+                pnlMain.AutoScroll = true;
+        }
+
+        private void BindSnapshot(ReportsDashboardDto snapshot)
+        {
+            if (_dataBound) return;
+
+            _dataBound = true;
+
+            SetupCards(snapshot);
+            LoadCharts(snapshot);
+            LoadTable(snapshot);
+
+            if (topIngredientsControl != null)
+                topIngredientsControl.LoadData(snapshot.TopUsedIngredients);
         }
 
         private void SetupExportButtonsUI()
         {
             if (pnlMain == null) return;
+
             if (btnExportCSV == null)
             {
                 btnExportCSV = new Bunifu.UI.WinForms.BunifuButton.BunifuButton
                 {
                     Name = "btnExportCSV"
                 };
+
                 pnlMain.Controls.Add(btnExportCSV);
                 btnExportCSV.BringToFront();
             }
@@ -111,8 +167,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 btnExportCSV.Location = new Point(pnlMain.ClientSize.Width - rightPadding - (btnSize.Width * 2) - gap, top);
             }
 
-            this.SizeChanged -= ReportsControl_SizeChanged;
-            this.SizeChanged += ReportsControl_SizeChanged;
+            SizeChanged -= ReportsControl_SizeChanged;
+            SizeChanged += ReportsControl_SizeChanged;
+
             btnExportCSV.Click -= btnExportCSV_Click;
             btnExportCSV.Click += btnExportCSV_Click;
 
@@ -127,6 +184,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 if (btnExportPDF != null) btnExportPDF.Visible = true;
             }
         }
+
         private void ReportsControl_SizeChanged(object sender, EventArgs e)
         {
             if (pnlMain == null || btnExportCSV == null || btnExportPDF == null) return;
@@ -147,11 +205,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
             var purple = Color.FromArgb(124, 58, 237);
 
-            // idle like your screenshot
             var idleFill = Color.FromArgb(248, 249, 252);
             var idleBorder = Color.FromArgb(223, 226, 233);
 
-            // hover/pressed
             var hoverFill = Color.FromArgb(245, 243, 255);
             var pressedFill = Color.FromArgb(237, 233, 254);
 
@@ -170,7 +226,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btn.BorderStyle = BorderStyles.Solid;
             btn.Cursor = Cursors.Hand;
 
-            // smaller so "Export PDF/CSV" fits perfectly
             btn.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btn.ForeColor = text;
 
@@ -182,7 +237,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btn.IconPadding = 5;
             btn.IconSize = 16;
 
-            // ===== idle (gray) =====
             btn.IdleBorderRadius = 14;
             btn.IdleBorderThickness = 1;
             btn.IdleBorderColor = idleBorder;
@@ -196,7 +250,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btn.OnIdleState.ForeColor = text;
             btn.OnIdleState.IconLeftImage = btn.IconLeft;
 
-            // ===== hover (purple border, light purple fill) =====
             btn.onHoverState.BorderStyle = BorderStyles.Solid;
             btn.onHoverState.BorderRadius = 14;
             btn.onHoverState.BorderThickness = 1;
@@ -205,7 +258,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btn.onHoverState.ForeColor = text;
             btn.onHoverState.IconLeftImage = btn.IconLeft;
 
-            // ===== pressed =====
             btn.OnPressedState.BorderStyle = BorderStyles.Solid;
             btn.OnPressedState.BorderRadius = 14;
             btn.OnPressedState.BorderThickness = 1;
@@ -214,7 +266,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btn.OnPressedState.ForeColor = text;
             btn.OnPressedState.IconLeftImage = btn.IconLeft;
 
-            // ===== disabled =====
             btn.OnDisabledState.BorderStyle = BorderStyles.Solid;
             btn.OnDisabledState.BorderRadius = 14;
             btn.OnDisabledState.BorderThickness = 1;
@@ -223,16 +274,17 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btn.OnDisabledState.ForeColor = Color.FromArgb(160, 160, 160);
         }
 
-        private void btnExportCSV_Click(object sender, EventArgs e)
+        private async void btnExportCSV_Click(object sender, EventArgs e)
         {
-            var reportsService = GetReportsService();
-            if (reportsService == null) return;
+            var snapshot = await GetSnapshotForExportAsync();
+            if (snapshot == null) return;
 
             using var sfd = new SaveFileDialog
             {
                 Filter = "Excel files (*.xlsx)|*.xlsx",
                 FileName = $"IRIS_Reports_{DateTime.Now:yyyyMMdd_HHmm}.xlsx"
             };
+
             if (sfd.ShowDialog() != DialogResult.OK) return;
 
             ExportExcel.ExportAndRevealInExplorer(
@@ -241,29 +293,74 @@ namespace IRIS.Presentation.UserControls.PagesUC
                             ?? UserSession.CurrentUser?.Username
                             ?? UserSession.CurrentUser?.Role.ToString()
                             ?? "Unknown User"),
-                totalIngredients: reportsService.GetTotalIngredients(),
-                totalRequests: reportsService.GetTotalRequests(),
-                totalTransactions: reportsService.GetTotalTransactions(),
-                approvalRate: reportsService.GetApprovalRate(),
-                inventoryStats: reportsService.GetInventoryStats(),
-                requestStats: reportsService.GetRequestStats(),
-                categoryStats: reportsService.GetCategoryStats(),
-                topIngredients: reportsService.GetTopUsedIngredients(5),
-                lowStock: reportsService.GetLowStockIngredients()
+                totalIngredients: snapshot.TotalIngredients,
+                totalRequests: snapshot.TotalRequests,
+                totalTransactions: snapshot.TotalTransactions,
+                approvalRate: snapshot.ApprovalRate,
+                inventoryStats: snapshot.InventoryStats,
+                requestStats: snapshot.RequestStats,
+                categoryStats: snapshot.CategoryStats,
+                topIngredients: snapshot.TopUsedIngredients,
+                lowStock: snapshot.LowStockIngredients
             );
         }
-        // ==========================================
-        // TABLE
-        // ==========================================
-        private void LoadTable(IReportsService reportsService)
-        {
-            if (reportsService == null) return;
 
+        private async void btnExportPDF_Click_1(object sender, EventArgs e)
+        {
+            var snapshot = await GetSnapshotForExportAsync();
+            if (snapshot == null) return;
+
+            using var sfd = new SaveFileDialog
+            {
+                Filter = "PDF files (*.pdf)|*.pdf",
+                FileName = $"IRIS_Reports_{DateTime.Now:yyyyMMdd_HHmm}.pdf"
+            };
+
+            if (sfd.ShowDialog() != DialogResult.OK) return;
+
+            byte[]? logoPng = null;
             try
             {
-                var lowStockData = reportsService.GetLowStockIngredients();
+                logoPng = ExportPdf.ImageToPngBytes(IRIS.Presentation.Properties.Resources.IRIS_Logo);
+            }
+            catch
+            {
+            }
+
+            ExportPdf.ExportAndRevealInExplorer(
+                filePath: sfd.FileName,
+                exportedBy: (UserSession.CurrentUser?.Role.ToString()
+                            ?? UserSession.CurrentUser?.Username
+                            ?? UserSession.CurrentUser?.Role.ToString()
+                            ?? "Unknown User"),
+                totalIngredients: snapshot.TotalIngredients,
+                totalRequests: snapshot.TotalRequests,
+                totalTransactions: snapshot.TotalTransactions,
+                approvalRate: snapshot.ApprovalRate,
+                inventoryStats: snapshot.InventoryStats,
+                requestStats: snapshot.RequestStats,
+                categoryStats: snapshot.CategoryStats,
+                topIngredients: snapshot.TopUsedIngredients,
+                lowStock: snapshot.LowStockIngredients,
+                irisLogoPng: logoPng
+            );
+        }
+
+        private async Task<ReportsDashboardDto?> GetSnapshotForExportAsync()
+        {
+            if (_snapshot != null)
+                return _snapshot;
+
+            await EnsureDataLoadedAsync();
+            return _snapshot;
+        }
+
+        private void LoadTable(ReportsDashboardDto snapshot)
+        {
+            try
+            {
                 if (lowStockControl != null)
-                    lowStockControl.LoadData(lowStockData);
+                    lowStockControl.LoadData(snapshot.LowStockIngredients);
             }
             catch (Exception ex)
             {
@@ -271,35 +368,42 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
         }
 
-        // ==========================================
-        // CARDS
-        // ==========================================
-        private void SetupCards(IReportsService reportsService)
+        private void SetupCards(ReportsDashboardDto snapshot)
         {
-            if (reportsService == null) return;
-
             if (TotalIngredientsCard != null)
             {
-                var total = reportsService.GetTotalIngredients();
-                ConfigureCard(TotalIngredientsCard, CardType.TotalIngredients, IconChar.Box, total.ToString());
+                ConfigureCard(
+                    TotalIngredientsCard,
+                    CardType.TotalIngredients,
+                    IconChar.Box,
+                    snapshot.TotalIngredients.ToString());
             }
 
             if (TotalRequestCard != null)
             {
-                var totalRequests = reportsService.GetTotalRequests();
-                ConfigureCard(TotalRequestCard, CardType.TotalRequests, IconChar.FileAlt, totalRequests.ToString());
+                ConfigureCard(
+                    TotalRequestCard,
+                    CardType.TotalRequests,
+                    IconChar.FileAlt,
+                    snapshot.TotalRequests.ToString());
             }
 
             if (ApprovalRateCard != null)
             {
-                var approvalRate = reportsService.GetApprovalRate();
-                ConfigureCard(ApprovalRateCard, CardType.ApprovalRate, IconChar.CheckCircle, $"{approvalRate}%");
+                ConfigureCard(
+                    ApprovalRateCard,
+                    CardType.ApprovalRate,
+                    IconChar.CheckCircle,
+                    $"{snapshot.ApprovalRate}%");
             }
 
             if (TotalTransactionsCard != null)
             {
-                var totalTransactions = reportsService.GetTotalTransactions();
-                ConfigureCard(TotalTransactionsCard, CardType.TotalTransactions, IconChar.ChartLine, totalTransactions.ToString());
+                ConfigureCard(
+                    TotalTransactionsCard,
+                    CardType.TotalTransactions,
+                    IconChar.ChartLine,
+                    snapshot.TotalTransactions.ToString());
             }
         }
 
@@ -318,28 +422,30 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
         }
 
-        // ==========================================
-        // CHARTS
-        // ==========================================
-        private void LoadCharts(IReportsService reportsService)
+        private void LoadCharts(ReportsDashboardDto snapshot)
         {
-            if (reportsService == null) return;
-
             try
             {
-                var invStats = reportsService.GetInventoryStats();
+                var invStats = snapshot.InventoryStats;
                 if (invStats != null && invStats.Any() && chartInventoryCanvas != null)
                 {
                     chartInventoryCanvas.Labels = invStats.Keys.ToArray();
+
                     if (pieInventory != null)
                     {
                         pieInventory.Data = invStats.Values.ToList();
-                        pieInventory.BackgroundColor = new List<Color> { Color.Crimson, Color.Gold, Color.SeaGreen };
+                        pieInventory.BackgroundColor = new List<Color>
+                        {
+                            Color.Crimson,
+                            Color.Gold,
+                            Color.SeaGreen
+                        };
                     }
+
                     chartInventoryCanvas.Update();
                 }
 
-                var reqStats = reportsService.GetRequestStats();
+                var reqStats = snapshot.RequestStats;
                 if (reqStats != null && reqStats.Any() && chartRequestsCanvas != null)
                 {
                     List<string> reqLabels = new List<string>();
@@ -349,9 +455,10 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     foreach (var item in reqStats)
                     {
                         reqLabels.Add(item.Key);
-                        reqData.Add((double)item.Value);
+                        reqData.Add(item.Value);
 
                         string statusKey = item.Key;
+
                         if (string.Equals(statusKey, nameof(RequestStatus.Pending), StringComparison.OrdinalIgnoreCase))
                             reqColors.Add(Color.Gold);
                         else if (string.Equals(statusKey, nameof(RequestStatus.Approved), StringComparison.OrdinalIgnoreCase))
@@ -365,29 +472,34 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     }
 
                     chartRequestsCanvas.Labels = reqLabels.ToArray();
+
                     if (pieRequests != null)
                     {
                         pieRequests.Data = reqData;
                         pieRequests.BackgroundColor = reqColors;
                     }
+
                     chartRequestsCanvas.Update();
                 }
 
-                var rawStats = reportsService.GetCategoryStats();
+                var rawStats = snapshot.CategoryStats;
                 if (rawStats != null && rawStats.Any() && chartBarCanvas != null)
                 {
-                    var catStats = rawStats.ToDictionary(k => k.Key, v => (double)v.Value);
+                    var catStats = rawStats.ToDictionary(k => k.Key, v => v.Value);
 
                     chartBarCanvas.Labels = catStats.Keys.ToArray();
 
                     if (barCategory != null)
                     {
                         barCategory.Data = catStats.Values.ToList();
+
                         var barColors = new List<Color>();
                         for (int i = 0; i < catStats.Count; i++)
                             barColors.Add(Color.Indigo);
+
                         barCategory.BackgroundColor = barColors;
                     }
+
                     chartBarCanvas.Update();
                 }
             }
@@ -395,43 +507,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             {
                 MessageBox.Show("Error loading charts: " + ex.Message);
             }
-        }
-
-        // ==========================================
-        // PDF EXPORT
-        // ==========================================
-        private void btnExportPDF_Click_1(object sender, EventArgs e)
-        {
-            var reportsService = GetReportsService();
-            if (reportsService == null) return;
-
-            using var sfd = new SaveFileDialog
-            {
-                Filter = "PDF files (*.pdf)|*.pdf",
-                FileName = $"IRIS_Reports_{DateTime.Now:yyyyMMdd_HHmm}.pdf"
-            };
-            if (sfd.ShowDialog() != DialogResult.OK) return;
-
-            byte[]? logoPng = null;
-            try { logoPng = ExportPdf.ImageToPngBytes(IRIS.Presentation.Properties.Resources.IRIS_Logo); } catch { }
-
-            ExportPdf.ExportAndRevealInExplorer(
-                filePath: sfd.FileName,
-                exportedBy: (UserSession.CurrentUser?.Role.ToString()
-                            ?? UserSession.CurrentUser?.Username
-                            ?? UserSession.CurrentUser?.Role.ToString()
-                            ?? "Unknown User"),
-                totalIngredients: reportsService.GetTotalIngredients(),
-                totalRequests: reportsService.GetTotalRequests(),
-                totalTransactions: reportsService.GetTotalTransactions(),
-                approvalRate: reportsService.GetApprovalRate(),
-                inventoryStats: reportsService.GetInventoryStats(),
-                requestStats: reportsService.GetRequestStats(),
-                categoryStats: reportsService.GetCategoryStats(),
-                topIngredients: reportsService.GetTopUsedIngredients(5),
-                lowStock: reportsService.GetLowStockIngredients(),
-                irisLogoPng: logoPng
-            );
         }
     }
 }

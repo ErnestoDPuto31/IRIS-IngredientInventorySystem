@@ -54,20 +54,57 @@ namespace IRIS.Presentation.Forms
 
         private void DropdownPanel_NotificationClicked(object sender, EventArgs e)
         {
+            // Check if the dropdown is currently visible on the screen
+            if (_dropdownPanel.Visible)
+            {
+                // If it's open, trigger your custom shrinking animation
+                _dropdownPanel.HideBubble();
+            }
+            else
+            {
+                // Optional but recommended: 
+                // Force the dropdown to load the very latest notifications right before it opens
+                if (UserSession.CurrentUser != null && _notificationService != null)
+                {
+                    var latestNotifs = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
+                    _dropdownPanel.LoadNotifications(latestNotifs);
+                }
 
+                // Trigger your custom expanding bubble animation
+                _dropdownPanel.ShowBubble();
+
+                // Ensure the dropdown appears ON TOP of all other controls on your form
+                _dropdownPanel.BringToFront();
+            }
         }
 
         private void NotificationTimer_Tick(object sender, EventArgs e)
         {
+            // 1. Safety check: Ensure the session and service actually exist
             if (UserSession.CurrentUser == null || _notificationService == null) return;
 
             try
             {
+                // 2. Fetch notifications
                 var notifications = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
 
-                int unreadCount = notifications.Count(n => n.IsRead == false);
+                // 3. Safety check: Ensure the database/service didn't return a null list
+                if (notifications == null) return;
 
-                notificationBadge1.Count = unreadCount;
+                // 4. Safely count unread items (ignoring any null rows in the database)
+                int unreadCount = notifications.Count(n => n != null && n.IsRead == false);
+
+                // 5. Update the UI safely
+                if (notificationBadge1 != null)
+                {
+                    notificationBadge1.Count = unreadCount;
+
+                    // 6. Force the badge to stay visible even if its default behavior is to hide on 0
+                    if (unreadCount == 0)
+                    {
+                        notificationBadge1.Visible = true;
+                    }
+                }
             }
             catch
             {
