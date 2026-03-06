@@ -39,6 +39,11 @@ namespace IRIS.Presentation.UserControls
         {
             InitializeComponent();
 
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
+
             _reportsService = ServiceFactory.GetReportsService();
             _reportsControl = new ReportsControl();
 

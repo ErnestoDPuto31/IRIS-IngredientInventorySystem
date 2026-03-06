@@ -6,8 +6,6 @@ using IRIS.Presentation.Helpers;
 using IRIS.Presentation.UserControls.Components;
 using IRIS.Services.DTOs;
 using IRIS.Services.Interfaces;
-using System.Drawing;
-using System.Threading.Tasks;
 using static Bunifu.UI.WinForms.BunifuButton.BunifuButton;
 
 namespace IRIS.Presentation.UserControls.PagesUC
@@ -26,6 +24,10 @@ namespace IRIS.Presentation.UserControls.PagesUC
             InitializeComponent();
             DoubleBuffered = true;
 
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             SetupExportButtonsUI();
         }
 
