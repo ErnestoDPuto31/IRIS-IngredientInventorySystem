@@ -261,7 +261,14 @@ namespace IRIS.Presentation.UserControls
             return buttons.ToArray();
         }
 
-        private void btnDashboard_Click(object sender, EventArgs e) { }
+        private void btnDashboard_Click(object sender, EventArgs e) 
+        { 
+            if (ParentForm is MainForm main)
+            {
+                main.LoadPage(new DashboardControl());
+                if (_isExpanded) btnHamburger_Click(null, null);
+            }
+        }
 
         private void btnInventory_Click(object sender, EventArgs e)
         {
@@ -310,7 +317,14 @@ namespace IRIS.Presentation.UserControls
             }
         }
 
-        private void btnHistory_Click(object sender, EventArgs e) { }
+        private void btnHistory_Click(object sender, EventArgs e) 
+        {
+            if (ParentForm is MainForm main)
+            {
+                main.LoadPage(new HistoryControl());
+                if (_isExpanded) btnHamburger_Click(null, null);
+            }
+        }
 
         private void btnLogout_Click(object sender, EventArgs e)
         {

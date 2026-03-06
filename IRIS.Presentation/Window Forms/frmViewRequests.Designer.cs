@@ -56,6 +56,7 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmViewRequests));
             guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(components);
             lblTitle = new Label();
             lblStatusBadge = new Guna.UI2.WinForms.Guna2TextBox();
@@ -67,14 +68,16 @@
             label3 = new Label();
             lblStudentCount = new Guna.UI2.WinForms.Guna2TextBox();
             label4 = new Label();
-            lblAllowedQuantity = new Guna.UI2.WinForms.Guna2TextBox();
+            lblTotalPrice = new Guna.UI2.WinForms.Guna2TextBox();
             label5 = new Label();
-            lblRecipeCosting = new Guna.UI2.WinForms.Guna2TextBox();
+            lblTotalBudget = new Guna.UI2.WinForms.Guna2TextBox();
             label6 = new Label();
-            materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
             gridItems = new Guna.UI2.WinForms.Guna2DataGridView();
             Ingredient = new DataGridViewTextBoxColumn();
-            Requested = new DataGridViewTextBoxColumn();
+            PortionPerStudent = new DataGridViewTextBoxColumn();
+            RequestedQty = new DataGridViewTextBoxColumn();
+            UnitPrice = new DataGridViewTextBoxColumn();
+            TotalPrice = new DataGridViewTextBoxColumn();
             label7 = new Label();
             txtRemarks = new Guna.UI2.WinForms.Guna2TextBox();
             btnApprove = new Guna.UI2.WinForms.Guna2GradientButton();
@@ -82,9 +85,10 @@
             btnClose = new Guna.UI2.WinForms.Guna2GradientButton();
             btnExitForm = new Guna.UI2.WinForms.Guna2ImageButton();
             lblRemarksTitle = new Label();
-            materialDivider2 = new MaterialSkin.Controls.MaterialDivider();
             lblSubmittedBy = new Guna.UI2.WinForms.Guna2HtmlLabel();
             lblApprovedRejectedBy = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            guna2Separator1 = new Guna.UI2.WinForms.Guna2Separator();
+            guna2Separator2 = new Guna.UI2.WinForms.Guna2Separator();
             ((System.ComponentModel.ISupportInitialize)gridItems).BeginInit();
             SuspendLayout();
             // 
@@ -145,7 +149,7 @@
             label1.AutoSize = true;
             label1.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ControlDarkDark;
-            label1.Location = new Point(317, 76);
+            label1.Location = new Point(361, 76);
             label1.Name = "label1";
             label1.Size = new Size(74, 30);
             label1.TabIndex = 4;
@@ -190,7 +194,7 @@
             lblFaculty.Font = new Font("Poppins", 10.2F);
             lblFaculty.ForeColor = Color.Black;
             lblFaculty.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            lblFaculty.Location = new Point(317, 100);
+            lblFaculty.Location = new Point(361, 100);
             lblFaculty.Margin = new Padding(6, 10, 6, 10);
             lblFaculty.Multiline = true;
             lblFaculty.Name = "lblFaculty";
@@ -249,7 +253,7 @@
             lblStudentCount.Font = new Font("Poppins", 10.2F);
             lblStudentCount.ForeColor = Color.Black;
             lblStudentCount.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            lblStudentCount.Location = new Point(317, 202);
+            lblStudentCount.Location = new Point(361, 202);
             lblStudentCount.Margin = new Padding(6, 10, 6, 10);
             lblStudentCount.Multiline = true;
             lblStudentCount.Name = "lblStudentCount";
@@ -264,92 +268,81 @@
             label4.AutoSize = true;
             label4.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.ForeColor = SystemColors.ControlDarkDark;
-            label4.Location = new Point(317, 176);
+            label4.Location = new Point(361, 176);
             label4.Name = "label4";
             label4.Size = new Size(88, 30);
             label4.TabIndex = 9;
             label4.Text = "Students";
             // 
-            // lblAllowedQuantity
+            // lblTotalPrice
             // 
-            lblAllowedQuantity.BackColor = Color.White;
-            lblAllowedQuantity.BorderThickness = 0;
-            lblAllowedQuantity.CustomizableEdges = customizableEdges10;
-            lblAllowedQuantity.DefaultText = "2500g";
-            lblAllowedQuantity.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            lblAllowedQuantity.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            lblAllowedQuantity.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            lblAllowedQuantity.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            lblAllowedQuantity.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            lblAllowedQuantity.Font = new Font("Poppins", 10.2F);
-            lblAllowedQuantity.ForeColor = Color.Black;
-            lblAllowedQuantity.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            lblAllowedQuantity.Location = new Point(317, 292);
-            lblAllowedQuantity.Margin = new Padding(6, 10, 6, 10);
-            lblAllowedQuantity.Multiline = true;
-            lblAllowedQuantity.Name = "lblAllowedQuantity";
-            lblAllowedQuantity.PlaceholderText = "";
-            lblAllowedQuantity.SelectedText = "";
-            lblAllowedQuantity.ShadowDecoration.CustomizableEdges = customizableEdges11;
-            lblAllowedQuantity.Size = new Size(172, 49);
-            lblAllowedQuantity.TabIndex = 14;
+            lblTotalPrice.BackColor = Color.White;
+            lblTotalPrice.BorderThickness = 0;
+            lblTotalPrice.CustomizableEdges = customizableEdges10;
+            lblTotalPrice.DefaultText = "P 5,000.00";
+            lblTotalPrice.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            lblTotalPrice.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            lblTotalPrice.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            lblTotalPrice.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            lblTotalPrice.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            lblTotalPrice.Font = new Font("Poppins", 10.2F);
+            lblTotalPrice.ForeColor = Color.Black;
+            lblTotalPrice.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            lblTotalPrice.Location = new Point(667, 202);
+            lblTotalPrice.Margin = new Padding(6, 10, 6, 10);
+            lblTotalPrice.Multiline = true;
+            lblTotalPrice.Name = "lblTotalPrice";
+            lblTotalPrice.PlaceholderText = "";
+            lblTotalPrice.SelectedText = "";
+            lblTotalPrice.ShadowDecoration.CustomizableEdges = customizableEdges11;
+            lblTotalPrice.Size = new Size(172, 49);
+            lblTotalPrice.TabIndex = 14;
             // 
             // label5
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label5.ForeColor = SystemColors.ControlDarkDark;
-            label5.Location = new Point(317, 271);
+            label5.Location = new Point(657, 179);
             label5.Name = "label5";
-            label5.Size = new Size(156, 30);
+            label5.Size = new Size(100, 30);
             label5.TabIndex = 13;
-            label5.Text = "Allowed Quantity";
+            label5.Text = "Total Price";
             // 
-            // lblRecipeCosting
+            // lblTotalBudget
             // 
-            lblRecipeCosting.BackColor = Color.White;
-            lblRecipeCosting.BorderThickness = 0;
-            lblRecipeCosting.CustomizableEdges = customizableEdges12;
-            lblRecipeCosting.DefaultText = "10g per student";
-            lblRecipeCosting.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            lblRecipeCosting.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            lblRecipeCosting.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            lblRecipeCosting.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            lblRecipeCosting.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            lblRecipeCosting.Font = new Font("Poppins", 10.2F);
-            lblRecipeCosting.ForeColor = Color.Black;
-            lblRecipeCosting.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            lblRecipeCosting.Location = new Point(24, 292);
-            lblRecipeCosting.Margin = new Padding(6, 10, 6, 10);
-            lblRecipeCosting.Multiline = true;
-            lblRecipeCosting.Name = "lblRecipeCosting";
-            lblRecipeCosting.PlaceholderText = "";
-            lblRecipeCosting.SelectedText = "";
-            lblRecipeCosting.ShadowDecoration.CustomizableEdges = customizableEdges13;
-            lblRecipeCosting.Size = new Size(235, 49);
-            lblRecipeCosting.TabIndex = 12;
+            lblTotalBudget.BackColor = Color.White;
+            lblTotalBudget.BorderThickness = 0;
+            lblTotalBudget.CustomizableEdges = customizableEdges12;
+            lblTotalBudget.DefaultText = "P 5,000.00";
+            lblTotalBudget.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            lblTotalBudget.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            lblTotalBudget.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            lblTotalBudget.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            lblTotalBudget.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            lblTotalBudget.Font = new Font("Poppins", 10.2F);
+            lblTotalBudget.ForeColor = Color.Black;
+            lblTotalBudget.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            lblTotalBudget.Location = new Point(667, 100);
+            lblTotalBudget.Margin = new Padding(6, 10, 6, 10);
+            lblTotalBudget.Multiline = true;
+            lblTotalBudget.Name = "lblTotalBudget";
+            lblTotalBudget.PlaceholderText = "";
+            lblTotalBudget.SelectedText = "";
+            lblTotalBudget.ShadowDecoration.CustomizableEdges = customizableEdges13;
+            lblTotalBudget.Size = new Size(212, 49);
+            lblTotalBudget.TabIndex = 12;
             // 
             // label6
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label6.ForeColor = SystemColors.ControlDarkDark;
-            label6.Location = new Point(24, 271);
+            label6.Location = new Point(657, 79);
             label6.Name = "label6";
-            label6.Size = new Size(140, 30);
+            label6.Size = new Size(119, 30);
             label6.TabIndex = 11;
-            label6.Text = "Recipe Costing";
-            // 
-            // materialDivider1
-            // 
-            materialDivider1.BackColor = Color.FromArgb(30, 0, 0, 0);
-            materialDivider1.Depth = 0;
-            materialDivider1.Location = new Point(26, 344);
-            materialDivider1.MouseState = MaterialSkin.MouseState.HOVER;
-            materialDivider1.Name = "materialDivider1";
-            materialDivider1.Size = new Size(479, 2);
-            materialDivider1.TabIndex = 15;
-            materialDivider1.Text = "materialDivider1";
+            label6.Text = "Total Budget";
             // 
             // gridItems
             // 
@@ -370,7 +363,7 @@
             gridItems.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             gridItems.ColumnHeadersHeight = 30;
             gridItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            gridItems.Columns.AddRange(new DataGridViewColumn[] { Ingredient, Requested });
+            gridItems.Columns.AddRange(new DataGridViewColumn[] { Ingredient, PortionPerStudent, RequestedQty, UnitPrice, TotalPrice });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.White;
             dataGridViewCellStyle3.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -380,7 +373,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
             gridItems.DefaultCellStyle = dataGridViewCellStyle3;
             gridItems.GridColor = Color.FromArgb(231, 229, 255);
-            gridItems.Location = new Point(26, 394);
+            gridItems.Location = new Point(26, 316);
             gridItems.Name = "gridItems";
             gridItems.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -394,7 +387,7 @@
             gridItems.RowHeadersVisible = false;
             gridItems.RowHeadersWidth = 51;
             gridItems.RowTemplate.Height = 30;
-            gridItems.Size = new Size(479, 140);
+            gridItems.Size = new Size(825, 199);
             gridItems.TabIndex = 16;
             gridItems.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
             gridItems.ThemeStyle.AlternatingRowsStyle.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -426,19 +419,37 @@
             Ingredient.Name = "Ingredient";
             Ingredient.ReadOnly = true;
             // 
-            // Requested
+            // PortionPerStudent
             // 
-            Requested.FillWeight = 50F;
-            Requested.HeaderText = "Requested";
-            Requested.MinimumWidth = 6;
-            Requested.Name = "Requested";
-            Requested.ReadOnly = true;
+            PortionPerStudent.FillWeight = 150F;
+            PortionPerStudent.HeaderText = "Portion Per Student";
+            PortionPerStudent.MinimumWidth = 6;
+            PortionPerStudent.Name = "PortionPerStudent";
+            // 
+            // RequestedQty
+            // 
+            RequestedQty.HeaderText = "Requested Qty";
+            RequestedQty.MinimumWidth = 6;
+            RequestedQty.Name = "RequestedQty";
+            // 
+            // UnitPrice
+            // 
+            UnitPrice.HeaderText = "Unit Price";
+            UnitPrice.MinimumWidth = 6;
+            UnitPrice.Name = "UnitPrice";
+            // 
+            // TotalPrice
+            // 
+            TotalPrice.FillWeight = 75F;
+            TotalPrice.HeaderText = "Total Price";
+            TotalPrice.MinimumWidth = 6;
+            TotalPrice.Name = "TotalPrice";
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Poppins", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.Location = new Point(26, 351);
+            label7.Location = new Point(26, 273);
             label7.Name = "label7";
             label7.Size = new Size(215, 40);
             label7.TabIndex = 17;
@@ -458,14 +469,14 @@
             txtRemarks.FocusedState.BorderColor = Color.Indigo;
             txtRemarks.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtRemarks.HoverState.BorderColor = Color.Indigo;
-            txtRemarks.Location = new Point(33, 645);
+            txtRemarks.Location = new Point(51, 633);
             txtRemarks.Margin = new Padding(3, 5, 3, 5);
             txtRemarks.Multiline = true;
             txtRemarks.Name = "txtRemarks";
             txtRemarks.PlaceholderText = "Add Remarks...";
             txtRemarks.SelectedText = "";
             txtRemarks.ShadowDecoration.CustomizableEdges = customizableEdges9;
-            txtRemarks.Size = new Size(472, 84);
+            txtRemarks.Size = new Size(778, 112);
             txtRemarks.TabIndex = 21;
             // 
             // btnApprove
@@ -484,7 +495,7 @@
             btnApprove.HoverState.CustomBorderColor = Color.GreenYellow;
             btnApprove.HoverState.FillColor = Color.GreenYellow;
             btnApprove.Image = Properties.Resources.icons8_approve_24;
-            btnApprove.Location = new Point(284, 773);
+            btnApprove.Location = new Point(608, 768);
             btnApprove.Name = "btnApprove";
             btnApprove.PressedColor = Color.ForestGreen;
             btnApprove.ShadowDecoration.CustomizableEdges = customizableEdges7;
@@ -512,7 +523,7 @@
             btnReject.HoverState.FillColor = Color.Red;
             btnReject.HoverState.FillColor2 = Color.Red;
             btnReject.HoverState.ForeColor = Color.White;
-            btnReject.Location = new Point(175, 773);
+            btnReject.Location = new Point(499, 768);
             btnReject.Name = "btnReject";
             btnReject.PressedColor = Color.LightGray;
             btnReject.ShadowDecoration.CustomizableEdges = customizableEdges5;
@@ -540,7 +551,7 @@
             btnClose.HoverState.FillColor = SystemColors.ControlDark;
             btnClose.HoverState.FillColor2 = SystemColors.ControlDark;
             btnClose.HoverState.ForeColor = Color.White;
-            btnClose.Location = new Point(411, 773);
+            btnClose.Location = new Point(735, 768);
             btnClose.Name = "btnClose";
             btnClose.PressedColor = SystemColors.ControlDarkDark;
             btnClose.ShadowDecoration.CustomizableEdges = customizableEdges3;
@@ -557,7 +568,7 @@
             btnExitForm.ImageOffset = new Point(0, 0);
             btnExitForm.ImageRotate = 0F;
             btnExitForm.ImageSize = new Size(24, 24);
-            btnExitForm.Location = new Point(495, 28);
+            btnExitForm.Location = new Point(855, 12);
             btnExitForm.Name = "btnExitForm";
             btnExitForm.PressedState.ImageSize = new Size(23, 23);
             btnExitForm.ShadowDecoration.CustomizableEdges = customizableEdges1;
@@ -570,29 +581,18 @@
             lblRemarksTitle.AutoSize = true;
             lblRemarksTitle.Font = new Font("Poppins", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblRemarksTitle.ForeColor = SystemColors.ActiveCaptionText;
-            lblRemarksTitle.Location = new Point(24, 610);
+            lblRemarksTitle.Location = new Point(51, 597);
             lblRemarksTitle.Name = "lblRemarksTitle";
             lblRemarksTitle.Size = new Size(277, 31);
             lblRemarksTitle.TabIndex = 26;
             lblRemarksTitle.Text = "Remarks (Req. for Rejection)";
-            // 
-            // materialDivider2
-            // 
-            materialDivider2.BackColor = Color.FromArgb(30, 0, 0, 0);
-            materialDivider2.Depth = 0;
-            materialDivider2.Location = new Point(24, 600);
-            materialDivider2.MouseState = MaterialSkin.MouseState.HOVER;
-            materialDivider2.Name = "materialDivider2";
-            materialDivider2.Size = new Size(479, 2);
-            materialDivider2.TabIndex = 28;
-            materialDivider2.Text = "materialDivider2";
             // 
             // lblSubmittedBy
             // 
             lblSubmittedBy.BackColor = Color.Transparent;
             lblSubmittedBy.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblSubmittedBy.ForeColor = SystemColors.ControlDarkDark;
-            lblSubmittedBy.Location = new Point(33, 540);
+            lblSubmittedBy.Location = new Point(51, 540);
             lblSubmittedBy.Name = "lblSubmittedBy";
             lblSubmittedBy.Size = new Size(120, 32);
             lblSubmittedBy.TabIndex = 29;
@@ -603,21 +603,38 @@
             lblApprovedRejectedBy.BackColor = Color.Transparent;
             lblApprovedRejectedBy.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblApprovedRejectedBy.ForeColor = SystemColors.ControlDarkDark;
-            lblApprovedRejectedBy.Location = new Point(33, 562);
+            lblApprovedRejectedBy.Location = new Point(51, 562);
             lblApprovedRejectedBy.Name = "lblApprovedRejectedBy";
             lblApprovedRejectedBy.Size = new Size(120, 32);
             lblApprovedRejectedBy.TabIndex = 30;
             lblApprovedRejectedBy.Text = "Submitted By:";
+            // 
+            // guna2Separator1
+            // 
+            guna2Separator1.FillThickness = 2;
+            guna2Separator1.Location = new Point(33, 521);
+            guna2Separator1.Name = "guna2Separator1";
+            guna2Separator1.Size = new Size(818, 13);
+            guna2Separator1.TabIndex = 31;
+            // 
+            // guna2Separator2
+            // 
+            guna2Separator2.FillThickness = 2;
+            guna2Separator2.Location = new Point(33, 240);
+            guna2Separator2.Name = "guna2Separator2";
+            guna2Separator2.Size = new Size(818, 13);
+            guna2Separator2.TabIndex = 32;
             // 
             // frmViewRequests
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(550, 850);
+            ClientSize = new Size(900, 850);
+            Controls.Add(guna2Separator2);
+            Controls.Add(guna2Separator1);
             Controls.Add(lblApprovedRejectedBy);
             Controls.Add(lblSubmittedBy);
-            Controls.Add(materialDivider2);
             Controls.Add(lblRemarksTitle);
             Controls.Add(btnExitForm);
             Controls.Add(btnClose);
@@ -626,10 +643,9 @@
             Controls.Add(txtRemarks);
             Controls.Add(label7);
             Controls.Add(gridItems);
-            Controls.Add(materialDivider1);
-            Controls.Add(lblAllowedQuantity);
+            Controls.Add(lblTotalPrice);
             Controls.Add(label5);
-            Controls.Add(lblRecipeCosting);
+            Controls.Add(lblTotalBudget);
             Controls.Add(label6);
             Controls.Add(lblStudentCount);
             Controls.Add(label4);
@@ -642,6 +658,7 @@
             Controls.Add(lblStatusBadge);
             Controls.Add(lblTitle);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmViewRequests";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmViewRequests";
@@ -658,9 +675,9 @@
         private Guna.UI2.WinForms.Guna2TextBox lblSubject;
         private Label label1;
         private Label label2;
-        private Guna.UI2.WinForms.Guna2TextBox lblAllowedQuantity;
+        private Guna.UI2.WinForms.Guna2TextBox lblTotalPrice;
         private Label label5;
-        private Guna.UI2.WinForms.Guna2TextBox lblRecipeCosting;
+        private Guna.UI2.WinForms.Guna2TextBox lblTotalBudget;
         private Label label6;
         private Guna.UI2.WinForms.Guna2TextBox lblStudentCount;
         private Label label4;
@@ -669,9 +686,6 @@
         private Guna.UI2.WinForms.Guna2TextBox lblFaculty;
         private Label label7;
         private Guna.UI2.WinForms.Guna2DataGridView gridItems;
-        private DataGridViewTextBoxColumn Ingredient;
-        private DataGridViewTextBoxColumn Requested;
-        private MaterialSkin.Controls.MaterialDivider materialDivider1;
         private Guna.UI2.WinForms.Guna2TextBox txtRemarks;
         private Label label9;
         private Guna.UI2.WinForms.Guna2GradientButton btnApprove;
@@ -679,8 +693,14 @@
         private Guna.UI2.WinForms.Guna2GradientButton btnClose;
         private Guna.UI2.WinForms.Guna2ImageButton btnExitForm;
         private Label lblRemarksTitle;
-        private MaterialSkin.Controls.MaterialDivider materialDivider2;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblApprovedRejectedBy;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblSubmittedBy;
+        private Guna.UI2.WinForms.Guna2Separator guna2Separator1;
+        private DataGridViewTextBoxColumn Ingredient;
+        private DataGridViewTextBoxColumn PortionPerStudent;
+        private DataGridViewTextBoxColumn RequestedQty;
+        private DataGridViewTextBoxColumn UnitPrice;
+        private DataGridViewTextBoxColumn TotalPrice;
+        private Guna.UI2.WinForms.Guna2Separator guna2Separator2;
     }
 }

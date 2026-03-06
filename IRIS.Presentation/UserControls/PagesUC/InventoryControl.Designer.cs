@@ -39,12 +39,14 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2GroupBox1 = new Guna.UI2.WinForms.Guna2GroupBox();
             guna2ImageButton2 = new Guna.UI2.WinForms.Guna2ImageButton();
             cmbSortIngredients = new Guna.UI2.WinForms.Guna2ComboBox();
@@ -58,6 +60,7 @@
             pnlIngredients = new Guna.UI2.WinForms.Guna2Panel();
             scrlIngredients = new Guna.UI2.WinForms.Guna2VScrollBar();
             pnlMainContent = new Guna.UI2.WinForms.Guna2Panel();
+            guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             guna2GroupBox1.SuspendLayout();
             pnlMainContent.SuspendLayout();
             SuspendLayout();
@@ -201,7 +204,7 @@
             // btnAddIngredient
             // 
             btnAddIngredient.BorderRadius = 10;
-            btnAddIngredient.CustomizableEdges = customizableEdges13;
+            btnAddIngredient.CustomizableEdges = customizableEdges15;
             btnAddIngredient.DisabledState.BorderColor = Color.DarkGray;
             btnAddIngredient.DisabledState.CustomBorderColor = Color.DarkGray;
             btnAddIngredient.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -219,7 +222,7 @@
             btnAddIngredient.Location = new Point(1296, 59);
             btnAddIngredient.Name = "btnAddIngredient";
             btnAddIngredient.PressedColor = Color.FromArgb(111, 49, 171);
-            btnAddIngredient.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            btnAddIngredient.ShadowDecoration.CustomizableEdges = customizableEdges16;
             btnAddIngredient.Size = new Size(223, 69);
             btnAddIngredient.TabIndex = 1;
             btnAddIngredient.Text = " Add Ingredient";
@@ -250,10 +253,10 @@
             // pnlIngredients
             // 
             pnlIngredients.AutoScroll = true;
-            pnlIngredients.CustomizableEdges = customizableEdges11;
+            pnlIngredients.CustomizableEdges = customizableEdges13;
             pnlIngredients.Location = new Point(127, 264);
             pnlIngredients.Name = "pnlIngredients";
-            pnlIngredients.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            pnlIngredients.ShadowDecoration.CustomizableEdges = customizableEdges14;
             pnlIngredients.Size = new Size(1400, 753);
             pnlIngredients.TabIndex = 4;
             // 
@@ -273,21 +276,32 @@
             // pnlMainContent
             // 
             pnlMainContent.AutoScroll = true;
+            pnlMainContent.Controls.Add(guna2Panel1);
             pnlMainContent.Controls.Add(scrlIngredients);
             pnlMainContent.Controls.Add(guna2GroupBox1);
             pnlMainContent.Controls.Add(pnlIngredients);
             pnlMainContent.Controls.Add(btnAddIngredient);
             pnlMainContent.Controls.Add(label2);
             pnlMainContent.Controls.Add(label1);
-            pnlMainContent.CustomizableEdges = customizableEdges15;
+            pnlMainContent.CustomizableEdges = customizableEdges17;
             pnlMainContent.Dock = DockStyle.Fill;
             pnlMainContent.Location = new Point(0, 0);
             pnlMainContent.Name = "pnlMainContent";
-            pnlMainContent.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            pnlMainContent.ShadowDecoration.CustomizableEdges = customizableEdges18;
             pnlMainContent.ShadowDecoration.Enabled = true;
             pnlMainContent.ShadowDecoration.Shadow = new Padding(10);
             pnlMainContent.Size = new Size(1600, 900);
             pnlMainContent.TabIndex = 5;
+            // 
+            // guna2Panel1
+            // 
+            guna2Panel1.CustomizableEdges = customizableEdges11;
+            guna2Panel1.Dock = DockStyle.Bottom;
+            guna2Panel1.Location = new Point(0, 1017);
+            guna2Panel1.Name = "guna2Panel1";
+            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            guna2Panel1.Size = new Size(1579, 50);
+            guna2Panel1.TabIndex = 5;
             // 
             // InventoryControl
             // 
@@ -319,5 +333,6 @@
         private Guna.UI2.WinForms.Guna2VScrollBar scrlIngredients;
         private Guna.UI2.WinForms.Guna2Panel pnlIngredients;
         private Guna.UI2.WinForms.Guna2Panel pnlMainContent;
+        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
     }
 }
