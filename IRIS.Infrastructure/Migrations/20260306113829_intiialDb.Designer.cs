@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    [Migration("20260306091256_intiialDb")]
+    [Migration("20260306113829_intiialDb")]
     partial class intiialDb
     {
         /// <inheritdoc />
