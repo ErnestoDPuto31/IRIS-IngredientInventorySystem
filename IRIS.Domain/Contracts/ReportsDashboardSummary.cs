@@ -1,9 +1,8 @@
 ﻿using IRIS.Domain.Entities;
-using System.Collections.Generic;
 
-namespace IRIS.Services.DTOs
+namespace IRIS.Domain.Contracts
 {
-    public class ReportsDashboardDto
+    public class ReportsDashboardSummary
     {
         public int TotalIngredients { get; set; }
         public int TotalRequests { get; set; }

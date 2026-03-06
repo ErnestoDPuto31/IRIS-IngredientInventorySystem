@@ -1,15 +1,10 @@
-﻿using IRIS.Domain.Entities;
-using IRIS.Services.DTOs;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using IRIS.Domain.Contracts;
+using IRIS.Domain.Entities;
 
 namespace IRIS.Services.Interfaces
 {
     public interface IReportsService
     {
-        // ==========================================
-        // YOUR ORIGINAL SYNC METHODS (UNTOUCHED)
-        // ==========================================
         int GetTotalIngredients();
         int GetTotalRequests();
         int GetTotalTransactions();
@@ -22,11 +17,7 @@ namespace IRIS.Services.Interfaces
         List<LowStockItem> GetLowStockIngredients();
         List<TopIngredientItem> GetTopUsedIngredients(int count = 5);
 
-        Task<ReportsDashboardDto> GetDashboardDataAsync(int count = 5);
-
-        // ==========================================
-        // NEW ASYNC ADDITIONS (ADDED FOR BACKGROUND FETCHING)
-        // ==========================================
+        Task<ReportsDashboardSummary> GetDashboardDataAsync(int count = 5);
         Task<int> GetTotalIngredientsAsync();
         Task<int> GetTotalRequestsAsync();
         Task<int> GetTotalTransactionsAsync();
