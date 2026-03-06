@@ -61,6 +61,10 @@ namespace IRIS.Services.Implementations
             }
         }
 
+        public int GetLowStockCount()
+        {
+            return _context.Ingredients.Count(i => i.CurrentStock <= i.MinimumStock);
+        }
 
         public IEnumerable<Ingredient> GetFilteredIngredients(string searchTerm, string category, IngredientSortBy sortBy)
         {

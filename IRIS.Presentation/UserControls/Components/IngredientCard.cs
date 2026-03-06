@@ -68,7 +68,7 @@ namespace IRIS.Presentation.UserControls
                 statusText = "Empty";
                 statusColor = Color.FromArgb(192, 57, 43);
             }
-            else if (IngredientData.CurrentStock <= IngredientData.MinimumStock)
+            else if (IngredientData.CurrentStock < IngredientData.MinimumStock)
             {
                 statusText = "Low";
                 statusColor = Color.FromArgb(231, 76, 60);

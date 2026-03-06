@@ -11,10 +11,13 @@ namespace IRIS.Services.Interfaces
         void ResolveRequestNotification(int requestId, string newStatus, string actionBy);
         List<NotificationDto> GetNotificationsForUser(User currentUser);
         int GetUnreadCountForUser(User currentUser);
-        void MarkActionTaken(int notificationId, string actionTakenBy); 
+        void MarkActionTaken(int notificationId, string actionTakenBy);
         void CreateLowStockNotification(int itemId, string itemName, bool isCritical);
 
         void CreateNewRequestNotification(int requestId, string facultyName, string subject);
         void CreateStatusUpdateNotification(int requestId, int staffUserId, RequestStatus newStatus, string actionBy);
+
+        // --- NEW: Added DismissNotification ---
+        void DismissNotification(int notificationId);
     }
 }

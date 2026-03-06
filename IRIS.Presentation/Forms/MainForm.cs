@@ -53,7 +53,7 @@ namespace IRIS.Presentation.Forms
             _dropdownPanel.BringToFront();
 
             _notificationTimer = new System.Windows.Forms.Timer();
-            _notificationTimer.Interval = 5000;
+            _notificationTimer.Interval = 5000; // Checks every 5 seconds
             _notificationTimer.Tick += NotificationTimer_Tick;
             _notificationTimer.Start();
         }
@@ -69,16 +69,24 @@ namespace IRIS.Presentation.Forms
 
             try
             {
+                // 1. Force the database to check for any newly saved low stock!
+                _notificationService.CheckAllStockLevels();
+
+                // 2. Fetch the newly generated notifications
                 var notifications = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
 
-                // ONLY count the notifications where IsRead is strictly FALSE
                 int unreadCount = notifications.Count(n => n.IsRead == false);
-
                 notificationBadge1.Count = unreadCount;
+
+                // 4. Live update: If the dropdown menu is open, refresh it instantly
+                if (_dropdownPanel.Visible)
+                {
+                    _dropdownPanel.LoadNotifications(notifications);
+                }
             }
             catch
             {
-                // Silently ignore errors
+                // Silently ignore errors to prevent UI crashes during polling
             }
         }
 
@@ -120,8 +128,7 @@ namespace IRIS.Presentation.Forms
         {
             lblDate.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy - hh:mm tt");
         }
-
-        public void LoadPage(UserControl page)
+        public void LoadPage(UserControl newPage)
         {
             if (pnlMainContent.Controls.Count > 0)
             {
@@ -133,6 +140,9 @@ namespace IRIS.Presentation.Forms
             page.BringToFront();
         }
 
+            newPage.Dock = DockStyle.Fill;
+            pnlMainContent.Controls.Add(newPage);
+        }
         private void btnExit_Click(object sender, EventArgs e)
         {
             this.Close();
