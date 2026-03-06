@@ -21,7 +21,7 @@ namespace IRIS.Presentation.Window_Forms
             btnAddIngredient.Text = "Add Ingredient";
 
             LoadCategoryDropdown();
-            LoadUnitDropdown(); 
+            LoadUnitDropdown();
             SetupFormDefaults();
         }
 
@@ -37,8 +37,6 @@ namespace IRIS.Presentation.Window_Forms
             numMinimumThreshold.Value = ingredientToEdit.MinimumStock;
 
             cmbCategory.SelectedValue = ingredientToEdit.Category;
-
-     
             cmbUnit.SelectedValue = ingredientToEdit.Unit;
         }
 
@@ -86,7 +84,6 @@ namespace IRIS.Presentation.Window_Forms
             numMinimumThreshold.Minimum = 0;
             numMinimumThreshold.Maximum = 99999;
 
-            // Dropdown defaults
             if (cmbUnit.SelectedIndex == -1 && cmbUnit.Items.Count > 0)
                 cmbUnit.SelectedIndex = 0;
 
@@ -142,12 +139,13 @@ namespace IRIS.Presentation.Window_Forms
                 IngredientId = _ingredientId,
                 Name = cleanName,
                 Category = selectedCategory,
-                Unit = selectedUnit, 
+                Unit = selectedUnit,
                 CurrentStock = numCurrentStock.Value,
                 MinimumStock = numMinimumThreshold.Value,
                 CreatedAt = _ingredientId == 0 ? DateTime.Now : DateTime.MinValue,
                 UpdatedAt = DateTime.Now
             };
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

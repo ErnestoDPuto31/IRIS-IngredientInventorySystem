@@ -224,9 +224,12 @@ namespace IRIS.Presentation.UserControls.Components.Tables
         {
             if (item.Ingredient == null) return 2;
 
-            if (item.Ingredient.CurrentStock <= 0) return 0; // Critical
-            if (item.Ingredient.CurrentStock <= item.Ingredient.MinimumStock) return 1; // Low
-            return 2; // OK
+            if (item.Ingredient.CurrentStock <= 0) return 0; // Empty
+
+            // Notice it is now strictly '<' instead of '<='
+            if (item.Ingredient.CurrentStock < item.Ingredient.MinimumStock) return 1; // Low
+
+            return 2; // Well Stocked
         }
 
         private void HandleRestock(Restock data)

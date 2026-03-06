@@ -6,6 +6,7 @@ using IRIS.Presentation.Helpers;
 using IRIS.Presentation.UserControls.Components;
 using IRIS.Services.Interfaces;
 using static Bunifu.UI.WinForms.BunifuButton.BunifuButton;
+using IRIS.Domain.Contracts;
 
 namespace IRIS.Presentation.UserControls.PagesUC
 {
@@ -15,8 +16,8 @@ namespace IRIS.Presentation.UserControls.PagesUC
         private bool _isLoadingData = false;
         private bool _dataBound = false;
 
-        private ReportsDashboardDto? _snapshot;
-        private Task<ReportsDashboardDto>? _preloadTask;
+        private ReportsDashboardSummary? _snapshot;
+        private Task<ReportsDashboardSummary>? _preloadTask;
 
         public ReportsControl()
         {
@@ -44,7 +45,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             return svc;
         }
 
-        public void SetPreloadedTask(Task<ReportsDashboardDto> preloadTask)
+        public void SetPreloadedTask(Task<ReportsDashboardSummary> preloadTask)
         {
             if (_preloadTask == null)
                 _preloadTask = preloadTask;
@@ -123,7 +124,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             await EnsureDataLoadedAsync();
         }
 
-        private void BindSnapshot(ReportsDashboardDto snapshot)
+        private void BindSnapshot(ReportsDashboardSummary snapshot)
         {
             if (_dataBound || snapshot == null) return;
 
@@ -357,7 +358,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             );
         }
 
-        private async Task<ReportsDashboardDto?> GetSnapshotForExportAsync()
+        private async Task<ReportsDashboardSummary?> GetSnapshotForExportAsync()
         {
             if (_snapshot != null)
                 return _snapshot;
@@ -370,7 +371,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
         // DTO SNAPSHOT METHODS (SYNC UI UPDATES)
         // ==========================================
 
-        private void LoadTable(ReportsDashboardDto snapshot)
+        private void LoadTable(ReportsDashboardSummary snapshot)
         {
             if (snapshot == null) return;
 
@@ -385,7 +386,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
         }
 
-        private void SetupCards(ReportsDashboardDto snapshot)
+        private void SetupCards(ReportsDashboardSummary snapshot)
         {
             if (snapshot == null) return;
 
@@ -402,7 +403,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 ConfigureCard(TotalTransactionsCard, CardType.TotalTransactions, IconChar.ChartLine, snapshot.TotalTransactions.ToString());
         }
 
-        private void LoadCharts(ReportsDashboardDto snapshot)
+        private void LoadCharts(ReportsDashboardSummary snapshot)
         {
             if (snapshot == null) return;
 

@@ -122,7 +122,8 @@ namespace IRIS.Presentation.UserControls.Components.Tables
 
                 Color stockColor;
                 if (currentStock <= 0) stockColor = Color.Crimson;
-                else if (currentStock <= minStock) stockColor = _cTextOrange;
+                else if (currentStock <
+                    minStock) stockColor = _cTextOrange;
                 else stockColor = Color.ForestGreen;
 
                 DrawText(g, $"{currentStock} {ingUnit}", fBold, stockColor, 2, this.Width, StringAlignment.Center);
@@ -163,7 +164,7 @@ namespace IRIS.Presentation.UserControls.Components.Tables
                 bg = Color.FromArgb(255, 235, 235);
                 fg = Color.Crimson;
             }
-            else if (currentStock <= minStock)
+            else if (currentStock < minStock)
             {
                 statusText = "Low";
                 bg = Color.FromArgb(255, 248, 225);

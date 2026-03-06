@@ -16,5 +16,6 @@ namespace IRIS.Services.Interfaces
 
         void CreateNewRequestNotification(int requestId, string facultyName, string subject);
         void CreateStatusUpdateNotification(int requestId, int staffUserId, RequestStatus newStatus, string actionBy);
+        void DismissNotification(int notificationId);
     }
 }

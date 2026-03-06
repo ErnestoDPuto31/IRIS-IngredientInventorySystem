@@ -1,8 +1,8 @@
-﻿using IRIS.Domain.Entities;
+﻿using IRIS.Domain.Contracts;
+using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using IRIS.Domain.Helpers;
 using IRIS.Infrastructure.Data;
-using IRIS.Services.DTOs;
 using IRIS.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,10 +20,6 @@ namespace IRIS.Services.Implementations
         {
             _context = context;
         }
-
-        // ==========================================
-        // ORIGINAL SYNC METHODS (UNTOUCHED / COMPLETED)
-        // ==========================================
         public int GetTotalIngredients() => _context.Ingredients.Count();
 
         public int GetTotalRequests() => _context.Requests.Count();
@@ -85,8 +81,6 @@ namespace IRIS.Services.Implementations
         {
             return _context.Ingredients
                 .Where(i => i.CurrentStock < i.MinimumStock)
-                // Passing arguments directly into the constructor! 
-                // Using .ToString() because Unit is an enum, not a string.
                 .Select(i => new LowStockItem(
                     i.Name,
                     i.Category.ToString(),
@@ -99,13 +93,12 @@ namespace IRIS.Services.Implementations
 
         public List<TopIngredientItem> GetTopUsedIngredients(int count = 5)
         {
-            // Placeholder: Adjust to match your actual TopIngredientItem logic
             return new List<TopIngredientItem>();
         }
 
-        public async Task<ReportsDashboardDto> GetDashboardDataAsync(int count = 5)
+        public async Task<ReportsDashboardSummary> GetDashboardDataAsync(int count = 5)
         {
-            return new ReportsDashboardDto
+            return new ReportsDashboardSummary
             {
                 TotalIngredients = await GetTotalIngredientsAsync(),
                 TotalRequests = await GetTotalRequestsAsync(),
@@ -119,9 +112,6 @@ namespace IRIS.Services.Implementations
             };
         }
 
-        // ==========================================
-        // NEW ASYNC ADDITIONS FOR BACKGROUND FETCHING
-        // ==========================================
         public async Task<int> GetTotalIngredientsAsync() => await _context.Ingredients.CountAsync();
 
         public async Task<int> GetTotalRequestsAsync() => await _context.Requests.CountAsync();
@@ -199,7 +189,7 @@ namespace IRIS.Services.Implementations
 
         public async Task<List<TopIngredientItem>> GetTopUsedIngredientsAsync(int count = 5)
         {
-            return await Task.Run(() => GetTopUsedIngredients(count)); // Map to real async DB call if needed
+            return await Task.Run(() => GetTopUsedIngredients(count));
         }
     }
 }

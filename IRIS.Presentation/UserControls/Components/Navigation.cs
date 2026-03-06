@@ -1,15 +1,12 @@
 ﻿using Guna.UI2.WinForms;
+using IRIS.Domain.Contracts;
 using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.Forms;
-using IRIS.Presentation.UserControls.Components;
 using IRIS.Presentation.UserControls.PagesUC;
-using IRIS.Services.DTOs;
 using IRIS.Services.Interfaces;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Threading.Tasks;
 using Timer = System.Windows.Forms.Timer;
 
 namespace IRIS.Presentation.UserControls
@@ -33,7 +30,7 @@ namespace IRIS.Presentation.UserControls
 
         private readonly IReportsService _reportsService;
         private ReportsControl _reportsControl;
-        private Task<ReportsDashboardDto>? _reportsPreloadTask;
+        private Task<ReportsDashboardSummary>? _reportsPreloadTask;
 
         public NavigationPanel()
         {
