@@ -1,28 +1,23 @@
-﻿using Guna.UI2.WinForms;
-using IRIS.Domain.Entities;
+﻿using IRIS.Domain.Entities;
 using IRIS.Presentation.UserControls;
 using IRIS.Presentation.UserControls.Components;
+using IRIS.Presentation.UserControls.PagesUC;
 using IRIS.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 namespace IRIS.Presentation.Forms
 {
     public partial class MainForm : Form
     {
-        private System.Windows.Forms.Timer _clockTimer;
-        private System.Windows.Forms.Timer _notificationTimer;
+        #region Fields
+        private Timer _clockTimer;
+        private Timer _notificationTimer;
+        private Timer _badgeTimer;
+
         private NotificationDropdown _dropdownPanel;
         private INotificationService _notificationService;
-
-        // ✅ 1. DECLARE THE NAVIGATION PANEL HERE
         private NavigationPanel _navigationPanel;
 
         private Panel _macTrafficHost;
@@ -31,117 +26,85 @@ namespace IRIS.Presentation.Forms
         private MacTrafficLightButton _btnMacMinimize;
 
         private readonly Color _topBarColor = Color.FromArgb(246, 246, 247);
+        #endregion
 
         public MainForm()
         {
             InitializeComponent();
-            SetupUserDisplay();
+            DoubleBuffered = true;
+
+            // 1. Core Setups
             SetupClock();
             SetupMacTopBar();
-
-            // Setup navigation is called here
             SetupNavigation();
             SetupNotifications();
+            SetupUserDisplay();
 
+            // 2. Initial Page
             LoadPage(new DashboardControl());
+        }
+
+        #region Setup Methods
+        private void SetupClock()
+        {
+            _clockTimer = new Timer { Interval = 30000 };
+            _clockTimer.Tick += (s, e) => UpdateDateTimeLabel();
+            _clockTimer.Start();
+            UpdateDateTimeLabel();
+        }
+
+        private void UpdateDateTimeLabel()
+        {
+            if (lblDate != null)
+                lblDate.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy - hh:mm tt");
         }
 
         private void SetupNavigation()
         {
-            // ✅ 2. CREATE AND DOCK THE PANEL PROGRAMMATICALLY
-            _navigationPanel = new NavigationPanel();
-            _navigationPanel.Dock = DockStyle.Left;
-
-            // Add it to the form
+            _navigationPanel = new NavigationPanel { Dock = DockStyle.Left };
             this.Controls.Add(_navigationPanel);
-
             _navigationPanel.BringToFront();
 
             var requestService = Program.Services.GetService<IRequestService>();
+            if (requestService != null) _navigationPanel.InitializeService(requestService);
 
-            if (requestService != null)
-            {
-                _navigationPanel.InitializeService(requestService);
-            }
-
-            _badgeTimer = new Timer
-            {
-                Interval = 3000
-            };
-            _badgeTimer.Tick += (s, e) =>
-            {
-                _navigationPanel?.RefreshBadgeCount();
-            };
+            _badgeTimer = new Timer { Interval = 3000 };
+            _badgeTimer.Tick += (s, e) => _navigationPanel?.RefreshBadgeCount();
             _badgeTimer.Start();
         }
 
-            _notificationService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
+        private void SetupNotifications()
+        {
+            _notificationService = Program.Services.GetService<INotificationService>();
 
-            if (_notificationService != null)
-            {
-                _notificationService.CheckAllStockLevels();
-            }
-
-            _dropdownPanel = new NotificationDropdown();
-            _dropdownPanel.Visible = false;
-
-            _dropdownPanel.NotificationClicked += DropdownPanel_NotificationClicked;
-
+            _dropdownPanel = new NotificationDropdown { Visible = false, Size = new Size(390, 430) };
             this.Controls.Add(_dropdownPanel);
             _dropdownPanel.BringToFront();
 
-            _notificationTimer = new System.Windows.Forms.Timer();
-            _notificationTimer.Interval = 5000; // Checks every 5 seconds
+            _notificationTimer = new Timer { Interval = 5000 };
             _notificationTimer.Tick += NotificationTimer_Tick;
             _notificationTimer.Start();
-
-            LoadPage(new DashboardControl());
-        }
-
-        private void DropdownPanel_NotificationClicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void NotificationTimer_Tick(object sender, EventArgs e)
-        {
-            if (UserSession.CurrentUser == null || _notificationService == null) return;
-
-            try
-            {
-                // 1. Force the database to check for any newly saved low stock!
-                _notificationService.CheckAllStockLevels();
-
-                // 2. Fetch the newly generated notifications
-                var notifications = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
-
-                // 3. Update the red bell badge count
-                int unreadCount = notifications.Count(n => n.IsRead == false);
-                notificationBadge1.Count = unreadCount;
-
-                // 4. Live update: If the dropdown menu is open, refresh it instantly
-                if (_dropdownPanel.Visible)
-                {
-                    _dropdownPanel.LoadNotifications(notifications);
-                }
-            }
-            catch
-            {
-                // Silently ignore errors to prevent UI crashes during polling
-            }
         }
 
         private void SetupUserDisplay()
         {
-            if (UserSession.CurrentUser != null)
+            if (UserSession.CurrentUser != null && txtRole != null)
             {
                 txtRole.Text = FormatRoleName(UserSession.CurrentUser.Role);
                 txtRole.Enabled = false;
                 txtRole.DisabledState.FillColor = Color.White;
                 txtRole.DisabledState.ForeColor = Color.Indigo;
-                txtRole.DisabledState.BorderColor = Color.Indigo;
-                txtRole.DisabledState.PlaceholderForeColor = Color.Indigo;
             }
+        }
+        #endregion
+
+        #region Logic Methods
+        public void LoadPage(UserControl newPage)
+        {
+            if (newPage == null || pnlMainContent == null) return;
+            pnlMainContent.Controls.Clear();
+            newPage.Dock = DockStyle.Fill;
+            pnlMainContent.Controls.Add(newPage);
         }
 
         private string FormatRoleName(Domain.Enums.UserRole role)
@@ -156,78 +119,163 @@ namespace IRIS.Presentation.Forms
             };
         }
 
-        private void SetupClock()
+        private void PositionDropdownUnderBadge()
         {
-            _clockTimer = new System.Windows.Forms.Timer();
-            _clockTimer.Interval = 30000;
-            _clockTimer.Tick += (s, e) => UpdateDateTimeLabel();
-            _clockTimer.Start();
-            UpdateDateTimeLabel();
+            if (notificationBadge == null || notificationBadge.Parent == null) return;
+
+            Control anchor = notificationBadge.Parent;
+            Point screenLoc = anchor.PointToScreen(new Point(anchor.Width - _dropdownPanel.Width, anchor.Height + 5));
+            Point clientLoc = this.PointToClient(screenLoc);
+
+            _dropdownPanel.Location = clientLoc;
         }
 
-        private void UpdateDateTimeLabel()
+        protected override void OnResize(EventArgs e)
         {
-            lblDate.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy - hh:mm tt");
-        }
-
-        public void LoadPage(UserControl newPage)
-        {
-            if (pnlMainContent.Controls.Count > 0 &&
-                pnlMainContent.Controls[0].GetType() == newPage.GetType())
+            base.OnResize(e);
+            PositionMacButtons();
+            if (_dropdownPanel != null && _dropdownPanel.Visible)
             {
-                return; // Already showing this page
+                PositionDropdownUnderBadge();
             }
-
-            // Clear existing controls
-            while (pnlMainContent.Controls.Count > 0)
-            {
-                var oldControl = pnlMainContent.Controls[0];
-                pnlMainContent.Controls.Remove(oldControl);
-
-                oldControl?.Dispose();
-            }
-
-            newPage.Dock = DockStyle.Fill;
-            pnlMainContent.Controls.Add(newPage);
         }
+        #endregion
 
+        #region Event Handlers
         private void btnExit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
         }
 
-        private void notificationBadge1_Click(object sender, EventArgs e)
+        private void NotificationTimer_Tick(object sender, EventArgs e)
+        {
+            if (UserSession.CurrentUser == null || _notificationService == null) return;
+            try
+            {
+                _notificationService.CheckAllStockLevels();
+                var list = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
+                int unread = list.Count(n => !n.IsRead);
+
+                if (notificationBadge != null) notificationBadge.Count = unread;
+                if (_dropdownPanel != null && _dropdownPanel.Visible)
+                {
+                    _dropdownPanel.LoadNotifications(list);
+                    PositionDropdownUnderBadge();
+                }
+            }
+            catch { /* Polling safety */ }
+        }
+
+        private void notificationBadge_Click(object sender, EventArgs e)
         {
             if (UserSession.CurrentUser == null || _notificationService == null) return;
 
-            // 1. Get current notifications
-            var notifications = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
+            if (_dropdownPanel.Visible) { _dropdownPanel.Visible = false; return; }
 
-            // 2. Tell the DATABASE we have read them!
-            var idsToMarkRead = notifications.Select(n => n.NotificationId).ToList();
-            if (idsToMarkRead.Any())
-            {
-                _notificationService.MarkNotificationsAsRead(idsToMarkRead);
-            }
+            var list = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
+            var ids = list.Select(n => n.NotificationId).ToList();
+            if (ids.Any()) _notificationService.MarkNotificationsAsRead(ids);
 
-            // 3. Kill the red number instantly
-            notificationBadge1.Count = 0;
+            if (notificationBadge != null) notificationBadge.Count = 0;
 
-            // 4. Handle the Dropdown UI
-            if (_dropdownPanel.Visible)
-            {
-                _dropdownPanel.Visible = false;
-                return;
-            }
-
-            _dropdownPanel.Location = new Point(
-                notificationBadge1.Location.X - _dropdownPanel.Width + notificationBadge1.Width,
-                notificationBadge1.Location.Y + notificationBadge1.Height + 5
-            );
-
-            _dropdownPanel.LoadNotifications(notifications);
+            PositionDropdownUnderBadge();
+            _dropdownPanel.LoadNotifications(list);
             _dropdownPanel.Visible = true;
             _dropdownPanel.BringToFront();
         }
+        #endregion
+
+        #region Mac Custom Title Bar & Dragging
+        private void SetupMacTopBar()
+        {
+            if (guna2Panel1 == null) return;
+
+            FormBorderStyle = FormBorderStyle.None;
+            guna2Panel1.Dock = DockStyle.Top;
+            guna2Panel1.Height = 42;
+            guna2Panel1.FillColor = _topBarColor;
+            guna2Panel1.BackColor = _topBarColor;
+
+            if (btnExit != null) btnExit.Visible = false;
+
+            if (_macTrafficHost == null)
+            {
+                _macTrafficHost = new Panel
+                {
+                    Name = "macTrafficHost",
+                    BackColor = _topBarColor,
+                    Size = new Size(46, 16),
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right
+                };
+
+                _btnMacMinimize = new MacTrafficLightButton(MacTrafficLightKind.Minimize, _topBarColor) { Location = new Point(0, 0) };
+                _btnMacMinimize.Click += (s, e) => WindowState = FormWindowState.Minimized;
+
+                _btnMacClose = new MacTrafficLightButton(MacTrafficLightKind.Close, _topBarColor) { Location = new Point(24, 0) };
+                _btnMacClose.Click += (s, e) => Close();
+
+                _macTrafficHost.Controls.Add(_btnMacMinimize);
+                _macTrafficHost.Controls.Add(_btnMacClose);
+                guna2Panel1.Controls.Add(_macTrafficHost);
+                _macTrafficHost.BringToFront();
+            }
+
+            if (_macTitleLabel == null)
+            {
+                _macTitleLabel = new Label
+                {
+                    AutoSize = false,
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Text = "IRIS",
+                    Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(82, 82, 88),
+                    BackColor = _topBarColor
+                };
+                guna2Panel1.Controls.Add(_macTitleLabel);
+                _macTitleLabel.SendToBack();
+            }
+
+            PositionMacButtons();
+            WireDragToControl(guna2Panel1);
+            WireDragToControl(_macTitleLabel);
+        }
+
+        private void PositionMacButtons()
+        {
+            if (guna2Panel1 == null || _macTrafficHost == null) return;
+            int rightPadding = 14;
+            int y = Math.Max(8, (guna2Panel1.Height - _macTrafficHost.Height) / 2);
+            int x = guna2Panel1.Width - rightPadding - _macTrafficHost.Width;
+            _macTrafficHost.Location = new Point(x, y);
+            _macTrafficHost.BringToFront();
+        }
+
+        private void WireDragToControl(Control control)
+        {
+            if (control == null) return;
+            control.MouseDown -= DragSurface_MouseDown;
+            control.MouseDown += DragSurface_MouseDown;
+
+            foreach (Control child in control.Controls)
+            {
+                if (child is MacTrafficLightButton) continue;
+                WireDragToControl(child);
+            }
+        }
+
+        private void DragSurface_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+            ReleaseCapture();
+            SendMessage(Handle, 0xA1, 0x2, 0);
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+        #endregion
     }
 }

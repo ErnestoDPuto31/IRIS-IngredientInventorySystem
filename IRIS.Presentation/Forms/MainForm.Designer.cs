@@ -39,7 +39,7 @@
             guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(components);
             pnlMainContent = new Panel();
             pnlTop = new Guna.UI2.WinForms.Guna2Panel();
-            notificationBadge2 = new IRIS.Presentation.UserControls.Components.NotificationBadge();
+            notificationBadge = new IRIS.Presentation.UserControls.Components.NotificationBadge();
             lblDate = new Label();
             txtRole = new Guna.UI2.WinForms.Guna2TextBox();
             btnExit = new Guna.UI2.WinForms.Guna2ImageButton();
@@ -68,7 +68,7 @@
             pnlTop.BackColor = Color.White;
             pnlTop.BorderColor = SystemColors.ControlDark;
             pnlTop.BorderThickness = 2;
-            pnlTop.Controls.Add(notificationBadge2);
+            pnlTop.Controls.Add(notificationBadge);
             pnlTop.Controls.Add(lblDate);
             pnlTop.Controls.Add(txtRole);
             pnlTop.CustomBorderThickness = new Padding(0, 0, 0, 2);
@@ -80,21 +80,22 @@
             pnlTop.Size = new Size(1554, 66);
             pnlTop.TabIndex = 0;
             // 
-            // notificationBadge2
+            // notificationBadge
             // 
-            notificationBadge2.BackColor = Color.Transparent;
-            notificationBadge2.Location = new Point(1462, 2);
-            notificationBadge2.Margin = new Padding(2);
-            notificationBadge2.Name = "notificationBadge2";
-            notificationBadge2.Size = new Size(50, 50);
-            notificationBadge2.TabIndex = 2;
+            notificationBadge.BackColor = Color.Transparent;
+            notificationBadge.Location = new Point(1462, 2);
+            notificationBadge.Margin = new Padding(2);
+            notificationBadge.Name = "notificationBadge";
+            notificationBadge.Size = new Size(50, 50);
+            notificationBadge.TabIndex = 2;
+            notificationBadge.Click += notificationBadge_Click;
             // 
             // lblDate
             // 
             lblDate.AutoSize = true;
             lblDate.Font = new Font("Poppins", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDate.ForeColor = SystemColors.ControlDarkDark;
-            lblDate.Location = new Point(261, 16);
+            lblDate.Location = new Point(194, 14);
             lblDate.Name = "lblDate";
             lblDate.Size = new Size(366, 36);
             lblDate.TabIndex = 1;
@@ -115,7 +116,7 @@
             txtRole.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtRole.ForeColor = Color.Indigo;
             txtRole.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtRole.Location = new Point(85, 14);
+            txtRole.Location = new Point(18, 12);
             txtRole.Margin = new Padding(8, 14, 8, 14);
             txtRole.Name = "txtRole";
             txtRole.PlaceholderText = "";
@@ -190,6 +191,6 @@
         private UserControls.NavigationPanel navigationPanel1;
         private UserControls.NavigationPanel navigationPanel2;
         private UserControls.NavigationPanel navigationPanel;
-        private UserControls.Components.NotificationBadge notificationBadge2;
+        private UserControls.Components.NotificationBadge notificationBadge;
     }
 }
