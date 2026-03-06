@@ -6,7 +6,6 @@
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -60,9 +59,10 @@
             // pnlMainContent
             // 
             pnlMainContent.BackColor = Color.White;
-            pnlMainContent.Location = new Point(0, 96);
+            pnlMainContent.Location = new Point(0, 120);
+            pnlMainContent.Margin = new Padding(4);
             pnlMainContent.Name = "pnlMainContent";
-            pnlMainContent.Size = new Size(1600, 804);
+            pnlMainContent.Size = new Size(2000, 1005);
             pnlMainContent.TabIndex = 1;
             // 
             // navigationPanel
@@ -86,15 +86,26 @@
             pnlTop.Location = new Point(57, 29);
             pnlTop.Name = "pnlTop";
             pnlTop.ShadowDecoration.CustomizableEdges = customizableEdges7;
-            pnlTop.Size = new Size(1543, 72);
+            pnlTop.Size = new Size(1929, 90);
             pnlTop.TabIndex = 0;
+            // 
+            // notificationBadge1
+            // 
+            notificationBadge1.BackColor = Color.Transparent;
+            notificationBadge1.Location = new Point(1856, 21);
+            notificationBadge1.Margin = new Padding(5);
+            notificationBadge1.Name = "notificationBadge1";
+            notificationBadge1.Size = new Size(42, 54);
+            notificationBadge1.TabIndex = 3;
+            notificationBadge1.Click += notificationBadge1_Click;
             // 
             // lblDate
             // 
             lblDate.AutoSize = true;
             lblDate.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblDate.ForeColor = SystemColors.ControlDarkDark;
-            lblDate.Location = new Point(224, 19);
+            lblDate.Location = new Point(280, 24);
+            lblDate.Margin = new Padding(4, 0, 4, 0);
             lblDate.Name = "lblDate";
             lblDate.Size = new Size(339, 25);
             lblDate.TabIndex = 1;
@@ -115,14 +126,14 @@
             txtRole.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtRole.ForeColor = Color.Indigo;
             txtRole.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtRole.Location = new Point(26, 16);
-            txtRole.Margin = new Padding(6, 9, 6, 9);
+            txtRole.Location = new Point(32, 20);
+            txtRole.Margin = new Padding(8, 11, 8, 11);
             txtRole.Name = "txtRole";
             txtRole.PlaceholderText = "";
             txtRole.ReadOnly = true;
             txtRole.SelectedText = "";
             txtRole.ShadowDecoration.CustomizableEdges = customizableEdges5;
-            txtRole.Size = new Size(189, 39);
+            txtRole.Size = new Size(236, 49);
             txtRole.TabIndex = 0;
             txtRole.TextAlign = HorizontalAlignment.Center;
             // 
@@ -152,6 +163,7 @@
             guna2Panel1.CustomBorderThickness = new Padding(0, 0, 0, 2);
             guna2Panel1.CustomizableEdges = customizableEdges2;
             guna2Panel1.Location = new Point(0, 0);
+            guna2Panel1.Margin = new Padding(4);
             guna2Panel1.Name = "guna2Panel1";
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges3;
             guna2Panel1.Size = new Size(1600, 33);
@@ -167,15 +179,16 @@
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1600, 900);
+            ClientSize = new Size(2000, 1125);
             Controls.Add(navigationPanel);
             Controls.Add(guna2Panel1);
             Controls.Add(pnlTop);
             Controls.Add(pnlMainContent);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(4);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "MainForm";

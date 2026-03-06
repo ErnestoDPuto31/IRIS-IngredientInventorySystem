@@ -44,7 +44,6 @@ namespace IRIS.Presentation
             label2 = new Label();
             label3 = new Label();
             guna2ImageButton1 = new Guna2ImageButton();
-            btnExit = new Guna2ImageButton();
             guna2Panel2.SuspendLayout();
             SuspendLayout();
             // 
@@ -267,22 +266,7 @@ namespace IRIS.Presentation
             guna2ImageButton1.Size = new Size(173, 182);
             guna2ImageButton1.TabIndex = 1;
             guna2ImageButton1.UseTransparentBackground = true;
-            // 
-            // btnExit
-            // 
-            btnExit.BackColor = Color.Transparent;
-            btnExit.CheckedState.ImageSize = new Size(24, 24);
-            btnExit.HoverState.ImageSize = new Size(30, 30);
-            btnExit.Image = Properties.Resources.exitBtn;
-            btnExit.ImageOffset = new Point(0, 0);
-            btnExit.ImageRotate = 0F;
-            btnExit.ImageSize = new Size(24, 24);
-            btnExit.Location = new Point(1564, 12);
-            btnExit.Name = "btnExit";
-            btnExit.ShadowDecoration.CustomizableEdges = customizableEdges1;
-            btnExit.Size = new Size(24, 24);
-            btnExit.TabIndex = 3;
-            btnExit.Click += btnExit_Click;
+         
             // 
             // LoginForm
             // 
@@ -292,7 +276,6 @@ namespace IRIS.Presentation
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1600, 900);
-            Controls.Add(btnExit);
             Controls.Add(guna2Panel2);
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.None;
@@ -300,6 +283,9 @@ namespace IRIS.Presentation
             Name = "LoginForm";
             StartPosition = FormStartPosition.CenterScreen;
             guna2Panel2.ResumeLayout(false);
+            guna2Panel1 = new Guna2Panel();  // Mac bar panel
+            guna2Panel2.BackColor = Color.Transparent;
+            Controls.Add(guna2Panel1);
             guna2Panel2.PerformLayout();
             ResumeLayout(false);
         }
@@ -315,9 +301,9 @@ namespace IRIS.Presentation
         private Label label4;
         private Label label6;
         private Guna2TextBox txtPassword;
+        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Label label5;
         private Guna2GradientButton btnLogin;
         private Label lblError;
-        private Guna2ImageButton btnExit;
     }
 }
