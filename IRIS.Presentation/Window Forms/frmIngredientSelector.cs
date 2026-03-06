@@ -9,22 +9,26 @@ namespace IRIS.Presentation.Window_Forms
     {
         private readonly IngredientService _ingredientService;
         private readonly int _studentCount;
+        private readonly decimal _totalBudget;
         private readonly BindingList<RequestDetails> _existingItems;
         private Ingredient _selectedIngredient;
 
         private readonly Color IRIS_Indigo = Color.FromArgb(75, 0, 130);
+        private readonly Dictionary<int, decimal> _tempPrices = new Dictionary<int, decimal>();
 
-        public frmIngredientSelector(IngredientService ingredientService, int studentCount, BindingList<RequestDetails> currentItems = null)
+        public frmIngredientSelector(IngredientService ingredientService, int studentCount, decimal totalBudget, BindingList<RequestDetails> currentItems = null)
         {
             InitializeComponent();
             _ingredientService = ingredientService;
             _studentCount = studentCount;
+            _totalBudget = totalBudget;
 
             _existingItems = currentItems ?? new BindingList<RequestDetails>();
 
-
             this.btnAdd.Click += btnAdd_Click;
-            this.btnRemove.Click += btnRemove_Click; 
+            this.btnRemove.Click += btnRemove_Click;
+
+            this.numPricePerUnit.ValueChanged += NumPricePerUnit_ValueChanged;
 
             SetupSummaryPanel();
             ConfigureControls();
@@ -35,12 +39,9 @@ namespace IRIS.Presentation.Window_Forms
         private void SetupSummaryPanel()
         {
             lstSummary.DataSource = _existingItems;
-
             lstSummary.DrawMode = DrawMode.OwnerDrawFixed;
-
             lstSummary.Font = new Font("Poppins", 10F, FontStyle.Regular);
             lstSummary.ItemHeight = 30;
-
             lstSummary.DrawItem += LstSummary_DrawItem;
         }
 
@@ -58,32 +59,53 @@ namespace IRIS.Presentation.Window_Forms
             {
                 string name = detail.Ingredient?.Name ?? "Unknown";
                 string unit = detail.Ingredient?.Unit.ToString() ?? "";
-                string displayString = $"{name} - {detail.RequestedQty:N2} {unit}";
+                decimal price = _tempPrices.ContainsKey(detail.IngredientId) ? _tempPrices[detail.IngredientId] : 0m;
+
+                string displayString = $"{name} - {detail.RequestedQty:N2} {unit} @ {price:C2}/{unit}";
 
                 int xOffset = 10;
                 Rectangle textBounds = new Rectangle(
-                    e.Bounds.X + xOffset,
-                    e.Bounds.Y,
-                    e.Bounds.Width - xOffset,
-                    e.Bounds.Height
+                    e.Bounds.X + xOffset, e.Bounds.Y,
+                    e.Bounds.Width - xOffset, e.Bounds.Height
                 );
 
-                TextRenderer.DrawText(
-                    e.Graphics,
-                    displayString,
-                    lstSummary.Font,
-                    textBounds,
-                    foreColor,
-                    TextFormatFlags.VerticalCenter | TextFormatFlags.Left
-                );
+                TextRenderer.DrawText(e.Graphics, displayString, lstSummary.Font, textBounds, foreColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
             }
             e.DrawFocusRectangle();
         }
 
         private void ConfigureControls()
         {
+            // FIX 2: Talk to the controls directly to lock/unlock them
             numRequestedQty.DecimalPlaces = 2;
-            numRequestedQty.Increment = 0.5M;
+            numRequestedQty.Enabled = false;
+
+            numPortionPerStudent.DecimalPlaces = 2;
+            numPortionPerStudent.Enabled = false;
+
+            numPricePerUnit.DecimalPlaces = 2;
+            numPricePerUnit.Enabled = true;
+        }
+
+        private void NumPricePerUnit_ValueChanged(object sender, EventArgs e)
+        {
+            decimal price = numPricePerUnit.Value;
+
+            if (price > 0 && _totalBudget > 0)
+            {
+                // The Math Engine now runs!
+                numRequestedQty.Value = _totalBudget / price;
+
+                if (_studentCount > 0)
+                {
+                    numPortionPerStudent.Value = numRequestedQty.Value / _studentCount;
+                }
+            }
+            else
+            {
+                numRequestedQty.Value = 0;
+                numPortionPerStudent.Value = 0;
+            }
         }
 
         private void frmIngredientSelector_Load(object sender, EventArgs e)
@@ -95,16 +117,20 @@ namespace IRIS.Presentation.Window_Forms
         private void UcIngredientTable_IngredientSelected(object sender, Ingredient selectedItem)
         {
             _selectedIngredient = selectedItem;
+
+            // FIX 3: Update the label text directly!
+            lblPricePerUnit.Text = $"Price/{_selectedIngredient.Unit}";
+
             var existing = _existingItems.FirstOrDefault(x => x.IngredientId == _selectedIngredient.IngredientId);
 
             if (existing != null)
             {
-                numRequestedQty.Value = existing.RequestedQty;
+                numPricePerUnit.Value = _tempPrices.ContainsKey(existing.IngredientId) ? _tempPrices[existing.IngredientId] : 0m;
                 btnAdd.Text = "Update Qty";
             }
             else
             {
-                numRequestedQty.Value = 0.00M;
+                numPricePerUnit.Value = 0.00M;
                 btnAdd.Text = "Add to List";
             }
 
@@ -112,25 +138,32 @@ namespace IRIS.Presentation.Window_Forms
             lblSelectedName.ForeColor = IRIS_Indigo;
 
             pnlInput.Enabled = true;
-            numRequestedQty.Focus();
+            numPricePerUnit.Focus();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             if (_selectedIngredient == null) return;
-            decimal requestedQty = numRequestedQty.Value;
 
-            if (requestedQty <= 0)
+            decimal requestedQty = numRequestedQty.Value;
+            decimal portion = numPortionPerStudent.Value;
+            decimal price = numPricePerUnit.Value;
+
+            if (price <= 0)
             {
-                MessageBox.Show("Please enter a quantity greater than zero.", "Validation");
+                MessageBox.Show("Please enter a valid price to calculate the quantity.", "Validation");
                 return;
             }
+
+            _tempPrices[_selectedIngredient.IngredientId] = price;
 
             var existing = _existingItems.FirstOrDefault(x => x.IngredientId == _selectedIngredient.IngredientId);
 
             if (existing != null)
             {
                 existing.RequestedQty = requestedQty;
+                existing.PortionPerStudent = portion;
+                existing.AllowedQty = requestedQty;
                 int index = _existingItems.IndexOf(existing);
                 _existingItems.ResetItem(index);
             }
@@ -141,12 +174,13 @@ namespace IRIS.Presentation.Window_Forms
                     IngredientId = _selectedIngredient.IngredientId,
                     Ingredient = _selectedIngredient,
                     RequestedQty = requestedQty,
-                    PortionPerStudent = 0,
-                    AllowedQty = 0
+                    PortionPerStudent = portion,
+                    AllowedQty = requestedQty
                 });
             }
 
             ResetInput();
+            UpdateTotalPriceDisplay();
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -157,6 +191,8 @@ namespace IRIS.Presentation.Window_Forms
                 if (result == DialogResult.Yes)
                 {
                     _existingItems.Remove(selectedItem);
+                    if (_tempPrices.ContainsKey(selectedItem.IngredientId)) _tempPrices.Remove(selectedItem.IngredientId);
+                    UpdateTotalPriceDisplay();
                 }
             }
             else
@@ -165,12 +201,30 @@ namespace IRIS.Presentation.Window_Forms
             }
         }
 
+        private void UpdateTotalPriceDisplay()
+        {
+            decimal grandTotal = 0m;
+            foreach (var item in _existingItems)
+            {
+                decimal price = _tempPrices.ContainsKey(item.IngredientId) ? _tempPrices[item.IngredientId] : 0m;
+                grandTotal += (item.RequestedQty * price);
+            }
+            if (this.Controls.Find("lblTotalPrice", true).FirstOrDefault() is Label lbl)
+            {
+                lbl.Text = $"Total Estimated Cost: {grandTotal:C2}";
+            }
+        }
+
         private void ResetInput()
         {
             pnlInput.Enabled = false;
             _selectedIngredient = null;
             lblSelectedName.Text = "Select another item...";
+
+            numPricePerUnit.Value = 0;
             numRequestedQty.Value = 0;
+            numPortionPerStudent.Value = 0;
+
             ucIngredientTable.Focus();
         }
 

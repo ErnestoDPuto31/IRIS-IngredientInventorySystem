@@ -228,9 +228,9 @@
             label7.ForeColor = Color.Black;
             label7.Location = new Point(423, 198);
             label7.Name = "label7";
-            label7.Size = new Size(143, 30);
+            label7.Size = new Size(125, 30);
             label7.TabIndex = 12;
-            label7.Text = "Recipe Costing";
+            label7.Text = "Total Budget";
             // 
             // numStudentCount
             // 
@@ -251,7 +251,6 @@
             numStudentCount.TextOffset = new Point(10, 0);
             numStudentCount.UpDownButtonFillColor = Color.Indigo;
             numStudentCount.UpDownButtonForeColor = Color.White;
-            numStudentCount.ValueChanged += numStudentCount_ValueChanged;
             // 
             // numRecipeCosting
             // 
@@ -274,7 +273,6 @@
             numRecipeCosting.TextOffset = new Point(10, 0);
             numRecipeCosting.UpDownButtonFillColor = Color.Indigo;
             numRecipeCosting.UpDownButtonForeColor = Color.White;
-            numRecipeCosting.ValueChanged += numRecipeCosting_ValueChanged;
             // 
             // materialDivider1
             // 
