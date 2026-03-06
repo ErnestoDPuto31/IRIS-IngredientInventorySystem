@@ -2,8 +2,11 @@
 using IRIS.Domain.Enums;
 using IRIS.Services.Implementations;
 using IRIS.Services.Interfaces;
+using System;
 using System.ComponentModel;
 using System.Data;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace IRIS.Presentation.Window_Forms
 {
@@ -33,6 +36,31 @@ namespace IRIS.Presentation.Window_Forms
             numRecipeCosting.ValueChanged += (s, e) => CalculateBudget();
 
             CalculateBudget();
+
+            // Load the faculty names into the Guna2TextBox's Autocomplete when the form opens
+            LoadFacultyNames();
+        }
+
+        private void LoadFacultyNames()
+        {
+            try
+            {
+                var names = _requestService.GetUniqueFacultyNames();
+
+                // 1. Create a special collection for the autocomplete
+                AutoCompleteStringCollection autoCompleteCollection = new AutoCompleteStringCollection();
+                autoCompleteCollection.AddRange(names.ToArray());
+
+                // 2. Attach it to your Guna2TextBox
+                txtFaculty.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                txtFaculty.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                txtFaculty.AutoCompleteCustomSource = autoCompleteCollection;
+            }
+            catch (Exception ex)
+            {
+                // Fail silently if it can't load, it will just act like a normal empty textbox
+                Console.WriteLine("Could not load faculty names: " + ex.Message);
+            }
         }
 
         private void CalculateBudget()
@@ -70,6 +98,7 @@ namespace IRIS.Presentation.Window_Forms
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
+            // Validation now checks the Guna txtFaculty
             if (string.IsNullOrWhiteSpace(txtSubject.Text) || string.IsNullOrWhiteSpace(txtFaculty.Text))
             {
                 MessageBox.Show("Please fill in Subject and Faculty Name.", "Missing Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -88,7 +117,10 @@ namespace IRIS.Presentation.Window_Forms
             var newRequest = new Request
             {
                 Subject = txtSubject.Text.Trim(),
+
+                // Save whatever is typed or selected in the Guna TextBox
                 FacultyName = txtFaculty.Text.Trim(),
+
                 DateOfUse = dtpDateOfUse.Value,
 
                 // StudentCount remains an int (no half students!), but the rest are now clean decimals.
@@ -118,7 +150,7 @@ namespace IRIS.Presentation.Window_Forms
 
                 _notificationService.CreateNewRequestNotification(
                     newRequest.RequestId,
-                    newRequest.FacultyName,
+                    newRequest.FacultyName, // This will correctly grab the new value
                     newRequest.Subject);
 
                 MessageBox.Show("Request submitted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);

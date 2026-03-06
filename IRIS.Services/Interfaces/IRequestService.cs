@@ -13,5 +13,6 @@ namespace IRIS.Services.Interfaces
         int GetApprovedRequestCount();
         void UpdateRequestStatus(int requestId, RequestStatus newStatus, string remarks, int currentUserId);
         void CreateRequest(Request newRequest, List<RequestDetails> items);
+        List<string> GetUniqueFacultyNames();
     }
 }

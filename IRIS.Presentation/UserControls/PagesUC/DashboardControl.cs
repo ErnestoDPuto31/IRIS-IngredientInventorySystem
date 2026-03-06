@@ -139,8 +139,8 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     var allIngredients = _ingredientService.GetAllIngredients().ToList();
 
                     int outOfStock = allIngredients.Count(i => i.CurrentStock <= 0);
-                    int lowStock = allIngredients.Count(i => i.CurrentStock > 0 && i.CurrentStock <= i.MinimumStock);
-                    int goodStock = allIngredients.Count(i => i.CurrentStock > i.MinimumStock);
+                    int lowStock = allIngredients.Count(i => i.CurrentStock > 0 && i.CurrentStock < i.MinimumStock);
+                    int goodStock = allIngredients.Count(i => i.CurrentStock >= i.MinimumStock);
 
                     statusOverviewStock.Value1 = goodStock;
                     statusOverviewStock.Value2 = lowStock;
@@ -175,6 +175,11 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
             LoadAlerts();
             LoadOverviews();
+        }
+
+        private void dashboardCardLowStock_IconClicked(object sender, EventArgs e)
+        {
+
         }
     }
 }
