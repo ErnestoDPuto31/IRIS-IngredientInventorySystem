@@ -31,7 +31,9 @@ namespace IRIS.Presentation
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
-            guna2BorderlessForm1 = new Guna2BorderlessForm(components);
+
+            // Initialize guna2Panel1 (Top Bar)
+            guna2Panel1 = new Guna2Panel();
             guna2Panel2 = new Guna2Panel();
             lblError = new Label();
             btnLogin = new Guna2GradientButton();
@@ -44,19 +46,78 @@ namespace IRIS.Presentation
             label2 = new Label();
             label3 = new Label();
             guna2ImageButton1 = new Guna2ImageButton();
-            btnExit = new Guna2ImageButton();
-            guna2Panel2.SuspendLayout();
-            SuspendLayout();
-            // 
-            // guna2BorderlessForm1
-            // 
+
+            // Set up the borderless form
+            guna2BorderlessForm1 = new Guna2BorderlessForm(components);
             guna2BorderlessForm1.BorderRadius = 30;
             guna2BorderlessForm1.ContainerControl = this;
             guna2BorderlessForm1.DockIndicatorTransparencyValue = 0.6D;
             guna2BorderlessForm1.TransparentWhileDrag = true;
-            // 
-            // guna2Panel2
-            // 
+
+            // Initialize guna2Panel1 (Top Bar)
+            guna2Panel1.Dock = DockStyle.Top;
+            guna2Panel1.Height = 42;
+            guna2Panel1.FillColor = Color.FromArgb(246, 246, 247);
+            guna2Panel1.BackColor = Color.FromArgb(246, 246, 247);
+            guna2Panel1.BorderColor = Color.FromArgb(223, 224, 228);
+            guna2Panel1.BorderThickness = 1;
+            guna2Panel1.CustomBorderThickness = new Padding(0, 0, 0, 1);
+            guna2Panel1.ShadowDecoration.Enabled = false;
+            guna2Panel1.Padding = new Padding(14, 8, 14, 8);
+            Controls.Add(guna2Panel1); // Add the top bar panel to the form
+
+            // Create the traffic buttons (minimize, close)
+            if (_macTrafficHost == null)
+            {
+                _macTrafficHost = new Panel
+                {
+                    Name = "macTrafficHost",
+                    BackColor = Color.FromArgb(246, 246, 247),
+                    Size = new Size(46, 16),
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right
+                };
+
+                _btnMacMinimize = new MacTrafficLightButton(MacTrafficLightKind.Minimize, Color.FromArgb(246, 246, 247))
+                {
+                    Location = new Point(0, 0)
+                };
+
+                _btnMacClose = new MacTrafficLightButton(MacTrafficLightKind.Close, Color.FromArgb(246, 246, 247))
+                {
+                    Location = new Point(24, 0)
+                };
+                _btnMacClose.Click += (s, e) => Close();
+
+                _macTrafficHost.Controls.Add(_btnMacMinimize);
+                _macTrafficHost.Controls.Add(_btnMacClose);
+
+                guna2Panel1.Controls.Add(_macTrafficHost);
+                _macTrafficHost.BringToFront();
+            }
+
+            // Title Label
+            if (_macTitleLabel == null)
+            {
+                _macTitleLabel = new Label
+                {
+                    AutoSize = false,
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Text = "IRIS",  // Your app name
+                    Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(82, 82, 88),
+                    BackColor = Color.FromArgb(246, 246, 247)
+                };
+
+                guna2Panel1.Controls.Add(_macTitleLabel);
+                _macTitleLabel.SendToBack();
+            }
+
+            PositionMacButtons();
+            WireDragToControl(guna2Panel1);
+            WireDragToControl(_macTitleLabel);
+
+            // Initialize guna2Panel2 (Login Form Panel)
             guna2Panel2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             guna2Panel2.BackColor = Color.Transparent;
             guna2Panel2.BorderColor = Color.FromArgb(137, 65, 208);
@@ -84,9 +145,8 @@ namespace IRIS.Presentation
             guna2Panel2.ShadowDecoration.Shadow = new Padding(0, 0, 0, 10);
             guna2Panel2.Size = new Size(549, 799);
             guna2Panel2.TabIndex = 1;
-            // 
-            // lblError
-            // 
+
+            // Other form controls (Login Form)
             lblError.AutoSize = true;
             lblError.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblError.ForeColor = Color.Red;
@@ -96,9 +156,7 @@ namespace IRIS.Presentation
             lblError.TabIndex = 9;
             lblError.Text = "aa";
             lblError.Visible = false;
-            // 
-            // btnLogin
-            // 
+
             btnLogin.Anchor = AnchorStyles.None;
             btnLogin.BorderRadius = 15;
             btnLogin.CustomizableEdges = customizableEdges2;
@@ -121,9 +179,9 @@ namespace IRIS.Presentation
             btnLogin.TabIndex = 3;
             btnLogin.Text = "Sign In";
             btnLogin.Click += btnLogin_Click;
-            // 
-            // label1
-            // 
+
+            // Labels, textboxes and other controls are initialized below:
+
             label1.Anchor = AnchorStyles.None;
             label1.AutoSize = true;
             label1.Font = new Font("Poppins", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -132,9 +190,7 @@ namespace IRIS.Presentation
             label1.Size = new Size(139, 36);
             label1.TabIndex = 0;
             label1.Text = "Welcome To";
-            // 
-            // label6
-            // 
+
             label6.Anchor = AnchorStyles.None;
             label6.AutoSize = true;
             label6.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -144,9 +200,7 @@ namespace IRIS.Presentation
             label6.Size = new Size(94, 30);
             label6.TabIndex = 8;
             label6.Text = "Password";
-            // 
-            // txtPassword
-            // 
+
             txtPassword.Anchor = AnchorStyles.None;
             txtPassword.BorderColor = Color.Gray;
             txtPassword.BorderRadius = 15;
@@ -173,9 +227,7 @@ namespace IRIS.Presentation
             txtPassword.Size = new Size(444, 55);
             txtPassword.TabIndex = 1;
             txtPassword.UseSystemPasswordChar = true;
-            // 
-            // label5
-            // 
+
             label5.Anchor = AnchorStyles.None;
             label5.AutoSize = true;
             label5.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -185,9 +237,7 @@ namespace IRIS.Presentation
             label5.Size = new Size(101, 30);
             label5.TabIndex = 6;
             label5.Text = "Username";
-            // 
-            // txtUsername
-            // 
+
             txtUsername.Anchor = AnchorStyles.None;
             txtUsername.BorderColor = Color.Gray;
             txtUsername.BorderRadius = 15;
@@ -213,9 +263,7 @@ namespace IRIS.Presentation
             txtUsername.ShadowDecoration.CustomizableEdges = customizableEdges7;
             txtUsername.Size = new Size(444, 54);
             txtUsername.TabIndex = 0;
-            // 
-            // label4
-            // 
+
             label4.Anchor = AnchorStyles.None;
             label4.AutoSize = true;
             label4.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -225,9 +273,7 @@ namespace IRIS.Presentation
             label4.Size = new Size(229, 26);
             label4.TabIndex = 4;
             label4.Text = "Sign-In to Access the System";
-            // 
-            // label2
-            // 
+
             label2.Anchor = AnchorStyles.None;
             label2.AutoSize = true;
             label2.Font = new Font("Poppins", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -237,9 +283,7 @@ namespace IRIS.Presentation
             label2.Size = new Size(408, 36);
             label2.TabIndex = 2;
             label2.Text = "An Ingredient Request Inventory System";
-            // 
-            // label3
-            // 
+
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
             label3.Font = new Font("Poppins", 48F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -249,9 +293,7 @@ namespace IRIS.Presentation
             label3.Size = new Size(311, 141);
             label3.TabIndex = 3;
             label3.Text = "i  R  I  S";
-            // 
-            // guna2ImageButton1
-            // 
+
             guna2ImageButton1.Anchor = AnchorStyles.None;
             guna2ImageButton1.BackgroundImageLayout = ImageLayout.Stretch;
             guna2ImageButton1.CheckedState.ImageSize = new Size(64, 64);
@@ -267,57 +309,41 @@ namespace IRIS.Presentation
             guna2ImageButton1.Size = new Size(173, 182);
             guna2ImageButton1.TabIndex = 1;
             guna2ImageButton1.UseTransparentBackground = true;
-            // 
-            // btnExit
-            // 
-            btnExit.BackColor = Color.Transparent;
-            btnExit.CheckedState.ImageSize = new Size(24, 24);
-            btnExit.HoverState.ImageSize = new Size(30, 30);
-            btnExit.Image = Properties.Resources.exitBtn;
-            btnExit.ImageOffset = new Point(0, 0);
-            btnExit.ImageRotate = 0F;
-            btnExit.ImageSize = new Size(24, 24);
-            btnExit.Location = new Point(1564, 12);
-            btnExit.Name = "btnExit";
-            btnExit.ShadowDecoration.CustomizableEdges = customizableEdges1;
-            btnExit.Size = new Size(24, 24);
-            btnExit.TabIndex = 3;
-            btnExit.Click += btnExit_Click;
-            // 
-            // LoginForm
-            // 
+
+            // Form configurations
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1600, 900);
-            Controls.Add(btnExit);
             Controls.Add(guna2Panel2);
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "LoginForm";
             StartPosition = FormStartPosition.CenterScreen;
+
             guna2Panel2.ResumeLayout(false);
             guna2Panel2.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
+
+        private Guna2Panel guna2Panel1;  // The top bar panel
         private Guna2BorderlessForm guna2BorderlessForm1;
         private Guna2Panel guna2Panel2;
         private Label label1;
         private Label label3;
         private Label label2;
+        private Label label5;
         private Guna2ImageButton guna2ImageButton1;
         private Guna2TextBox txtUsername;
         private Label label4;
         private Label label6;
         private Guna2TextBox txtPassword;
-        private Label label5;
-        private Guna2GradientButton btnLogin;
+        private Guna.UI2.WinForms.Guna2GradientButton btnLogin;
         private Label lblError;
-        private Guna2ImageButton btnExit;
     }
 }
