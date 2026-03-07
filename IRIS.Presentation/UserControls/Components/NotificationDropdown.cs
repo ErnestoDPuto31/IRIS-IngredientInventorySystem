@@ -45,9 +45,9 @@ namespace IRIS.Presentation.UserControls.Components
             _animTimer.Tick += AnimTick;
 
             SetStyle(ControlStyles.AllPaintingInWmPaint |
-                     ControlStyles.OptimizedDoubleBuffer |
-                     ControlStyles.UserPaint |
-                     ControlStyles.ResizeRedraw, true);
+                      ControlStyles.OptimizedDoubleBuffer |
+                      ControlStyles.UserPaint |
+                      ControlStyles.ResizeRedraw, true);
 
             BackColor = _dropdownBg;
             BorderStyle = BorderStyle.None;
@@ -65,6 +65,9 @@ namespace IRIS.Presentation.UserControls.Components
 
                 flpNotifications.SizeChanged += (s, e) => ReflowCardWidths();
             }
+
+            // You can subscribe to the NotificationClicked event here to show the dropdown when clicked
+            NotificationClicked += (sender, args) => ShowBubble();
         }
 
         private void AnimTick(object sender, EventArgs e)
@@ -184,6 +187,7 @@ namespace IRIS.Presentation.UserControls.Components
 
             _animTimer.Start();
         }
+
         private void ApplyRoundedRegion(int radius)
         {
             if (radius <= 0) { this.Region = null; return; }
@@ -209,8 +213,8 @@ namespace IRIS.Presentation.UserControls.Components
             flpNotifications.Controls.Clear();
 
             var visibleNotifications = notifications?
-    .Where(n => !_hiddenNotificationIds.Contains(n.NotificationId.ToString()))
-    .ToList() ?? new List<NotificationDto>();
+                .Where(n => !_hiddenNotificationIds.Contains(n.NotificationId.ToString()))
+                .ToList() ?? new List<NotificationDto>();
 
             if (visibleNotifications.Count == 0)
             {
@@ -442,9 +446,9 @@ namespace IRIS.Presentation.UserControls.Components
                 Size = new Size(10, 10);
                 BackColor = Color.White;
                 SetStyle(ControlStyles.AllPaintingInWmPaint |
-                         ControlStyles.OptimizedDoubleBuffer |
-                         ControlStyles.UserPaint |
-                         ControlStyles.ResizeRedraw, true);
+                          ControlStyles.OptimizedDoubleBuffer |
+                          ControlStyles.UserPaint |
+                          ControlStyles.ResizeRedraw, true);
             }
 
             protected override void OnPaint(PaintEventArgs e)
@@ -480,9 +484,9 @@ namespace IRIS.Presentation.UserControls.Components
                 ForeColor = Color.Black;
 
                 SetStyle(ControlStyles.AllPaintingInWmPaint |
-                         ControlStyles.OptimizedDoubleBuffer |
-                         ControlStyles.UserPaint |
-                         ControlStyles.ResizeRedraw, true);
+                          ControlStyles.OptimizedDoubleBuffer |
+                          ControlStyles.UserPaint |
+                          ControlStyles.ResizeRedraw, true);
 
                 MouseEnter += (_, __) => { _hover = true; Invalidate(); };
                 MouseLeave += (_, __) => { _hover = false; Invalidate(); };
