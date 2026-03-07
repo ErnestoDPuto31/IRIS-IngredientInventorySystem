@@ -57,6 +57,8 @@
             // 
             // guna2BorderlessForm1
             // 
+            guna2BorderlessForm1.AnimateWindow = true;
+            guna2BorderlessForm1.AnimationType = Guna.UI2.WinForms.Guna2BorderlessForm.AnimateWindowType.AW_VER_POSITIVE;
             guna2BorderlessForm1.BorderRadius = 30;
             guna2BorderlessForm1.ContainerControl = this;
             guna2BorderlessForm1.DockIndicatorTransparencyValue = 0.6D;
@@ -107,7 +109,7 @@
             btnCancel.PressedColor = Color.DarkSlateBlue;
             btnCancel.ShadowDecoration.CustomizableEdges = customizableEdges2;
             btnCancel.Size = new Size(106, 41);
-            btnCancel.TabIndex = 9;
+            btnCancel.TabIndex = 4;
             btnCancel.Text = "CANCEL";
             btnCancel.Click += btnCancel_Click;
             // 
@@ -133,7 +135,7 @@
             btnSave.PressedColor = Color.DarkSlateBlue;
             btnSave.ShadowDecoration.CustomizableEdges = customizableEdges4;
             btnSave.Size = new Size(128, 41);
-            btnSave.TabIndex = 3;
+            btnSave.TabIndex = 5;
             btnSave.Text = "SAVE";
             btnSave.Click += btnSave_Click;
             // 
@@ -161,7 +163,7 @@
             chkShowPassword.Location = new Point(32, 305);
             chkShowPassword.Name = "chkShowPassword";
             chkShowPassword.Size = new Size(152, 30);
-            chkShowPassword.TabIndex = 6;
+            chkShowPassword.TabIndex = 3;
             chkShowPassword.Text = "Show Password";
             chkShowPassword.UncheckedState.BorderColor = Color.Indigo;
             chkShowPassword.UncheckedState.BorderRadius = 2;
@@ -279,7 +281,9 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "ChangePasswordForm";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
+            TopMost = true;
             guna2Panel1.ResumeLayout(false);
             guna2Panel1.PerformLayout();
             ResumeLayout(false);
