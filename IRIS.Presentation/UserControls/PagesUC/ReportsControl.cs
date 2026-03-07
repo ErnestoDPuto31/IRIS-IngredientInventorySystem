@@ -58,46 +58,44 @@ namespace IRIS.Presentation.UserControls.PagesUC
             _dataBound = false;
             _isLoadingData = false;
         }
-
-        public async Task EnsureDataLoadedAsync()
+        protected override async void OnVisibleChanged(EventArgs e)
         {
-            // Ensure no redundant loading
-            if (_dataBound || _isLoadingData)
-                return;
+            base.OnVisibleChanged(e);
+
+            if (this.Visible && !this.DesignMode)
+            {
+                await EnsureDataLoadedAsync(true);
+            }
+        }
+        public async Task EnsureDataLoadedAsync(bool forceReload = false)
+        {
+            if (_isLoadingData) return;
 
             var reportsService = GetReportsService();
-            if (reportsService == null)
-                return;
+            if (reportsService == null) return;
 
             try
             {
                 _isLoadingData = true;
                 UseWaitCursor = true;
 
-                // Check if snapshot is already loaded
-                if (_snapshot == null)
+                if (forceReload || _snapshot == null)
                 {
-                    if (_preloadTask == null || _preloadTask.IsCanceled || _preloadTask.IsFaulted)
-                        _preloadTask = reportsService.GetDashboardDataAsync(5);
+                    ResetCachedData(); // This crucially sets _dataBound = false
 
-                    // Await for data to load before binding it
+                    if (_preloadTask == null || _preloadTask.IsCanceled || _preloadTask.IsFaulted)
+                    {
+                        // Force a brand new query to the database
+                        _preloadTask = reportsService.GetDashboardDataAsync(5);
+                    }
+
                     _snapshot = await _preloadTask;
                 }
 
-                // Only bind the data if not disposed and the snapshot is valid
-                if (!IsDisposed && _snapshot != null)
+                if (_snapshot != null && !IsDisposed)
                 {
                     BindSnapshot(_snapshot);
                 }
-                else
-                {
-                    // Handle the case where snapshot is null
-                    MessageBox.Show("Failed to load report data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading reports data: " + ex.Message);
             }
             finally
             {
@@ -121,7 +119,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             if (pnlMain != null)
                 pnlMain.AutoScroll = true;
 
-            await EnsureDataLoadedAsync();
+            await EnsureDataLoadedAsync(true);
         }
 
         private void BindSnapshot(ReportsDashboardSummary snapshot)
