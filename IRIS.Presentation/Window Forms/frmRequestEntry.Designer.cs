@@ -87,21 +87,21 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Poppins", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(30, 25);
             label1.Name = "label1";
-            label1.Size = new Size(307, 36);
+            label1.Size = new Size(331, 53);
             label1.TabIndex = 0;
             label1.Text = "Create New Request";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = SystemColors.ControlDarkDark;
             label2.Location = new Point(30, 65);
             label2.Name = "label2";
-            label2.Size = new Size(343, 20);
+            label2.Size = new Size(394, 30);
             label2.TabIndex = 1;
             label2.Text = "Fill in the request details and add ingredients";
             // 
@@ -116,36 +116,36 @@
             txtSubject.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
             txtSubject.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtSubject.FocusedState.BorderColor = Color.FromArgb(77, 10, 133);
-            txtSubject.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtSubject.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtSubject.HoverState.BorderColor = Color.FromArgb(77, 10, 133);
-            txtSubject.Location = new Point(32, 137);
-            txtSubject.Margin = new Padding(5, 12, 5, 12);
+            txtSubject.Location = new Point(38, 137);
+            txtSubject.Margin = new Padding(6, 18, 6, 18);
             txtSubject.Name = "txtSubject";
             txtSubject.PlaceholderText = "e.g. Culinary Arts 101";
             txtSubject.SelectedText = "";
             txtSubject.ShadowDecoration.CustomizableEdges = customizableEdges19;
-            txtSubject.Size = new Size(289, 38);
+            txtSubject.Size = new Size(284, 38);
             txtSubject.TabIndex = 5;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.Black;
             label3.Location = new Point(32, 107);
             label3.Name = "label3";
-            label3.Size = new Size(138, 20);
+            label3.Size = new Size(147, 30);
             label3.TabIndex = 6;
             label3.Text = "Subject/Course";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label4.ForeColor = SystemColors.ActiveCaptionText;
             label4.Location = new Point(346, 107);
             label4.Name = "label4";
-            label4.Size = new Size(124, 20);
+            label4.Size = new Size(135, 30);
             label4.TabIndex = 7;
             label4.Text = "Faculty Name";
             // 
@@ -160,10 +160,10 @@
             txtFaculty.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
             txtFaculty.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtFaculty.FocusedState.BorderColor = Color.FromArgb(77, 10, 133);
-            txtFaculty.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtFaculty.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtFaculty.HoverState.BorderColor = Color.FromArgb(77, 10, 133);
             txtFaculty.Location = new Point(346, 137);
-            txtFaculty.Margin = new Padding(5, 12, 5, 12);
+            txtFaculty.Margin = new Padding(6, 18, 6, 18);
             txtFaculty.Name = "txtFaculty";
             txtFaculty.PlaceholderText = "e.g. Prof. John Doe";
             txtFaculty.SelectedText = "";
@@ -174,11 +174,11 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Font = new Font("Poppins", 10.2F, FontStyle.Bold);
             label5.ForeColor = Color.Black;
             label5.Location = new Point(32, 198);
             label5.Name = "label5";
-            label5.Size = new Size(110, 20);
+            label5.Size = new Size(110, 30);
             label5.TabIndex = 9;
             label5.Text = "Date of Use";
             // 
@@ -195,7 +195,7 @@
             dtpDateOfUse.CustomizableEdges = customizableEdges14;
             dtpDateOfUse.FillColor = Color.White;
             dtpDateOfUse.FocusedColor = Color.Indigo;
-            dtpDateOfUse.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dtpDateOfUse.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpDateOfUse.ForeColor = Color.White;
             dtpDateOfUse.Format = DateTimePickerFormat.Short;
             dtpDateOfUse.HoverState.BorderColor = Color.Indigo;
@@ -213,22 +213,22 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.Font = new Font("Poppins", 10.2F, FontStyle.Bold);
             label6.ForeColor = Color.Black;
             label6.Location = new Point(228, 198);
             label6.Name = "label6";
-            label6.Size = new Size(128, 20);
+            label6.Size = new Size(138, 30);
             label6.TabIndex = 11;
             label6.Text = "Student Count";
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label7.Font = new Font("Poppins", 10.2F, FontStyle.Bold);
             label7.ForeColor = Color.Black;
             label7.Location = new Point(423, 198);
             label7.Name = "label7";
-            label7.Size = new Size(158, 20);
+            label7.Size = new Size(160, 30);
             label7.TabIndex = 12;
             label7.Text = "Price Per Student";
             // 
@@ -241,7 +241,7 @@
             numStudentCount.FocusedState.BorderColor = Color.Indigo;
             numStudentCount.FocusedState.UpDownButtonFillColor = Color.White;
             numStudentCount.FocusedState.UpDownButtonForeColor = Color.Indigo;
-            numStudentCount.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            numStudentCount.Font = new Font("Poppins", 10.2F);
             numStudentCount.Location = new Point(228, 231);
             numStudentCount.Margin = new Padding(3, 4, 3, 4);
             numStudentCount.Name = "numStudentCount";
@@ -262,7 +262,7 @@
             numRecipeCosting.FocusedState.BorderColor = Color.Indigo;
             numRecipeCosting.FocusedState.UpDownButtonFillColor = Color.White;
             numRecipeCosting.FocusedState.UpDownButtonForeColor = Color.Indigo;
-            numRecipeCosting.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            numRecipeCosting.Font = new Font("Poppins", 10.2F);
             numRecipeCosting.Location = new Point(423, 231);
             numRecipeCosting.Margin = new Padding(3, 4, 3, 4);
             numRecipeCosting.Maximum = new decimal(new int[] { 1316134912, 2328, 0, 0 });
@@ -318,10 +318,10 @@
             // 
             lblAllowedQtyDisplay.AutoSize = true;
             lblAllowedQtyDisplay.BackColor = Color.Transparent;
-            lblAllowedQtyDisplay.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblAllowedQtyDisplay.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblAllowedQtyDisplay.Location = new Point(132, 10);
             lblAllowedQtyDisplay.Name = "lblAllowedQtyDisplay";
-            lblAllowedQtyDisplay.Size = new Size(59, 20);
+            lblAllowedQtyDisplay.Size = new Size(68, 30);
             lblAllowedQtyDisplay.TabIndex = 1;
             lblAllowedQtyDisplay.Text = "2500g";
             // 
@@ -329,10 +329,10 @@
             // 
             label9.AutoSize = true;
             label9.BackColor = Color.Transparent;
-            label9.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label9.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label9.Location = new Point(16, 10);
             label9.Name = "label9";
-            label9.Size = new Size(109, 20);
+            label9.Size = new Size(123, 30);
             label9.TabIndex = 0;
             label9.Text = "Total Budget:";
             // 
@@ -345,7 +345,7 @@
             btnAdd.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             btnAdd.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnAdd.FillColor = Color.Indigo;
-            btnAdd.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAdd.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAdd.ForeColor = Color.White;
             btnAdd.HoverState.FillColor = Color.FromArgb(151, 71, 230);
             btnAdd.Location = new Point(45, 397);
@@ -366,7 +366,7 @@
             btnSubmit.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             btnSubmit.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnSubmit.FillColor = Color.Indigo;
-            btnSubmit.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSubmit.Font = new Font("Poppins", 10.2F, FontStyle.Bold);
             btnSubmit.ForeColor = Color.White;
             btnSubmit.HoverState.FillColor = Color.FromArgb(137, 65, 208);
             btnSubmit.Location = new Point(402, 507);
@@ -389,7 +389,7 @@
             btnCancel.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             btnCancel.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnCancel.FillColor = Color.White;
-            btnCancel.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.Font = new Font("Poppins", 10.2F, FontStyle.Bold);
             btnCancel.ForeColor = Color.Black;
             btnCancel.HoverState.FillColor = Color.FromArgb(151, 71, 230);
             btnCancel.HoverState.ForeColor = Color.White;
