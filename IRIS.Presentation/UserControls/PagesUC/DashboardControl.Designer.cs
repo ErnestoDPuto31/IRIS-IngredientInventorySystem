@@ -67,6 +67,7 @@
             dashboardCardLowStock.Padding = new Padding(10);
             dashboardCardLowStock.Size = new Size(360, 168);
             dashboardCardLowStock.TabIndex = 1;
+            dashboardCardLowStock.IconClicked += dashboardCardLowStock_IconClicked;
             // 
             // dashboardCardPending
             // 
@@ -80,21 +81,21 @@
             // lblWelcomeDescription
             // 
             lblWelcomeDescription.AutoSize = true;
-            lblWelcomeDescription.Font = new Font("Poppins", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblWelcomeDescription.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblWelcomeDescription.ForeColor = SystemColors.ControlDarkDark;
             lblWelcomeDescription.Location = new Point(97, 98);
             lblWelcomeDescription.Name = "lblWelcomeDescription";
-            lblWelcomeDescription.Size = new Size(533, 40);
+            lblWelcomeDescription.Size = new Size(476, 29);
             lblWelcomeDescription.TabIndex = 7;
             lblWelcomeDescription.Text = "View all inventory transactions and changes";
             // 
             // lblWelcomeText
             // 
             lblWelcomeText.AutoSize = true;
-            lblWelcomeText.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblWelcomeText.Font = new Font("Microsoft Sans Serif", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblWelcomeText.Location = new Point(87, 46);
             lblWelcomeText.Name = "lblWelcomeText";
-            lblWelcomeText.Size = new Size(277, 70);
+            lblWelcomeText.Size = new Size(255, 46);
             lblWelcomeText.TabIndex = 6;
             lblWelcomeText.Text = "Welcome, ...";
             // 
@@ -133,11 +134,11 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Poppins", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ActiveCaptionText;
             label1.Location = new Point(136, 334);
             label1.Name = "label1";
-            label1.Size = new Size(150, 36);
+            label1.Size = new Size(141, 25);
             label1.TabIndex = 12;
             label1.Text = "Recent Alerts";
             label1.TextAlign = ContentAlignment.MiddleLeft;
@@ -202,7 +203,7 @@
             guna2Panel1.Location = new Point(0, 923);
             guna2Panel1.Name = "guna2Panel1";
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges3;
-            guna2Panel1.Size = new Size(1518, 50);
+            guna2Panel1.Size = new Size(1497, 50);
             guna2Panel1.TabIndex = 14;
             // 
             // DashboardControl
@@ -225,7 +226,7 @@
             Controls.Add(dashboardCardTotalIngredients);
             Name = "DashboardControl";
             Padding = new Padding(0, 0, 40, 0);
-            Size = new Size(1558, 900);
+            Size = new Size(1537, 900);
             flowLayoutPanelAlerts.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();

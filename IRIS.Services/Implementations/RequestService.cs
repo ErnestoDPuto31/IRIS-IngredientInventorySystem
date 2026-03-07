@@ -17,7 +17,15 @@ namespace IRIS.Services.Implementations
         {
             _context = context;
         }
-
+        public List<string> GetUniqueFacultyNames()
+        {
+            return _context.Requests
+                .Where(r => !string.IsNullOrWhiteSpace(r.FacultyName))
+                .Select(r => r.FacultyName)
+                .Distinct()
+                .OrderBy(name => name)
+                .ToList();
+        }
         public int GetPendingRequestCount()
         {
             return _context.Requests.Count(r => r.Status == RequestStatus.Pending);

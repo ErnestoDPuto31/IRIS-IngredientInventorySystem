@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    [Migration("20260306123713_RevampedRequestAndRequestItemsTables")]
-    partial class RevampedRequestAndRequestItemsTables
+    [Migration("20260306180105_ToUpdate")]
+    partial class ToUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

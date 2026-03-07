@@ -62,8 +62,8 @@ namespace IRIS.Presentation.UserControls.Components
 
             // Setup Data based on type
             string title = _widgetType == OverviewWidgetType.Stock ? "Stock Status Overview" : "Request Status Overview";
-            string label1 = _widgetType == OverviewWidgetType.Stock ? "Full Stock" : "Pending";
-            string label2 = _widgetType == OverviewWidgetType.Stock ? "Low Stock" : "Approved";
+            string label1 = _widgetType == OverviewWidgetType.Stock ? "Well Stocked" : "Pending";
+            string label2 = _widgetType == OverviewWidgetType.Stock ? "Low Stocked" : "Approved";
             string label3 = _widgetType == OverviewWidgetType.Stock ? "Empty" : "Released";
 
             Color c1 = _widgetType == OverviewWidgetType.Stock ? Color.FromArgb(16, 185, 129) : Color.FromArgb(139, 92, 246);

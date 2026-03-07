@@ -129,10 +129,10 @@ namespace IRIS.Presentation.UserControls.Components
                         count = allIngredients.Count(i => i.CurrentStock <= 0);
                         break;
                     case CardType.LowStockItems:
-                        count = allIngredients.Count(i => i.CurrentStock > 0 && i.CurrentStock <= i.MinimumStock);
+                        count = allIngredients.Count(i => i.CurrentStock > 0 && i.CurrentStock < i.MinimumStock);
                         break;
                     case CardType.WellStockedItems:
-                        count = allIngredients.Count(i => i.CurrentStock > i.MinimumStock);
+                        count = allIngredients.Count(i => i.CurrentStock >= i.MinimumStock);
                         break;
                 }
 
