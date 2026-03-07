@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace IRIS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class intiialDb : Migration
+    public partial class initialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -133,6 +133,9 @@ namespace IRIS.Infrastructure.Migrations
                     Subject = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     FacultyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     StudentCount = table.Column<int>(type: "int", nullable: false),
+                    TotalBudget = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PricePerStudent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     DateOfUse = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -190,7 +193,8 @@ namespace IRIS.Infrastructure.Migrations
                     IngredientId = table.Column<int>(type: "int", nullable: false),
                     PortionPerStudent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     RequestedQty = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    AllowedQty = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    AllowedQty = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {

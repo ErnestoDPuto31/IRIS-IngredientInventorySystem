@@ -18,27 +18,24 @@ namespace IRIS.Presentation.UserControls.Components
     {
         public event EventHandler NotificationClicked;
 
-        // modern dropdown palette
         private readonly Color _dropdownBg = Color.White;
         private readonly Color _listBg = Color.FromArgb(245, 247, 252);
 
-        // --- soft delete tracking ---
-        // Keeps track of dismissed notifications locally for instant UI snappiness
-        private readonly HashSet<string> _hiddenNotificationIds = new HashSet<string>();
-
-        // --- bubble animation fields ---
         private readonly System.Windows.Forms.Timer _animTimer = new System.Windows.Forms.Timer();
         private bool _animShowing;
         private bool _animRunning;
         private DateTime _animStart;
+
         private int _animDurationMs = 220;
+        private int _collapsedHeight = 10;
+        private int _liftPx = 10;
+        private int _cornerRadius = 14;
 
         private Rectangle _targetBounds;
         private Rectangle _startBounds;
 
-        private int _collapsedHeight = 10;   // start height when showing
-        private int _liftPx = 10;            // start a bit higher then drop into place
-        private int _cornerRadius = 14;
+        // Soft delete tracking for dismissed notifications
+        private readonly HashSet<string> _hiddenNotificationIds = new HashSet<string>();
 
         public NotificationDropdown()
         {
@@ -47,10 +44,6 @@ namespace IRIS.Presentation.UserControls.Components
             _animTimer.Interval = 15;
             _animTimer.Tick += AnimTick;
 
-            ApplyRoundedRegion(_cornerRadius);
-            this.SizeChanged += (s, e) => ApplyRoundedRegion(_cornerRadius);
-
-            // smoother rendering
             SetStyle(ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.UserPaint |
@@ -65,13 +58,9 @@ namespace IRIS.Presentation.UserControls.Components
                 flpNotifications.AutoScroll = true;
                 flpNotifications.WrapContents = false;
                 flpNotifications.FlowDirection = FlowDirection.TopDown;
-
                 flpNotifications.BackColor = _listBg;
-
-                // nice breathing space around cards
                 flpNotifications.Padding = new Padding(12, 12, 12, 14);
 
-                // reduce flicker when scrolling
                 EnableDoubleBuffering(flpNotifications);
 
                 flpNotifications.SizeChanged += (s, e) => ReflowCardWidths();
@@ -125,26 +114,6 @@ namespace IRIS.Presentation.UserControls.Components
             }
         }
 
-        private void ApplyRoundedRegion(int radius)
-        {
-            if (radius <= 0) { this.Region = null; return; }
-            if (this.Width <= 2 || this.Height <= 2) return;
-
-            using (var path = new GraphicsPath())
-            {
-                int d = radius * 2;
-                Rectangle r = new Rectangle(0, 0, this.Width, this.Height);
-
-                path.AddArc(r.X, r.Y, d, d, 180, 90);
-                path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
-                path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
-                path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
-                path.CloseFigure();
-
-                this.Region = new Region(path);
-            }
-        }
-
         private static float Lerp(float a, float b, float t) => a + (b - a) * t;
 
         private static float EaseOutCubic(float t)
@@ -165,11 +134,15 @@ namespace IRIS.Presentation.UserControls.Components
 
         public void ShowBubble()
         {
-            if (_animRunning) return;
+            if (_animRunning)
+            {
+                _animTimer.Stop();
+                _animRunning = false;
+            }
 
             BringToFront();
-            _targetBounds = this.Bounds;
 
+            _targetBounds = Bounds;
             _startBounds = new Rectangle(
                 _targetBounds.X,
                 _targetBounds.Y - _liftPx,
@@ -177,8 +150,8 @@ namespace IRIS.Presentation.UserControls.Components
                 _collapsedHeight
             );
 
-            this.Bounds = _startBounds;
-            this.Visible = true;
+            Bounds = _startBounds;
+            Visible = true;  // Ensure the dropdown is visible before starting the animation
 
             _animShowing = true;
             _animRunning = true;
@@ -189,10 +162,15 @@ namespace IRIS.Presentation.UserControls.Components
 
         public void HideBubble()
         {
-            if (_animRunning) return;
-            if (!this.Visible) return;
+            if (_animRunning)
+            {
+                _animTimer.Stop();
+                _animRunning = false;
+            }
 
-            _startBounds = this.Bounds;
+            if (!Visible) return;
+
+            _startBounds = Bounds;
             _targetBounds = new Rectangle(
                 _startBounds.X,
                 _startBounds.Y - _liftPx,
@@ -206,30 +184,50 @@ namespace IRIS.Presentation.UserControls.Components
 
             _animTimer.Start();
         }
-
-        protected override void OnPaint(PaintEventArgs e)
+        private void ApplyRoundedRegion(int radius)
         {
-            base.OnPaint(e);
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            if (radius <= 0) { this.Region = null; return; }
+            if (this.Width <= 2 || this.Height <= 2) return;
 
-            var rect = ClientRectangle;
-            rect.Inflate(-1, -1);
-
-            using (var pen = new Pen(Color.FromArgb(220, 225, 235), 1))
+            using (var path = new GraphicsPath())
             {
-                e.Graphics.DrawRectangle(pen, rect);
+                int d = radius * 2;
+                Rectangle r = new Rectangle(0, 0, this.Width, this.Height);
+
+                path.AddArc(r.X, r.Y, d, d, 180, 90);
+                path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
+                path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+                path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
+                path.CloseFigure();
+
+                this.Region = new Region(path);
             }
         }
 
-        private static void EnableDoubleBuffering(Control ctrl)
+        public void LoadNotifications(List<NotificationDto> notifications)
         {
-            try
+            flpNotifications.Controls.Clear();
+
+            var visibleNotifications = notifications?
+    .Where(n => !_hiddenNotificationIds.Contains(n.NotificationId.ToString()))
+    .ToList() ?? new List<NotificationDto>();
+
+            if (visibleNotifications.Count == 0)
             {
-                typeof(Control).InvokeMember("DoubleBuffered",
-                    BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
-                    null, ctrl, new object[] { true });
+                flpNotifications.Controls.Add(CreateEmptyStateCard());
+                ReflowCardWidths();
+                return;
             }
-            catch { /* ignore */ }
+
+            foreach (var notif in visibleNotifications)
+            {
+                var statusColor = GetStatusColor(notif.Message);
+                var card = CreateNotificationCard(notif, statusColor);  // Create notification card
+                flpNotifications.Controls.Add(card);
+            }
+
+            flpNotifications.Controls.Add(CreateClearAllButton(visibleNotifications));
+            ReflowCardWidths();
         }
 
         private Color GetStatusColor(string message)
@@ -247,33 +245,6 @@ namespace IRIS.Presentation.UserControls.Components
             if (msg.Contains("new") || msg.Contains("pending")) return Color.DarkOrange;
 
             return Color.Indigo;
-        }
-
-        public void LoadNotifications(List<NotificationDto> notifications)
-        {
-            flpNotifications.Controls.Clear();
-
-            // Filter out notifications that the user has already soft-deleted locally
-            var visibleNotifications = notifications?
-    .Where(n => !_hiddenNotificationIds.Contains(n.NotificationId.ToString()))
-    .ToList() ?? new List<NotificationDto>();
-
-            if (visibleNotifications.Count == 0)
-            {
-                flpNotifications.Controls.Add(CreateEmptyStateCard());
-                ReflowCardWidths();
-                return;
-            }
-
-            foreach (var notif in visibleNotifications)
-            {
-                var statusColor = GetStatusColor(notif.Message);
-                var card = CreateNotificationCard(notif, statusColor);
-                flpNotifications.Controls.Add(card);
-            }
-
-            flpNotifications.Controls.Add(CreateClearAllButton(visibleNotifications));
-            ReflowCardWidths();
         }
 
         private Control CreateEmptyStateCard()
@@ -302,6 +273,7 @@ namespace IRIS.Presentation.UserControls.Components
             return card;
         }
 
+        // ** CreateNotificationCard method ** 
         private Control CreateNotificationCard(NotificationDto notif, Color statusColor)
         {
             var card = new RoundedShadowCard(_listBg)
@@ -347,46 +319,6 @@ namespace IRIS.Presentation.UserControls.Components
                 Dock = DockStyle.Fill
             };
 
-            var lblClose = new Label
-            {
-                Text = "✕",
-                Font = new Font("Segoe UI", 10f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(170, 170, 180),
-                Cursor = Cursors.Hand,
-                AutoSize = true,
-                Margin = new Padding(0, 0, 0, 0),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                BackColor = Color.White
-            };
-
-            lblClose.MouseEnter += (s, e) => lblClose.ForeColor = Color.Crimson;
-            lblClose.MouseLeave += (s, e) => lblClose.ForeColor = Color.FromArgb(170, 170, 180);
-
-            // --- INDIVIDUAL X BUTTON CLICK ---
-            lblClose.Click += (s, e) =>
-            {
-                // 1. Mark as soft-deleted locally...
-                _hiddenNotificationIds.Add(notif.NotificationId.ToString());
-
-                // 2. --- SERVER-SIDE SOFT DELETE ---
-                var notifService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
-                notifService?.DismissNotification(notif.NotificationId);
-
-                // 3. Visually remove from list
-                flpNotifications.Controls.Remove(card);
-                card.Dispose();
-
-                // 4. Check if list is empty
-                if (flpNotifications.Controls.Count == 0 ||
-                   (flpNotifications.Controls.Count == 1 && flpNotifications.Controls[0].Name == "ClearAllBtn"))
-                {
-                    flpNotifications.Controls.Clear();
-                    flpNotifications.Controls.Add(CreateEmptyStateCard());
-                }
-
-                ReflowCardWidths();
-            };
-
             var footer = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -416,9 +348,9 @@ namespace IRIS.Presentation.UserControls.Components
                 VisitedLinkColor = Color.Indigo,
                 Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
                 Margin = new Padding(0, 1, 0, 0),
-                BackColor = Color.White
+                BackColor = Color.White,
+                LinkBehavior = LinkBehavior.NeverUnderline
             };
-            link.LinkBehavior = LinkBehavior.NeverUnderline;
 
             link.MouseEnter += (s, e) => link.LinkBehavior = LinkBehavior.AlwaysUnderline;
             link.MouseLeave += (s, e) => link.LinkBehavior = LinkBehavior.NeverUnderline;
@@ -430,52 +362,12 @@ namespace IRIS.Presentation.UserControls.Components
             root.SetRowSpan(dot, 2);
 
             root.Controls.Add(rtbMessage, 1, 0);
-            root.Controls.Add(lblClose, 2, 0);
-
             root.Controls.Add(footer, 1, 1);
             root.SetColumnSpan(footer, 2);
 
             card.Controls.Add(root);
 
             rtbMessage.Text = notif.Message ?? "";
-
-            string[] keywords =
-            {
-                "Approved", "Rejected", "Released", "Pending", "New", "Critically", "Low on stock", "Out of stock"
-            };
-
-            foreach (var word in keywords)
-            {
-                int index = rtbMessage.Text.IndexOf(word, StringComparison.OrdinalIgnoreCase);
-                if (index != -1)
-                {
-                    rtbMessage.Select(index, word.Length);
-                    rtbMessage.SelectionColor = GetStatusColor(word);
-                    rtbMessage.SelectionFont = new Font(rtbMessage.Font, FontStyle.Bold);
-                }
-            }
-            rtbMessage.DeselectAll();
-
-            rtbMessage.ContentsResized += (s, e) =>
-            {
-                var h = Math.Max(22, e.NewRectangle.Height + 2);
-                rtbMessage.Height = h;
-
-                card.Height = card.Padding.Vertical + h + 22 + 8;
-                card.Invalidate();
-            };
-
-            void handleClick(object sender, EventArgs e) => HandleNotificationAction(notif);
-
-            link.Click += handleClick;
-            card.Click += handleClick;
-            root.Click += handleClick;
-            dot.Click += handleClick;
-            rtbMessage.Click += handleClick;
-            footer.Click += handleClick;
-            lblTime.Click += handleClick;
-
-            card.WireHoverToChildren();
 
             return card;
         }
@@ -503,49 +395,22 @@ namespace IRIS.Presentation.UserControls.Components
 
             pnl.Controls.Add(linkClearAll);
 
-            // --- CLEAR ALL BUTTON CLICK ---
             linkClearAll.Click += (s, e) =>
             {
-                // Grab service once
                 var notifService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
 
-                // 1. Soft delete all currently visible items locally AND server-side
                 foreach (var notif in visibleNotifications)
                 {
                     _hiddenNotificationIds.Add(notif.NotificationId.ToString());
-
-                    // 2. --- SERVER-SIDE SOFT DELETE ---
                     notifService?.DismissNotification(notif.NotificationId);
                 }
 
-                // 3. Clear UI
                 flpNotifications.Controls.Clear();
                 flpNotifications.Controls.Add(CreateEmptyStateCard());
                 ReflowCardWidths();
             };
 
             return pnl;
-        }
-
-        private void HandleNotificationAction(NotificationDto notif)
-        {
-            if (ParentForm is MainForm main)
-            {
-                if (notif.TargetPage == "RestockPage")
-                {
-                    main.LoadPage(new RestockPage());
-                }
-                else if (notif.TargetPage == "RequestControl")
-                {
-                    main.LoadPage(new RequestControl());
-                }
-
-                var notifService = (INotificationService)Program.Services.GetService(typeof(INotificationService));
-                notifService?.MarkActionTaken(notif.NotificationId, UserSession.CurrentUser?.Username ?? "System");
-            }
-
-            NotificationClicked?.Invoke(this, EventArgs.Empty);
-            Visible = false;
         }
 
         private void ReflowCardWidths()
@@ -698,6 +563,18 @@ namespace IRIS.Presentation.UserControls.Components
                 path.CloseFigure();
                 return path;
             }
+        }
+
+        // Helper Method to Enable Double Buffering for controls
+        private static void EnableDoubleBuffering(Control ctrl)
+        {
+            try
+            {
+                typeof(Control).InvokeMember("DoubleBuffered",
+                    BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
+                    null, ctrl, new object[] { true });
+            }
+            catch { /* ignore */ }
         }
     }
 }
