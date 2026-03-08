@@ -13,5 +13,7 @@ namespace IRIS.Domain.Entities
         public bool IsActive { get; set; }
         public bool IsLoggedIn { get; set; } = false;
         public string? SessionToken { get; set; }
+        [MaxLength(255)] public string? SecurityQuestion { get; set; }
+        [MaxLength(255)] public string? SecurityAnswerHash { get; set; }
     }
 }

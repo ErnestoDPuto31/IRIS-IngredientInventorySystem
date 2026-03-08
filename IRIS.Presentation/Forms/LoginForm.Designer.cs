@@ -20,8 +20,8 @@ namespace IRIS.Presentation
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -29,11 +29,14 @@ namespace IRIS.Presentation
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             guna2BorderlessForm1 = new Guna2BorderlessForm(components);
             guna2Panel2 = new Guna2Panel();
+            btnForgotPassword = new Guna2Button();
             lblError = new Label();
             btnLogin = new Guna2GradientButton();
             label1 = new Label();
@@ -63,6 +66,7 @@ namespace IRIS.Presentation
             guna2Panel2.BorderColor = Color.FromArgb(137, 65, 208);
             guna2Panel2.BorderRadius = 30;
             guna2Panel2.BorderThickness = 2;
+            guna2Panel2.Controls.Add(btnForgotPassword);
             guna2Panel2.Controls.Add(lblError);
             guna2Panel2.Controls.Add(btnLogin);
             guna2Panel2.Controls.Add(label1);
@@ -75,16 +79,41 @@ namespace IRIS.Presentation
             guna2Panel2.Controls.Add(label3);
             guna2Panel2.Controls.Add(guna2ImageButton1);
             guna2Panel2.CustomBorderColor = Color.FromArgb(137, 65, 208);
-            guna2Panel2.CustomizableEdges = customizableEdges8;
+            guna2Panel2.CustomizableEdges = customizableEdges10;
             guna2Panel2.FillColor = Color.Transparent;
             guna2Panel2.Location = new Point(997, 51);
             guna2Panel2.Name = "guna2Panel2";
             guna2Panel2.ShadowDecoration.BorderRadius = 25;
-            guna2Panel2.ShadowDecoration.CustomizableEdges = customizableEdges9;
+            guna2Panel2.ShadowDecoration.CustomizableEdges = customizableEdges11;
             guna2Panel2.ShadowDecoration.Depth = 100;
             guna2Panel2.ShadowDecoration.Shadow = new Padding(0, 0, 0, 10);
             guna2Panel2.Size = new Size(549, 799);
             guna2Panel2.TabIndex = 1;
+            // 
+            // btnForgotPassword
+            // 
+            btnForgotPassword.BackColor = Color.White;
+            btnForgotPassword.CustomizableEdges = customizableEdges1;
+            btnForgotPassword.DisabledState.BorderColor = Color.DarkGray;
+            btnForgotPassword.DisabledState.CustomBorderColor = Color.DarkGray;
+            btnForgotPassword.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            btnForgotPassword.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            btnForgotPassword.FillColor = Color.White;
+            btnForgotPassword.Font = new Font("Poppins", 9F, FontStyle.Bold | FontStyle.Underline, GraphicsUnit.Point, 0);
+            btnForgotPassword.ForeColor = Color.Indigo;
+            btnForgotPassword.HoverState.BorderColor = Color.White;
+            btnForgotPassword.HoverState.CustomBorderColor = Color.White;
+            btnForgotPassword.HoverState.FillColor = Color.White;
+            btnForgotPassword.HoverState.ForeColor = Color.FromArgb(107, 5, 181);
+            btnForgotPassword.Location = new Point(190, 720);
+            btnForgotPassword.Name = "btnForgotPassword";
+            btnForgotPassword.PressedColor = Color.FromArgb(76, 4, 128);
+            btnForgotPassword.PressedDepth = 15;
+            btnForgotPassword.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            btnForgotPassword.Size = new Size(173, 28);
+            btnForgotPassword.TabIndex = 10;
+            btnForgotPassword.Text = "Forgot Password?";
+            btnForgotPassword.Click += btnForgotPassword_Click;
             // 
             // lblError
             // 
@@ -102,7 +131,7 @@ namespace IRIS.Presentation
             // 
             btnLogin.Anchor = AnchorStyles.None;
             btnLogin.BorderRadius = 15;
-            btnLogin.CustomizableEdges = customizableEdges1;
+            btnLogin.CustomizableEdges = customizableEdges3;
             btnLogin.DisabledState.BorderColor = Color.DarkGray;
             btnLogin.DisabledState.CustomBorderColor = Color.DarkGray;
             btnLogin.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -117,7 +146,7 @@ namespace IRIS.Presentation
             btnLogin.Location = new Point(57, 647);
             btnLogin.Name = "btnLogin";
             btnLogin.PressedColor = Color.FromArgb(60, 5, 110);
-            btnLogin.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            btnLogin.ShadowDecoration.CustomizableEdges = customizableEdges4;
             btnLogin.Size = new Size(444, 67);
             btnLogin.TabIndex = 3;
             btnLogin.Text = "Sign In";
@@ -152,7 +181,7 @@ namespace IRIS.Presentation
             txtPassword.BorderColor = Color.Gray;
             txtPassword.BorderRadius = 15;
             txtPassword.BorderThickness = 2;
-            txtPassword.CustomizableEdges = customizableEdges3;
+            txtPassword.CustomizableEdges = customizableEdges5;
             txtPassword.DefaultText = "";
             txtPassword.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             txtPassword.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -170,7 +199,7 @@ namespace IRIS.Presentation
             txtPassword.Name = "txtPassword";
             txtPassword.PlaceholderText = "Enter Password";
             txtPassword.SelectedText = "";
-            txtPassword.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            txtPassword.ShadowDecoration.CustomizableEdges = customizableEdges6;
             txtPassword.Size = new Size(444, 55);
             txtPassword.TabIndex = 1;
             txtPassword.UseSystemPasswordChar = true;
@@ -193,7 +222,7 @@ namespace IRIS.Presentation
             txtUsername.BorderColor = Color.Gray;
             txtUsername.BorderRadius = 15;
             txtUsername.BorderThickness = 2;
-            txtUsername.CustomizableEdges = customizableEdges5;
+            txtUsername.CustomizableEdges = customizableEdges7;
             txtUsername.DefaultText = "";
             txtUsername.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             txtUsername.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -211,7 +240,7 @@ namespace IRIS.Presentation
             txtUsername.Name = "txtUsername";
             txtUsername.PlaceholderText = "Enter Username";
             txtUsername.SelectedText = "";
-            txtUsername.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            txtUsername.ShadowDecoration.CustomizableEdges = customizableEdges8;
             txtUsername.Size = new Size(444, 54);
             txtUsername.TabIndex = 0;
             // 
@@ -264,17 +293,17 @@ namespace IRIS.Presentation
             guna2ImageButton1.Location = new Point(204, 36);
             guna2ImageButton1.Name = "guna2ImageButton1";
             guna2ImageButton1.PressedState.ImageSize = new Size(300, 300);
-            guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges7;
+            guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges9;
             guna2ImageButton1.Size = new Size(173, 182);
             guna2ImageButton1.TabIndex = 1;
             guna2ImageButton1.UseTransparentBackground = true;
             // 
             // guna2Panel1
             // 
-            guna2Panel1.CustomizableEdges = customizableEdges10;
+            guna2Panel1.CustomizableEdges = customizableEdges12;
             guna2Panel1.Location = new Point(0, 0);
             guna2Panel1.Name = "guna2Panel1";
-            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges11;
+            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges13;
             guna2Panel1.Size = new Size(200, 100);
             guna2Panel1.TabIndex = 2;
             // 
@@ -314,5 +343,6 @@ namespace IRIS.Presentation
         private Label label5;
         private Guna2GradientButton btnLogin;
         private Label lblError;
+        private Guna2Button btnForgotPassword;
     }
 }
