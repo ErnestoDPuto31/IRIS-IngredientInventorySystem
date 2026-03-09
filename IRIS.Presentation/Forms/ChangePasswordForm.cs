@@ -33,6 +33,7 @@ namespace IRIS.Presentation.Forms
             fadeInTimer.Tick += FadeInTimer_Tick;
 
             this.Opacity = 0;
+            // Hook up form load event to start the fade-in effect
             this.Load += new EventHandler(ChangePasswordForm_Load);
         }
 
