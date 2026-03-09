@@ -170,7 +170,12 @@ namespace IRIS.Presentation.Forms
         {
             if (UserSession.CurrentUser == null || _notificationService == null) return;
 
-            if (_dropdownPanel.Visible) { _dropdownPanel.Visible = false; return; }
+            if (_dropdownPanel.Visible)
+            {
+                // Hide the dropdown with animation when it's already visible
+                _dropdownPanel.HideBubble();
+                return; // Return to prevent reloading the notifications if it's being hidden
+            }
 
             var list = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
             var ids = list.Select(n => n.NotificationId).ToList();
@@ -182,6 +187,9 @@ namespace IRIS.Presentation.Forms
             _dropdownPanel.LoadNotifications(list);
             _dropdownPanel.Visible = true;
             _dropdownPanel.BringToFront();
+
+            // Show the dropdown with animation
+            _dropdownPanel.ShowBubble();
         }
         #endregion
 

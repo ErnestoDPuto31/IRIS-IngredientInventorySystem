@@ -69,7 +69,7 @@ namespace IRIS.Presentation
             slidePictureBox.Margin = new Padding(2);
             slidePictureBox.Name = "slidePictureBox";
             slidePictureBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            slidePictureBox.Size = new Size(616, 624);
+            slidePictureBox.Size = new Size(748, 760);
             slidePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             slidePictureBox.TabIndex = 0;
             slidePictureBox.TabStop = false;
@@ -110,14 +110,14 @@ namespace IRIS.Presentation
             guna2Panel2.CustomBorderColor = Color.Transparent;
             guna2Panel2.CustomizableEdges = customizableEdges12;
             guna2Panel2.FillColor = Color.White;
-            guna2Panel2.Location = new Point(56, 48);
+            guna2Panel2.Location = new Point(96, 78);
             guna2Panel2.Name = "guna2Panel2";
             guna2Panel2.ShadowDecoration.BorderRadius = 36;
             guna2Panel2.ShadowDecoration.CustomizableEdges = customizableEdges13;
             guna2Panel2.ShadowDecoration.Depth = 15;
             guna2Panel2.ShadowDecoration.Enabled = true;
             guna2Panel2.ShadowDecoration.Shadow = new Padding(0, 0, 0, 10);
-            guna2Panel2.Size = new Size(512, 624);
+            guna2Panel2.Size = new Size(620, 760);
             guna2Panel2.TabIndex = 1;
             // 
             // chkShowPassword
@@ -133,7 +133,7 @@ namespace IRIS.Presentation
             chkShowPassword.Cursor = Cursors.Hand;
             chkShowPassword.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             chkShowPassword.ForeColor = Color.FromArgb(110, 110, 110);
-            chkShowPassword.Location = new Point(96, 468);
+            chkShowPassword.Location = new Point(120, 556);
             chkShowPassword.Margin = new Padding(0);
             chkShowPassword.Name = "chkShowPassword";
             chkShowPassword.Size = new Size(152, 30);
@@ -151,7 +151,7 @@ namespace IRIS.Presentation
             lblError.AutoSize = true;
             lblError.Font = new Font("Poppins", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblError.ForeColor = Color.FromArgb(220, 53, 69);
-            lblError.Location = new Point(96, 500);
+            lblError.Location = new Point(120, 590);
             lblError.Name = "lblError";
             lblError.Size = new Size(32, 26);
             lblError.TabIndex = 9;
@@ -178,11 +178,11 @@ namespace IRIS.Presentation
             btnLogin.ImageAlign = HorizontalAlignment.Right;
             btnLogin.ImageOffset = new Point(-18, 0);
             btnLogin.ImageSize = new Size(22, 22);
-            btnLogin.Location = new Point(96, 532);
+            btnLogin.Location = new Point(130, 632);
             btnLogin.Name = "btnLogin";
             btnLogin.PressedColor = Color.FromArgb(60, 5, 110);
             btnLogin.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            btnLogin.Size = new Size(320, 48);
+            btnLogin.Size = new Size(360, 54);
             btnLogin.TabIndex = 3;
             btnLogin.Text = "Sign In";
             btnLogin.TextOffset = new Point(-6, 0);
@@ -194,7 +194,7 @@ namespace IRIS.Presentation
             label1.AutoSize = true;
             label1.Font = new Font("Poppins", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(25, 25, 35);
-            label1.Location = new Point(82, 191);
+            label1.Location = new Point(106, 211);
             label1.Name = "label1";
             label1.Size = new Size(251, 70);
             label1.TabIndex = 0;
@@ -206,7 +206,7 @@ namespace IRIS.Presentation
             label6.AutoSize = true;
             label6.Font = new Font("Poppins", 9.5F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label6.ForeColor = Color.FromArgb(70, 70, 70);
-            label6.Location = new Point(96, 392);
+            label6.Location = new Point(120, 428);
             label6.Name = "label6";
             label6.Size = new Size(88, 28);
             label6.TabIndex = 8;
@@ -232,14 +232,14 @@ namespace IRIS.Presentation
             txtPassword.HoverState.BorderColor = Color.FromArgb(160, 95, 225);
             txtPassword.IconLeft = Properties.Resources.icons8_password_24;
             txtPassword.IconLeftOffset = new Point(10, 0);
-            txtPassword.Location = new Point(96, 420);
+            txtPassword.Location = new Point(120, 456);
             txtPassword.Margin = new Padding(4, 9, 4, 9);
             txtPassword.Name = "txtPassword";
             txtPassword.PlaceholderForeColor = Color.FromArgb(170, 170, 170);
             txtPassword.PlaceholderText = "Enter Password";
             txtPassword.SelectedText = "";
             txtPassword.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            txtPassword.Size = new Size(320, 45);
+            txtPassword.Size = new Size(380, 48);
             txtPassword.TabIndex = 1;
             txtPassword.UseSystemPasswordChar = true;
             // 
@@ -249,7 +249,7 @@ namespace IRIS.Presentation
             label5.AutoSize = true;
             label5.Font = new Font("Poppins", 9.5F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label5.ForeColor = Color.FromArgb(70, 70, 70);
-            label5.Location = new Point(96, 304);
+            label5.Location = new Point(120, 338);
             label5.Name = "label5";
             label5.Size = new Size(94, 28);
             label5.TabIndex = 6;
@@ -275,14 +275,14 @@ namespace IRIS.Presentation
             txtUsername.HoverState.BorderColor = Color.FromArgb(160, 95, 225);
             txtUsername.IconLeft = Properties.Resources.icons8_user_24;
             txtUsername.IconLeftOffset = new Point(10, 0);
-            txtUsername.Location = new Point(96, 332);
+            txtUsername.Location = new Point(120, 366);
             txtUsername.Margin = new Padding(4, 8, 4, 8);
             txtUsername.Name = "txtUsername";
             txtUsername.PlaceholderForeColor = Color.FromArgb(170, 170, 170);
             txtUsername.PlaceholderText = "Enter Username";
             txtUsername.SelectedText = "";
             txtUsername.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            txtUsername.Size = new Size(320, 45);
+            txtUsername.Size = new Size(380, 48);
             txtUsername.TabIndex = 0;
             // 
             // label4
@@ -291,7 +291,7 @@ namespace IRIS.Presentation
             label4.AutoSize = true;
             label4.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.ForeColor = Color.FromArgb(125, 125, 125);
-            label4.Location = new Point(96, 253);
+            label4.Location = new Point(120, 284);
             label4.Name = "label4";
             label4.Size = new Size(241, 30);
             label4.TabIndex = 4;
@@ -303,7 +303,7 @@ namespace IRIS.Presentation
             label2.AutoSize = true;
             label2.Font = new Font("Poppins", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.FromArgb(137, 65, 208);
-            label2.Location = new Point(96, 168);
+            label2.Location = new Point(120, 184);
             label2.Name = "label2";
             label2.Size = new Size(154, 30);
             label2.TabIndex = 2;
@@ -321,7 +321,7 @@ namespace IRIS.Presentation
             guna2ImageButton1.ImageRotate = 0F;
             guna2ImageButton1.ImageSize = new Size(200, 200);
             guna2ImageButton1.ImeMode = ImeMode.Off;
-            guna2ImageButton1.Location = new Point(175, 19);
+            guna2ImageButton1.Location = new Point(244, 35);
             guna2ImageButton1.Name = "guna2ImageButton1";
             guna2ImageButton1.PressedState.ImageSize = new Size(120, 120);
             guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges11;
@@ -338,14 +338,14 @@ namespace IRIS.Presentation
             guna2Panel1.Controls.Add(slidePictureBox);
             guna2Panel1.CustomizableEdges = customizableEdges3;
             guna2Panel1.FillColor = Color.FromArgb(240, 235, 245);
-            guna2Panel1.Location = new Point(608, 48);
+            guna2Panel1.Location = new Point(756, 78);
             guna2Panel1.Name = "guna2Panel1";
             guna2Panel1.ShadowDecoration.BorderRadius = 40;
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges4;
             guna2Panel1.ShadowDecoration.Depth = 15;
             guna2Panel1.ShadowDecoration.Enabled = true;
             guna2Panel1.ShadowDecoration.Shadow = new Padding(0, 0, 0, 10);
-            guna2Panel1.Size = new Size(616, 624);
+            guna2Panel1.Size = new Size(748, 760);
             guna2Panel1.TabIndex = 2;
             guna2Panel1.UseTransparentBackground = true;
             // 
@@ -354,13 +354,14 @@ namespace IRIS.Presentation
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLightLight;
-            ClientSize = new Size(1280, 720);
+            ClientSize = new Size(1600, 900);
             Controls.Add(guna2Panel1);
             Controls.Add(guna2Panel2);
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new Size(1278, 688);
+            MaximumSize = new Size(1600, 900);
+            MinimumSize = new Size(1600, 900);
             Name = "LoginForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "iRIS";
@@ -372,6 +373,7 @@ namespace IRIS.Presentation
         }
 
         #endregion
+
         private Guna2PictureBox slidePictureBox;
         private System.Windows.Forms.Timer slideshowTimer;
         private System.Windows.Forms.Timer btnHoverTimer;
