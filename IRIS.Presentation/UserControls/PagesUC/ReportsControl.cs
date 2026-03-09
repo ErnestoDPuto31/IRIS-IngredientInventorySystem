@@ -5,7 +5,6 @@ using IRIS.Domain.Enums;
 using IRIS.Presentation.DependencyInjection;
 using IRIS.Presentation.Helpers;
 using IRIS.Presentation.UserControls.Components;
-using IRIS.Services.Implementations;
 using IRIS.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -115,6 +114,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 if (forceReload)
                 {
                     ResetCachedData();
+                    _preloadTask = reportsService.GetDashboardDataAsync(5);
                 }
 
                 if (_snapshot == null)
@@ -361,9 +361,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 totalIngredients: snapshot.TotalIngredients,
                 totalRequests: snapshot.TotalRequests,
                 totalTransactions: snapshot.TotalTransactions,
-                approvalRate: snapshot.ApprovalRate,
+                approvalRate: GetCalculatedApprovalRate(snapshot),
                 inventoryStats: PrepareDisplayStats(snapshot.InventoryStats),
-                requestStats: PrepareDisplayStats(snapshot.RequestStats),
+                requestStats: NormalizeRequestStatsForDisplay(snapshot.RequestStats),
                 categoryStats: PrepareDisplayStats(snapshot.CategoryStats),
                 topIngredients: PrepareDisplayItems(snapshot.TopUsedIngredients),
                 lowStock: PrepareDisplayItems(snapshot.LowStockIngredients)
@@ -401,9 +401,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 totalIngredients: snapshot.TotalIngredients,
                 totalRequests: snapshot.TotalRequests,
                 totalTransactions: snapshot.TotalTransactions,
-                approvalRate: snapshot.ApprovalRate,
+                approvalRate: GetCalculatedApprovalRate(snapshot),
                 inventoryStats: PrepareDisplayStats(snapshot.InventoryStats),
-                requestStats: PrepareDisplayStats(snapshot.RequestStats),
+                requestStats: NormalizeRequestStatsForDisplay(snapshot.RequestStats),
                 categoryStats: PrepareDisplayStats(snapshot.CategoryStats),
                 topIngredients: PrepareDisplayItems(snapshot.TopUsedIngredients),
                 lowStock: PrepareDisplayItems(snapshot.LowStockIngredients),
@@ -441,6 +441,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
         {
             if (snapshot == null) return;
 
+            double approvalRate = GetCalculatedApprovalRate(snapshot);
+            int totalTransactions = GetCalculatedReleasedCount(snapshot);
+
             if (TotalIngredientsCard != null)
                 ConfigureCard(TotalIngredientsCard, CardType.TotalIngredients, IconChar.Box, FormatWholeNumber(snapshot.TotalIngredients));
 
@@ -448,10 +451,10 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 ConfigureCard(TotalRequestCard, CardType.TotalRequests, IconChar.FileAlt, FormatWholeNumber(snapshot.TotalRequests));
 
             if (ApprovalRateCard != null)
-                ConfigureCard(ApprovalRateCard, CardType.ApprovalRate, IconChar.CheckCircle, FormatWholePercent(snapshot.ApprovalRate));
+                ConfigureCard(ApprovalRateCard, CardType.ApprovalRate, IconChar.CheckCircle, FormatWholePercent(approvalRate));
 
             if (TotalTransactionsCard != null)
-                ConfigureCard(TotalTransactionsCard, CardType.TotalTransactions, IconChar.ChartLine, FormatWholeNumber(snapshot.TotalTransactions));
+                ConfigureCard(TotalTransactionsCard, CardType.TotalTransactions, IconChar.ChartLine, FormatWholeNumber(totalTransactions));
         }
 
         private void LoadCharts(ReportsDashboardSummary snapshot)
@@ -463,7 +466,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 ClearCharts();
 
                 var invStats = PrepareDisplayStats(snapshot.InventoryStats);
-                if (invStats != null && invStats.Any() && chartInventoryCanvas != null)
+                if (invStats.Any() && chartInventoryCanvas != null)
                 {
                     chartInventoryCanvas.Labels = invStats.Keys.ToArray();
 
@@ -485,8 +488,8 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     chartInventoryCanvas.Refresh();
                 }
 
-                var reqStats = PrepareDisplayStats(snapshot.RequestStats);
-                if (reqStats != null && reqStats.Any() && chartRequestsCanvas != null)
+                var reqStats = NormalizeRequestStatsForDisplay(snapshot.RequestStats);
+                if (reqStats.Any() && chartRequestsCanvas != null)
                 {
                     List<string> reqLabels = new List<string>();
                     List<double> reqData = new List<double>();
@@ -498,13 +501,13 @@ namespace IRIS.Presentation.UserControls.PagesUC
                         reqData.Add(ToWholeChartValue(Convert.ToDouble(item.Value)));
 
                         string statusKey = item.Key;
-                        if (string.Equals(statusKey, FormatDisplayText(nameof(RequestStatus.Pending)), StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(statusKey, "Pending", StringComparison.OrdinalIgnoreCase))
                             reqColors.Add(Color.Gold);
-                        else if (string.Equals(statusKey, FormatDisplayText(nameof(RequestStatus.Approved)), StringComparison.OrdinalIgnoreCase))
+                        else if (string.Equals(statusKey, "Approved", StringComparison.OrdinalIgnoreCase))
                             reqColors.Add(Color.SeaGreen);
-                        else if (string.Equals(statusKey, FormatDisplayText(nameof(RequestStatus.Released)), StringComparison.OrdinalIgnoreCase))
+                        else if (string.Equals(statusKey, "Released", StringComparison.OrdinalIgnoreCase))
                             reqColors.Add(Color.DarkBlue);
-                        else if (string.Equals(statusKey, FormatDisplayText(nameof(RequestStatus.Rejected)), StringComparison.OrdinalIgnoreCase))
+                        else if (string.Equals(statusKey, "Rejected", StringComparison.OrdinalIgnoreCase))
                             reqColors.Add(Color.Crimson);
                         else
                             reqColors.Add(Color.Indigo);
@@ -523,7 +526,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 }
 
                 var catStats = PrepareDisplayStats(snapshot.CategoryStats);
-                if (catStats != null && catStats.Any() && chartBarCanvas != null)
+                if (catStats.Any() && chartBarCanvas != null)
                 {
                     ApplyDefaultBarChartAppearance();
                     chartBarCanvas.Labels = catStats.Keys.ToArray();
@@ -531,7 +534,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     if (barCategory != null)
                     {
                         barCategory.Data = catStats.Values
-                            .Select(v => Convert.ToDouble(v))
+                            .Select(v => ToWholeChartValue(Convert.ToDouble(v)))
                             .ToList();
 
                         var barColors = new List<Color>();
@@ -597,6 +600,84 @@ namespace IRIS.Presentation.UserControls.PagesUC
             catch
             {
             }
+        }
+
+        private static Dictionary<string, double> NormalizeRequestStatsForDisplay(IDictionary<string, double>? rawStats)
+        {
+            var result = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+
+            if (rawStats == null)
+                return result;
+
+            foreach (var item in rawStats)
+            {
+                string normalizedKey = NormalizeRequestStatusKey(item.Key);
+
+                if (result.ContainsKey(normalizedKey))
+                    result[normalizedKey] += item.Value;
+                else
+                    result[normalizedKey] = item.Value;
+            }
+
+            return result;
+        }
+
+        private static string NormalizeRequestStatusKey(string? raw)
+        {
+            string clean = (raw ?? string.Empty).Trim();
+
+            if (string.IsNullOrWhiteSpace(clean))
+                return "Unknown";
+
+            clean = clean.Replace("_", " ").Replace("-", " ");
+            clean = Regex.Replace(clean, @"([a-z0-9])([A-Z])", "$1 $2");
+            clean = Regex.Replace(clean, @"\s+", " ").Trim().ToLowerInvariant();
+
+            if (clean == "pending")
+                return "Pending";
+
+            if (clean == "approved" || clean == "approve")
+                return "Approved";
+
+            if (clean == "released" || clean == "release")
+                return "Released";
+
+            if (clean == "rejected" || clean == "reject" || clean == "declined" || clean == "denied")
+                return "Rejected";
+
+            return FormatDisplayText(raw);
+        }
+
+        private static double GetCalculatedApprovalRate(ReportsDashboardSummary snapshot)
+        {
+            var reqStats = NormalizeRequestStatsForDisplay(snapshot.RequestStats);
+
+            double totalRequests = reqStats.Values.Sum();
+            if (totalRequests <= 0)
+                totalRequests = snapshot.TotalRequests;
+
+            if (totalRequests <= 0)
+                return 0;
+
+            double approvedCount = 0;
+
+            if (reqStats.TryGetValue("Approved", out double approved))
+                approvedCount += approved;
+
+            if (reqStats.TryGetValue("Released", out double released))
+                approvedCount += released;
+
+            return (approvedCount / totalRequests) * 100.0;
+        }
+
+        private static int GetCalculatedReleasedCount(ReportsDashboardSummary snapshot)
+        {
+            var reqStats = NormalizeRequestStatsForDisplay(snapshot.RequestStats);
+
+            if (reqStats.TryGetValue("Released", out double released))
+                return Convert.ToInt32(Math.Round(released, 0, MidpointRounding.AwayFromZero));
+
+            return snapshot.TotalTransactions;
         }
 
         private static double ToWholeChartValue(double value)
@@ -736,7 +817,15 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 string? currentValue = prop.GetValue(item) as string;
                 if (string.IsNullOrWhiteSpace(currentValue)) continue;
 
-                prop.SetValue(item, FormatDisplayText(currentValue));
+                if (prop.Name.Equals("Status", StringComparison.OrdinalIgnoreCase) ||
+                    prop.Name.Equals("RequestStatus", StringComparison.OrdinalIgnoreCase))
+                {
+                    prop.SetValue(item, NormalizeRequestStatusKey(currentValue));
+                }
+                else
+                {
+                    prop.SetValue(item, FormatDisplayText(currentValue));
+                }
             }
         }
 
