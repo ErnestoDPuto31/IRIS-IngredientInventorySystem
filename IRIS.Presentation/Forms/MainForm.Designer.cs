@@ -1,42 +1,41 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-
-namespace IRIS.Presentation.Forms
+﻿namespace IRIS.Presentation.Forms
 {
     partial class MainForm
     {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
-
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                if (components != null)
-                    components.Dispose();
-
-                _clockTimer?.Dispose();
-                _notificationTimer?.Dispose();
-                _badgeTimer?.Dispose();
-                _pageIntroTimer?.Dispose();
+                components.Dispose();
             }
-
             base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
 
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdgesTop = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdgesTopShadow = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdgesRole = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdgesRoleShadow = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdgesExit = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdgesBar = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdgesBarShadow = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-
             guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(components);
             pnlMainContent = new Panel();
             pnlTop = new Guna.UI2.WinForms.Guna2Panel();
@@ -45,38 +44,88 @@ namespace IRIS.Presentation.Forms
             txtRole = new Guna.UI2.WinForms.Guna2TextBox();
             btnExit = new Guna.UI2.WinForms.Guna2ImageButton();
             guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-
             pnlTop.SuspendLayout();
             guna2Panel1.SuspendLayout();
             SuspendLayout();
-
             // 
             // guna2BorderlessForm1
             // 
-            guna2BorderlessForm1.BorderRadius = 24;
+            guna2BorderlessForm1.BorderRadius = 50;
             guna2BorderlessForm1.ContainerControl = this;
             guna2BorderlessForm1.DockIndicatorTransparencyValue = 0.6D;
             guna2BorderlessForm1.TransparentWhileDrag = true;
-            guna2BorderlessForm1.ResizeForm = false;
-
             // 
-            // guna2Panel1
+            // pnlMainContent
             // 
-            guna2Panel1.BackColor = Color.LightGray;
-            guna2Panel1.BorderColor = SystemColors.ControlDark;
-            guna2Panel1.BorderThickness = 1;
-            guna2Panel1.Controls.Add(btnExit);
-            guna2Panel1.CustomBorderThickness = new Padding(0, 0, 0, 1);
-            guna2Panel1.CustomizableEdges = customizableEdgesBar;
-            guna2Panel1.Dock = DockStyle.Top;
-            guna2Panel1.FillColor = Color.LightGray;
-            guna2Panel1.Location = new Point(0, 0);
-            guna2Panel1.Margin = new Padding(0);
-            guna2Panel1.Name = "guna2Panel1";
-            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdgesBarShadow;
-            guna2Panel1.Size = new Size(1600, 42);
-            guna2Panel1.TabIndex = 0;
-
+            pnlMainContent.BackColor = Color.White;
+            pnlMainContent.Location = new Point(0, 96);
+            pnlMainContent.Name = "pnlMainContent";
+            pnlMainContent.Size = new Size(1600, 804);
+            pnlMainContent.TabIndex = 1;
+            // 
+            // pnlTop
+            // 
+            pnlTop.BackColor = Color.White;
+            pnlTop.BorderColor = SystemColors.ControlDark;
+            pnlTop.BorderThickness = 2;
+            pnlTop.Controls.Add(notificationBadge);
+            pnlTop.Controls.Add(lblDate);
+            pnlTop.Controls.Add(txtRole);
+            pnlTop.CustomBorderThickness = new Padding(0, 0, 0, 2);
+            pnlTop.CustomizableEdges = customizableEdges6;
+            pnlTop.Location = new Point(52, 43);
+            pnlTop.Margin = new Padding(2);
+            pnlTop.Name = "pnlTop";
+            pnlTop.ShadowDecoration.CustomizableEdges = customizableEdges7;
+            pnlTop.Size = new Size(1554, 66);
+            pnlTop.TabIndex = 0;
+            // 
+            // notificationBadge
+            // 
+            notificationBadge.BackColor = Color.Transparent;
+            notificationBadge.Location = new Point(1462, 2);
+            notificationBadge.Margin = new Padding(2);
+            notificationBadge.Name = "notificationBadge";
+            notificationBadge.Size = new Size(50, 50);
+            notificationBadge.TabIndex = 2;
+            notificationBadge.Click += notificationBadge_Click;
+            // 
+            // lblDate
+            // 
+            lblDate.AutoSize = true;
+            lblDate.Font = new Font("Poppins", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDate.ForeColor = SystemColors.ControlDarkDark;
+            lblDate.Location = new Point(194, 14);
+            lblDate.Name = "lblDate";
+            lblDate.Size = new Size(366, 36);
+            lblDate.TabIndex = 1;
+            lblDate.Text = "Saturday, March 31, 2006 - 10:00 PM";
+            // 
+            // txtRole
+            // 
+            txtRole.BorderColor = Color.Indigo;
+            txtRole.BorderRadius = 15;
+            txtRole.BorderThickness = 2;
+            txtRole.CustomizableEdges = customizableEdges4;
+            txtRole.DefaultText = "OFFICE STAFF";
+            txtRole.DisabledState.BorderColor = Color.Indigo;
+            txtRole.DisabledState.FillColor = Color.White;
+            txtRole.DisabledState.ForeColor = Color.Indigo;
+            txtRole.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            txtRole.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            txtRole.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            txtRole.ForeColor = Color.Indigo;
+            txtRole.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            txtRole.Location = new Point(18, 12);
+            txtRole.Margin = new Padding(8, 14, 8, 14);
+            txtRole.Name = "txtRole";
+            txtRole.PlaceholderText = "";
+            txtRole.ReadOnly = true;
+            txtRole.SelectedText = "";
+            txtRole.ShadowDecoration.CustomizableEdges = customizableEdges5;
+            txtRole.Size = new Size(165, 38);
+            txtRole.TabIndex = 0;
+            txtRole.TextAlign = HorizontalAlignment.Center;
             // 
             // btnExit
             // 
@@ -88,118 +137,41 @@ namespace IRIS.Presentation.Forms
             btnExit.ImageOffset = new Point(0, 0);
             btnExit.ImageRotate = 0F;
             btnExit.ImageSize = new Size(24, 24);
-            btnExit.Location = new Point(1566, 7);
+            btnExit.Location = new Point(1559, 2);
             btnExit.Margin = new Padding(2);
             btnExit.Name = "btnExit";
-            btnExit.PressedState.ImageSize = new Size(24, 24);
-            btnExit.ShadowDecoration.CustomizableEdges = customizableEdgesExit;
-            btnExit.Size = new Size(24, 24);
-            btnExit.TabIndex = 1;
-            btnExit.Visible = false;
+            btnExit.ShadowDecoration.CustomizableEdges = customizableEdges1;
+            btnExit.Size = new Size(16, 22);
+            btnExit.TabIndex = 2;
             btnExit.Click += btnExit_Click;
-
             // 
-            // pnlTop
+            // guna2Panel1
             // 
-            pnlTop.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pnlTop.BackColor = Color.White;
-            pnlTop.BorderColor = SystemColors.ControlDark;
-            pnlTop.BorderThickness = 1;
-            pnlTop.Controls.Add(notificationBadge);
-            pnlTop.Controls.Add(lblDate);
-            pnlTop.Controls.Add(txtRole);
-            pnlTop.CustomBorderThickness = new Padding(0, 0, 0, 1);
-            pnlTop.CustomizableEdges = customizableEdgesTop;
-            pnlTop.FillColor = Color.White;
-            pnlTop.Location = new Point(240, 58);
-            pnlTop.Margin = new Padding(2);
-            pnlTop.Name = "pnlTop";
-            pnlTop.ShadowDecoration.CustomizableEdges = customizableEdgesTopShadow;
-            pnlTop.Size = new Size(1344, 80);
-            pnlTop.TabIndex = 1;
-
-            // 
-            // notificationBadge
-            // 
-            notificationBadge.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            notificationBadge.BackColor = Color.Transparent;
-            notificationBadge.Location = new Point(1268, 10);
-            notificationBadge.Margin = new Padding(2);
-            notificationBadge.Name = "notificationBadge";
-            notificationBadge.Size = new Size(56, 56);
-            notificationBadge.TabIndex = 2;
-            notificationBadge.Click += notificationBadge_Click;
-
-            // 
-            // lblDate
-            // 
-            lblDate.AutoSize = true;
-            lblDate.Font = new Font("Poppins", 11F, FontStyle.Regular, GraphicsUnit.Point);
-            lblDate.ForeColor = SystemColors.ControlDarkDark;
-            lblDate.Location = new Point(240, 21);
-            lblDate.Margin = new Padding(4, 0, 4, 0);
-            lblDate.Name = "lblDate";
-            lblDate.Size = new Size(397, 39);
-            lblDate.TabIndex = 1;
-            lblDate.Text = "Saturday, March 31, 2006 - 10:00 PM";
-
-            // 
-            // txtRole
-            // 
-            txtRole.BorderColor = Color.Indigo;
-            txtRole.BorderRadius = 14;
-            txtRole.BorderThickness = 2;
-            txtRole.CustomizableEdges = customizableEdgesRole;
-            txtRole.DefaultText = "OFFICE STAFF";
-            txtRole.DisabledState.BorderColor = Color.Indigo;
-            txtRole.DisabledState.FillColor = Color.White;
-            txtRole.DisabledState.ForeColor = Color.Indigo;
-            txtRole.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            txtRole.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtRole.Font = new Font("Poppins", 10F, FontStyle.Bold, GraphicsUnit.Point);
-            txtRole.ForeColor = Color.Indigo;
-            txtRole.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtRole.Location = new Point(18, 16);
-            txtRole.Margin = new Padding(8);
-            txtRole.Name = "txtRole";
-            txtRole.PlaceholderText = "";
-            txtRole.ReadOnly = true;
-            txtRole.SelectedText = "";
-            txtRole.ShadowDecoration.CustomizableEdges = customizableEdgesRoleShadow;
-            txtRole.Size = new Size(206, 46);
-            txtRole.TabIndex = 0;
-            txtRole.TextAlign = HorizontalAlignment.Center;
-
-            // 
-            // pnlMainContent
-            // 
-            pnlMainContent.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pnlMainContent.BackColor = Color.White;
-            pnlMainContent.Location = new Point(240, 150);
-            pnlMainContent.Margin = new Padding(4);
-            pnlMainContent.Name = "pnlMainContent";
-            pnlMainContent.Size = new Size(1344, 734);
-            pnlMainContent.TabIndex = 2;
-
+            guna2Panel1.BackColor = Color.FromArgb(224, 224, 224);
+            guna2Panel1.BorderColor = SystemColors.ControlDark;
+            guna2Panel1.BorderThickness = 2;
+            guna2Panel1.Controls.Add(btnExit);
+            guna2Panel1.CustomBorderThickness = new Padding(0, 0, 0, 2);
+            guna2Panel1.CustomizableEdges = customizableEdges2;
+            guna2Panel1.Location = new Point(0, 0);
+            guna2Panel1.Name = "guna2Panel1";
+            guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges3;
+            guna2Panel1.Size = new Size(1600, 38);
+            guna2Panel1.TabIndex = 4;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
             ClientSize = new Size(1600, 900);
-            Controls.Add(pnlMainContent);
-            Controls.Add(pnlTop);
             Controls.Add(guna2Panel1);
+            Controls.Add(pnlTop);
+            Controls.Add(pnlMainContent);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(4);
-            MaximumSize = new Size(1600, 900);
-            MinimumSize = new Size(1600, 900);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "MainForm";
-
             pnlTop.ResumeLayout(false);
             pnlTop.PerformLayout();
             guna2Panel1.ResumeLayout(false);
@@ -214,7 +186,11 @@ namespace IRIS.Presentation.Forms
         private Label lblDate;
         private Guna.UI2.WinForms.Guna2TextBox txtRole;
         private Guna.UI2.WinForms.Guna2ImageButton btnExit;
+        private UserControls.Components.NotificationBadge notificationBadge1;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
+        private UserControls.NavigationPanel navigationPanel1;
+        private UserControls.NavigationPanel navigationPanel2;
+        private UserControls.NavigationPanel navigationPanel;
         private UserControls.Components.NotificationBadge notificationBadge;
     }
 }
