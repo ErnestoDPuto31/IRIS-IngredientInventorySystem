@@ -65,17 +65,17 @@ namespace IRIS.Presentation.UserControls.PagesUC
             pnlMain.Location = new Point(0, 0);
             pnlMain.Margin = new Padding(2);
             pnlMain.Name = "pnlMain";
-            pnlMain.Size = new Size(1600, 900);
+            pnlMain.Size = new Size(2000, 1125);
             pnlMain.TabIndex = 0;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Poppins", 24F, FontStyle.Bold);
-            label1.Location = new Point(102, 34);
+            label1.Location = new Point(128, 42);
             label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(836, 70);
+            label1.Size = new Size(1002, 84);
             label1.TabIndex = 0;
             label1.Text = "REPORTS AND ANALYTICS MANAGEMENT";
             // 
@@ -84,10 +84,10 @@ namespace IRIS.Presentation.UserControls.PagesUC
             label2.AutoSize = true;
             label2.Font = new Font("Poppins", 13.8F);
             label2.ForeColor = SystemColors.ControlDarkDark;
-            label2.Location = new Point(107, 95);
+            label2.Location = new Point(134, 119);
             label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
-            label2.Size = new Size(504, 40);
+            label2.Size = new Size(607, 50);
             label2.TabIndex = 1;
             label2.Text = "Comprehensive insights and data exports";
             // 
@@ -140,7 +140,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btnExportPDF.IdleIconLeftImage = null;
             btnExportPDF.IdleIconRightImage = null;
             btnExportPDF.IndicateFocus = false;
-            btnExportPDF.Location = new Point(1384, 89);
+            btnExportPDF.Location = new Point(1730, 111);
             btnExportPDF.Margin = new Padding(2);
             btnExportPDF.Name = "btnExportPDF";
             btnExportPDF.OnDisabledState.BorderColor = Color.FromArgb(191, 191, 191);
@@ -175,7 +175,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btnExportPDF.OnPressedState.ForeColor = Color.White;
             btnExportPDF.OnPressedState.IconLeftImage = null;
             btnExportPDF.OnPressedState.IconRightImage = null;
-            btnExportPDF.Size = new Size(120, 36);
+            btnExportPDF.Size = new Size(150, 45);
             btnExportPDF.TabIndex = 12;
             btnExportPDF.TextAlign = ContentAlignment.MiddleCenter;
             btnExportPDF.TextAlignment = HorizontalAlignment.Center;
@@ -187,41 +187,41 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // TotalIngredientsCard
             // 
             TotalIngredientsCard.BackColor = Color.Transparent;
-            TotalIngredientsCard.Location = new Point(110, 146);
+            TotalIngredientsCard.Location = new Point(138, 182);
             TotalIngredientsCard.Margin = new Padding(2);
             TotalIngredientsCard.Name = "TotalIngredientsCard";
-            TotalIngredientsCard.Padding = new Padding(10);
-            TotalIngredientsCard.Size = new Size(330, 133);
+            TotalIngredientsCard.Padding = new Padding(12);
+            TotalIngredientsCard.Size = new Size(412, 166);
             TotalIngredientsCard.TabIndex = 2;
             // 
             // TotalRequestCard
             // 
             TotalRequestCard.BackColor = Color.Transparent;
-            TotalRequestCard.Location = new Point(1174, 146);
+            TotalRequestCard.Location = new Point(1468, 182);
             TotalRequestCard.Margin = new Padding(2);
             TotalRequestCard.Name = "TotalRequestCard";
-            TotalRequestCard.Padding = new Padding(10);
-            TotalRequestCard.Size = new Size(330, 133);
+            TotalRequestCard.Padding = new Padding(12);
+            TotalRequestCard.Size = new Size(412, 166);
             TotalRequestCard.TabIndex = 3;
             // 
             // ApprovalRateCard
             // 
             ApprovalRateCard.BackColor = Color.Transparent;
-            ApprovalRateCard.Location = new Point(470, 146);
+            ApprovalRateCard.Location = new Point(588, 182);
             ApprovalRateCard.Margin = new Padding(2);
             ApprovalRateCard.Name = "ApprovalRateCard";
-            ApprovalRateCard.Padding = new Padding(10);
-            ApprovalRateCard.Size = new Size(330, 133);
+            ApprovalRateCard.Padding = new Padding(12);
+            ApprovalRateCard.Size = new Size(412, 166);
             ApprovalRateCard.TabIndex = 4;
             // 
             // TotalTransactionsCard
             // 
             TotalTransactionsCard.BackColor = Color.Transparent;
-            TotalTransactionsCard.Location = new Point(821, 146);
+            TotalTransactionsCard.Location = new Point(1026, 182);
             TotalTransactionsCard.Margin = new Padding(2);
             TotalTransactionsCard.Name = "TotalTransactionsCard";
-            TotalTransactionsCard.Padding = new Padding(10);
-            TotalTransactionsCard.Size = new Size(330, 133);
+            TotalTransactionsCard.Padding = new Padding(12);
+            TotalTransactionsCard.Size = new Size(412, 166);
             TotalTransactionsCard.TabIndex = 5;
             // 
             // chartInventoryCanvas
@@ -241,12 +241,12 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartInventoryCanvas.LegendPosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
             chartInventoryCanvas.LegendRevese = false;
             chartInventoryCanvas.LegendRTL = false;
-            chartInventoryCanvas.Location = new Point(102, 299);
-            chartInventoryCanvas.Margin = new Padding(4);
+            chartInventoryCanvas.Location = new Point(128, 374);
+            chartInventoryCanvas.Margin = new Padding(5);
             chartInventoryCanvas.Name = "chartInventoryCanvas";
             chartInventoryCanvas.ShowXAxis = false;
             chartInventoryCanvas.ShowYAxis = false;
-            chartInventoryCanvas.Size = new Size(679, 360);
+            chartInventoryCanvas.Size = new Size(849, 450);
             chartInventoryCanvas.TabIndex = 6;
             chartInventoryCanvas.Title = "Inventory Status Distribution";
             chartInventoryCanvas.TitleLineHeight = 1.2D;
@@ -301,12 +301,12 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartRequestsCanvas.LegendPosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
             chartRequestsCanvas.LegendRevese = false;
             chartRequestsCanvas.LegendRTL = false;
-            chartRequestsCanvas.Location = new Point(825, 300);
-            chartRequestsCanvas.Margin = new Padding(4);
+            chartRequestsCanvas.Location = new Point(1031, 375);
+            chartRequestsCanvas.Margin = new Padding(5);
             chartRequestsCanvas.Name = "chartRequestsCanvas";
             chartRequestsCanvas.ShowXAxis = false;
             chartRequestsCanvas.ShowYAxis = false;
-            chartRequestsCanvas.Size = new Size(679, 360);
+            chartRequestsCanvas.Size = new Size(849, 450);
             chartRequestsCanvas.TabIndex = 7;
             chartRequestsCanvas.Title = "Request Status Distribution";
             chartRequestsCanvas.TitleLineHeight = 1.2D;
@@ -361,12 +361,12 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartBarCanvas.LegendPosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
             chartBarCanvas.LegendRevese = false;
             chartBarCanvas.LegendRTL = false;
-            chartBarCanvas.Location = new Point(102, 643);
-            chartBarCanvas.Margin = new Padding(4);
+            chartBarCanvas.Location = new Point(128, 860);
+            chartBarCanvas.Margin = new Padding(5);
             chartBarCanvas.Name = "chartBarCanvas";
             chartBarCanvas.ShowXAxis = true;
             chartBarCanvas.ShowYAxis = true;
-            chartBarCanvas.Size = new Size(1402, 520);
+            chartBarCanvas.Size = new Size(1735, 594);
             chartBarCanvas.TabIndex = 8;
             chartBarCanvas.Title = "Ingredients by Category";
             chartBarCanvas.TitleLineHeight = 1.2D;
@@ -408,22 +408,22 @@ namespace IRIS.Presentation.UserControls.PagesUC
             // 
             lowStockControl.BackColor = Color.White;
             lowStockControl.Font = new Font("Segoe UI", 9.75F);
-            lowStockControl.Location = new Point(110, 1540);
-            lowStockControl.Margin = new Padding(8);
+            lowStockControl.Location = new Point(138, 1925);
+            lowStockControl.Margin = new Padding(10);
             lowStockControl.Name = "lowStockControl";
             lowStockControl.Padding = new Padding(1);
-            lowStockControl.Size = new Size(1379, 360);
+            lowStockControl.Size = new Size(1724, 450);
             lowStockControl.TabIndex = 9;
             // 
             // topIngredientsControl
             // 
             topIngredientsControl.BackColor = Color.White;
             topIngredientsControl.Font = new Font("Segoe UI", 9.75F);
-            topIngredientsControl.Location = new Point(110, 1150);
-            topIngredientsControl.Margin = new Padding(8);
+            topIngredientsControl.Location = new Point(138, 1438);
+            topIngredientsControl.Margin = new Padding(10);
             topIngredientsControl.Name = "topIngredientsControl";
             topIngredientsControl.Padding = new Padding(1);
-            topIngredientsControl.Size = new Size(1379, 360);
+            topIngredientsControl.Size = new Size(1724, 450);
             topIngredientsControl.TabIndex = 10;
             // 
             // pieInventory
@@ -483,7 +483,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             bunifuVScrollBar1.Dock = DockStyle.Right;
             bunifuVScrollBar1.DurationBeforeShrink = 2000;
             bunifuVScrollBar1.LargeChange = 50;
-            bunifuVScrollBar1.Location = new Point(1584, 0);
+            bunifuVScrollBar1.Location = new Point(1980, 0);
             bunifuVScrollBar1.Margin = new Padding(2);
             bunifuVScrollBar1.Maximum = 100;
             bunifuVScrollBar1.Minimum = 0;
@@ -495,24 +495,24 @@ namespace IRIS.Presentation.UserControls.PagesUC
             bunifuVScrollBar1.ScrollBarBorderColor = Color.White;
             bunifuVScrollBar1.ScrollBarColor = Color.White;
             bunifuVScrollBar1.ShrinkSizeLimit = 3;
-            bunifuVScrollBar1.Size = new Size(16, 900);
+            bunifuVScrollBar1.Size = new Size(20, 1125);
             bunifuVScrollBar1.SmallChange = 10;
             bunifuVScrollBar1.TabIndex = 1;
             bunifuVScrollBar1.ThumbColor = Color.Gray;
-            bunifuVScrollBar1.ThumbLength = 444;
+            bunifuVScrollBar1.ThumbLength = 555;
             bunifuVScrollBar1.ThumbMargin = 1;
             bunifuVScrollBar1.ThumbStyle = Bunifu.UI.WinForms.BunifuVScrollBar.ThumbStyles.Inset;
             bunifuVScrollBar1.Value = 0;
             // 
             // ReportsControl
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(bunifuVScrollBar1);
             Controls.Add(pnlMain);
             Margin = new Padding(2);
             Name = "ReportsControl";
-            Size = new Size(1600, 900);
+            Size = new Size(2000, 1125);
             Load += ReportsControl_Load;
             pnlMain.ResumeLayout(false);
             pnlMain.PerformLayout();

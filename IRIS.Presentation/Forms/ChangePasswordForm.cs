@@ -12,7 +12,7 @@ namespace IRIS.Presentation.Forms
         private readonly User _user;
         private readonly IrisDbContext _context;
         private System.Windows.Forms.Timer fadeInTimer;
-        private double opacityStep = 0.05; // Controls the speed of the fade-in effect
+        private double opacityStep = 0.05;
 
         public ChangePasswordForm()
         {
@@ -28,34 +28,28 @@ namespace IRIS.Presentation.Forms
             this.AcceptButton = btnSave;
             lblError.Visible = false;
 
-            // Initialize and configure the timer for the fade-in effect
             fadeInTimer = new System.Windows.Forms.Timer();
-            fadeInTimer.Interval = 10; // The interval in milliseconds for smoother fade
+            fadeInTimer.Interval = 10; 
             fadeInTimer.Tick += FadeInTimer_Tick;
 
-            // Set initial opacity to 0 (fully transparent)
             this.Opacity = 0;
 
-            // Hook up form load event to start the fade-in effect
             this.Load += new EventHandler(ChangePasswordForm_Load);
         }
 
         private void ChangePasswordForm_Load(object sender, EventArgs e)
         {
-            // Start the fade-in animation when the form is loaded
             fadeInTimer.Start();
         }
 
         private void FadeInTimer_Tick(object sender, EventArgs e)
         {
-            // Increase opacity gradually by opacityStep
             if (this.Opacity < 1)
             {
                 this.Opacity += opacityStep;
             }
             else
             {
-                // Stop the timer once the opacity reaches 100%
                 fadeInTimer.Stop();
             }
         }
