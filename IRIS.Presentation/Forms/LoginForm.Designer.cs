@@ -105,7 +105,7 @@ namespace IRIS.Presentation
             btnForgotPassword.HoverState.CustomBorderColor = Color.White;
             btnForgotPassword.HoverState.FillColor = Color.White;
             btnForgotPassword.HoverState.ForeColor = Color.FromArgb(107, 5, 181);
-            btnForgotPassword.Location = new Point(190, 720);
+            btnForgotPassword.Location = new Point(190, 736);
             btnForgotPassword.Name = "btnForgotPassword";
             btnForgotPassword.PressedColor = Color.FromArgb(76, 4, 128);
             btnForgotPassword.PressedDepth = 15;
@@ -120,7 +120,7 @@ namespace IRIS.Presentation
             lblError.AutoSize = true;
             lblError.Font = new Font("Poppins", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblError.ForeColor = Color.Red;
-            lblError.Location = new Point(57, 601);
+            lblError.Location = new Point(57, 595);
             lblError.Name = "lblError";
             lblError.Size = new Size(35, 30);
             lblError.TabIndex = 9;
@@ -143,7 +143,7 @@ namespace IRIS.Presentation
             btnLogin.ForeColor = Color.White;
             btnLogin.HoverState.FillColor = Color.FromArgb(155, 85, 225);
             btnLogin.HoverState.FillColor2 = Color.FromArgb(95, 25, 155);
-            btnLogin.Location = new Point(57, 647);
+            btnLogin.Location = new Point(57, 663);
             btnLogin.Name = "btnLogin";
             btnLogin.PressedColor = Color.FromArgb(60, 5, 110);
             btnLogin.ShadowDecoration.CustomizableEdges = customizableEdges4;
