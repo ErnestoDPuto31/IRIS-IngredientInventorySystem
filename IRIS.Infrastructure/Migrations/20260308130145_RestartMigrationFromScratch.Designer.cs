@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRIS.Infrastructure.Migrations
 {
     [DbContext(typeof(IrisDbContext))]
-    [Migration("20260306180105_ToUpdate")]
-    partial class ToUpdate
+    [Migration("20260308130145_RestartMigrationFromScratch")]
+    partial class RestartMigrationFromScratch
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -322,6 +322,14 @@ namespace IRIS.Infrastructure.Migrations
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecurityAnswerHash")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("SecurityQuestion")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("SessionToken")
                         .HasColumnType("nvarchar(max)");

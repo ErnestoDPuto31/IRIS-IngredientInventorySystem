@@ -25,7 +25,7 @@ namespace IRIS.Presentation.Forms
         private MacTrafficLightButton _btnMacClose;
         private MacTrafficLightButton _btnMacMinimize;
 
-        private readonly Color _topBarColor = Color.LightGray;
+        private readonly Color _topBarColor = Color.FromArgb(246, 246, 247);
         #endregion
 
         public MainForm()
@@ -170,7 +170,12 @@ namespace IRIS.Presentation.Forms
         {
             if (UserSession.CurrentUser == null || _notificationService == null) return;
 
-            if (_dropdownPanel.Visible) { _dropdownPanel.Visible = false; return; }
+            if (_dropdownPanel.Visible)
+            {
+                // Hide the dropdown with animation when it's already visible
+                _dropdownPanel.HideBubble();
+                return; // Return to prevent reloading the notifications if it's being hidden
+            }
 
             var list = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
             var ids = list.Select(n => n.NotificationId).ToList();
@@ -182,6 +187,9 @@ namespace IRIS.Presentation.Forms
             _dropdownPanel.LoadNotifications(list);
             _dropdownPanel.Visible = true;
             _dropdownPanel.BringToFront();
+
+            // Show the dropdown with animation
+            _dropdownPanel.ShowBubble();
         }
         #endregion
 
@@ -227,6 +235,7 @@ namespace IRIS.Presentation.Forms
                     AutoSize = false,
                     Dock = DockStyle.Fill,
                     TextAlign = ContentAlignment.MiddleCenter,
+                    Text = "IRIS",
                     Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
                     ForeColor = Color.FromArgb(82, 82, 88),
                     BackColor = _topBarColor

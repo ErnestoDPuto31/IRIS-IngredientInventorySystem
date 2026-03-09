@@ -62,14 +62,14 @@ namespace IRIS.Presentation.UserControls.Components
             }
 
             // 2. Draw Message
-            using (Font msgFont = new Font("Segoe UI", 10F, FontStyle.Regular))
+            using (Font msgFont = new Font("Poppins", 10F, FontStyle.Regular))
             using (Brush textBrush = new SolidBrush(Color.FromArgb(31, 41, 55)))
             {
                 g.DrawString(_message, msgFont, textBrush, new PointF(15, 12));
             }
 
             // 3. Draw Date
-            using (Font dateFont = new Font("Segoe UI", 8.5F, FontStyle.Regular))
+            using (Font dateFont = new Font("Poppins", 8.5F, FontStyle.Regular))
             using (Brush dateBrush = new SolidBrush(Color.FromArgb(107, 114, 128)))
             {
                 g.DrawString(_dateText, dateFont, dateBrush, new PointF(15, 35));
@@ -79,7 +79,7 @@ namespace IRIS.Presentation.UserControls.Components
             string badgeText = _badgeType == AlertBadgeType.Stock ? "Stock" : "Approval";
             Color badgeColor = _badgeType == AlertBadgeType.Stock ? Color.FromArgb(220, 38, 38) : Color.FromArgb(139, 92, 246);
 
-            using (Font badgeFont = new Font("Segoe UI", 8.5F, FontStyle.Bold))
+            using (Font badgeFont = new Font("Poppins", 8.5F, FontStyle.Bold))
             {
                 SizeF textSize = g.MeasureString(badgeText, badgeFont);
                 int badgeWidth = (int)textSize.Width + 24;
