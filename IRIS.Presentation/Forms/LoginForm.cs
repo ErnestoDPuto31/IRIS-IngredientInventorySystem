@@ -890,6 +890,18 @@ namespace IRIS.Presentation
         {
             Close();
         }
-        #endregion
+
+        private void btnForgotPassword_Click(object sender, EventArgs e)
+        {
+            using (var forgotForm = new ForgotPasswordForm(_context))
+            {
+                this.Hide();
+                if (forgotForm.ShowDialog() == DialogResult.OK)
+                {
+                    MessageBox.Show("You can now log in with your new password.");
+                }
+                this.Show();
+            }
+        }
     }
 }
