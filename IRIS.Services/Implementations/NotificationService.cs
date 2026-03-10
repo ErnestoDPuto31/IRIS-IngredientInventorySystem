@@ -2,10 +2,6 @@
 using IRIS.Domain.Enums;
 using IRIS.Infrastructure.Data;
 using IRIS.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IRIS.Services
 {
@@ -34,7 +30,6 @@ namespace IRIS.Services
 
         public void CheckAllStockLevels()
         {
-            // 1. FIX: Use strictly '<' so it perfectly matches your UI table logic
             var lowIngredients = _context.Ingredients
                                          .Where(i => i.CurrentStock < i.MinimumStock)
                                          .ToList();
@@ -45,31 +40,23 @@ namespace IRIS.Services
                 CreateLowStockNotification(ingredient.IngredientId, ingredient.Name, isCritical);
             }
 
-            // 2. AUTO-CLEANUP: Find ingredients that are now well-stocked
+            // AUTO-CLEANUP: Find ingredients that are now well-stocked
             var wellStockedItemIds = _context.Ingredients
                                              .Where(i => i.CurrentStock >= i.MinimumStock)
                                              .Select(i => i.IngredientId)
                                              .ToList();
 
-            // Find active notifications for items that don't need them anymore
+            // Find stale notifications for items that have been restocked (regardless of ActionTaken)
             var staleNotifications = _context.SystemNotifications
-     .Where(n => n.NotificationType == "LowStock"
-              && !n.IsActionTaken
-              && n.ReferenceId.HasValue
-              && wellStockedItemIds.Contains(n.ReferenceId.Value))
-     .ToList();
+                                             .Where(n => n.NotificationType == "LowStock"
+                                                      && n.ReferenceId.HasValue
+                                                      && wellStockedItemIds.Contains(n.ReferenceId.Value))
+                                             .ToList();
 
-            // Mark them as resolved so they stop bothering you!
-            foreach (var notif in staleNotifications)
-            {
-                notif.IsActionTaken = true;
-                notif.IsRead = true; // Mark as read so it drops the unread count
-                notif.ActionTakenByName = "System";
-            }
-
-            // Only save if there were stale notifications to clean up
+            // Remove them from DB entirely when stock is replenished
             if (staleNotifications.Any())
             {
+                _context.SystemNotifications.RemoveRange(staleNotifications);
                 _context.SaveChanges();
             }
         }
@@ -78,6 +65,8 @@ namespace IRIS.Services
         public List<NotificationDto> GetNotificationsForUser(User currentUser)
         {
             var query = _context.SystemNotifications.AsQueryable();
+
+            // We do NOT filter out IsActionTaken here anymore, so it STAYS VISIBLE!
 
             if (currentUser.Role == UserRole.Dean || currentUser.Role == UserRole.AssistantDean)
             {
@@ -151,7 +140,6 @@ namespace IRIS.Services
             }
         }
 
-        // --- 2. THE "TAKE ACTION" UPDATE LOGIC ---
         public void MarkActionTaken(int notificationId, string actionTakenBy)
         {
             var notification = _context.SystemNotifications.Find(notificationId);
@@ -163,32 +151,39 @@ namespace IRIS.Services
             }
         }
 
-        // --- NEW: THE DISMISS LOGIC ---
         public void DismissNotification(int notificationId)
         {
             var notification = _context.SystemNotifications.Find(notificationId);
             if (notification != null)
             {
-                // Hard delete approach (Removes from DB so it never shows again):
                 _context.SystemNotifications.Remove(notification);
-
-                // ALTERNATIVE Soft Delete approach (if you added an IsHidden or IsDeleted column to your DB entity):
-                // notification.IsDeleted = true;
-                // notification.IsRead = true; 
-
                 _context.SaveChanges();
             }
         }
 
-        // --- 3. SYSTEM TRIGGERS (Call these from other services) ---
+        // --- 3. SYSTEM TRIGGERS ---
         public void CreateLowStockNotification(int itemId, string itemName, bool isCritical)
         {
-            bool alreadyExists = _context.SystemNotifications.Any(n => n.ReferenceId == itemId && n.NotificationType == "LowStock" && !n.IsActionTaken);
-            if (alreadyExists) return;
+            // FIX: Check if a notification already exists, REGARDLESS of whether you clicked "see now"
+            var existingNotif = _context.SystemNotifications
+                                        .FirstOrDefault(n => n.ReferenceId == itemId && n.NotificationType == "LowStock");
 
             string alertMessage = isCritical
                 ? $"{itemName} is critically out of stock (0 remaining) and requires immediate restocking!"
                 : $"{itemName} is running low on stock. Please restock soon.";
+
+            if (existingNotif != null)
+            {
+                // If it exists, update the message if it went from "Low" to "Critical"
+                if (existingNotif.Message != alertMessage)
+                {
+                    existingNotif.Message = alertMessage;
+                    _context.SaveChanges();
+                }
+
+                // STOP HERE. We found an existing notification, so DO NOT create a new one!
+                return;
+            }
 
             var notif = new SystemNotification
             {
@@ -229,7 +224,6 @@ namespace IRIS.Services
             _context.SaveChanges();
         }
 
-        // --- HELPER METHOD ---
         private string CalculateTimeAgo(DateTime createdAt)
         {
             TimeSpan timeSince = DateTime.Now - createdAt;

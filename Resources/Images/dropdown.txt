@@ -1,4 +1,4 @@
-﻿using IRIS.Domain.Entities;
+using IRIS.Domain.Entities;
 using IRIS.Presentation.Forms;
 using IRIS.Presentation.UserControls.PagesUC;
 using IRIS.Services.Interfaces;

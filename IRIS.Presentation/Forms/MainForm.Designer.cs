@@ -108,9 +108,9 @@
             txtRole.BorderThickness = 2;
             txtRole.CustomizableEdges = customizableEdges4;
             txtRole.DefaultText = "OFFICE STAFF";
-            txtRole.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            txtRole.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            txtRole.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            txtRole.DisabledState.BorderColor = Color.Indigo;
+            txtRole.DisabledState.FillColor = Color.White;
+            txtRole.DisabledState.ForeColor = Color.Indigo;
             txtRole.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             txtRole.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             txtRole.Font = new Font("Poppins", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);

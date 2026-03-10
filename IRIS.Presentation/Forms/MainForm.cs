@@ -4,7 +4,11 @@ using IRIS.Presentation.UserControls.Components;
 using IRIS.Presentation.UserControls.PagesUC;
 using IRIS.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 namespace IRIS.Presentation.Forms
@@ -39,6 +43,9 @@ namespace IRIS.Presentation.Forms
             SetupNavigation();
             SetupNotifications();
             SetupUserDisplay();
+
+            // Setup global click-away to close dropdown
+            WireClickAway(this);
 
             // 2. Initial Page
             LoadPage(new DashboardControl());
@@ -77,7 +84,16 @@ namespace IRIS.Presentation.Forms
         {
             _notificationService = Program.Services.GetService<INotificationService>();
 
-            _dropdownPanel = new NotificationDropdown { Visible = false, Size = new Size(390, 430) };
+            _dropdownPanel = new NotificationDropdown
+            {
+                Visible = false,
+                Size = new Size(390, 430),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+
+            // Uncomment and wire this up if your NotificationDropdown exposes an event to handle navigation
+            // _dropdownPanel.OnNotificationNavigationRequested += HandleNotificationNavigation;
+
             this.Controls.Add(_dropdownPanel);
             _dropdownPanel.BringToFront();
 
@@ -107,6 +123,22 @@ namespace IRIS.Presentation.Forms
             pnlMainContent.Controls.Add(newPage);
         }
 
+        // Example handler for routing notification clicks to specific pages
+        private void HandleNotificationNavigation(string targetPage, int? referenceId)
+        {
+            _dropdownPanel.HideBubble();
+
+            switch (targetPage)
+            {
+                case "RestockPage":
+                    // LoadPage(new RestockControl());
+                    break;
+                case "RequestControl":
+                    // LoadPage(new RequestControl(referenceId));
+                    break;
+            }
+        }
+
         private string FormatRoleName(Domain.Enums.UserRole role)
         {
             return role switch
@@ -121,24 +153,48 @@ namespace IRIS.Presentation.Forms
 
         private void PositionDropdownUnderBadge()
         {
-            if (notificationBadge == null || notificationBadge.Parent == null) return;
+            if (notificationBadge == null) return;
 
-            Control anchor = notificationBadge.Parent;
-            Point screenLoc = anchor.PointToScreen(new Point(anchor.Width - _dropdownPanel.Width, anchor.Height + 5));
+            // Anchor directly to the badge, aligning their right edges
+            Point screenLoc = notificationBadge.PointToScreen(new Point(notificationBadge.Width - _dropdownPanel.Width, notificationBadge.Height + 5));
             Point clientLoc = this.PointToClient(screenLoc);
 
             _dropdownPanel.Location = clientLoc;
+            _dropdownPanel.BringToFront();
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             PositionMacButtons();
+
             if (_dropdownPanel != null && _dropdownPanel.Visible)
             {
                 PositionDropdownUnderBadge();
             }
         }
+
+        #region Click-Away Logic
+        private void WireClickAway(Control control)
+        {
+            control.MouseClick += Control_ClickAway;
+            foreach (Control child in control.Controls)
+            {
+                // Don't wire the badge itself or the dropdown itself
+                if (child == notificationBadge || child == _dropdownPanel) continue;
+                WireClickAway(child);
+            }
+        }
+
+        private void Control_ClickAway(object sender, MouseEventArgs e)
+        {
+            if (_dropdownPanel != null && _dropdownPanel.Visible)
+            {
+                _dropdownPanel.HideBubble();
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Event Handlers
@@ -157,6 +213,7 @@ namespace IRIS.Presentation.Forms
                 int unread = list.Count(n => !n.IsRead);
 
                 if (notificationBadge != null) notificationBadge.Count = unread;
+
                 if (_dropdownPanel != null && _dropdownPanel.Visible)
                 {
                     _dropdownPanel.LoadNotifications(list);
@@ -172,9 +229,8 @@ namespace IRIS.Presentation.Forms
 
             if (_dropdownPanel.Visible)
             {
-                // Hide the dropdown with animation when it's already visible
                 _dropdownPanel.HideBubble();
-                return; // Return to prevent reloading the notifications if it's being hidden
+                return;
             }
 
             var list = _notificationService.GetNotificationsForUser(UserSession.CurrentUser);
@@ -188,7 +244,6 @@ namespace IRIS.Presentation.Forms
             _dropdownPanel.Visible = true;
             _dropdownPanel.BringToFront();
 
-            // Show the dropdown with animation
             _dropdownPanel.ShowBubble();
         }
         #endregion
