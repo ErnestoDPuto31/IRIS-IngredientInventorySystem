@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IRIS.Domain.Entities;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace IRIS.Infrastructure.Data
@@ -9,9 +11,8 @@ namespace IRIS.Infrastructure.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
 
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;
-                                          Database=IRIS_DB;
-                                          Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(@"Data Source=10.100.6.107,1433;
+User ID=admin;Password=admin;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False;Command Timeout=30");
 
             return new IrisDbContext(optionsBuilder.Options);
         }
