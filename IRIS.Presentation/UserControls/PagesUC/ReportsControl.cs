@@ -81,7 +81,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
                 if (forceReload || _snapshot == null)
                 {
-                    ResetCachedData(); // This crucially sets _dataBound = false
+                    ResetCachedData();
+                    _preloadTask = reportsService.GetDashboardDataAsync(5);
+                }
 
                     if (_preloadTask == null || _preloadTask.IsCanceled || _preloadTask.IsFaulted)
                     {
@@ -199,6 +201,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
         }
 
+        // reports done.
         private void ReportsControl_SizeChanged(object sender, EventArgs e)
         {
             if (pnlMain == null || btnExportCSV == null || btnExportPDF == null) return;
@@ -306,12 +309,12 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 totalIngredients: snapshot.TotalIngredients,
                 totalRequests: snapshot.TotalRequests,
                 totalTransactions: snapshot.TotalTransactions,
-                approvalRate: snapshot.ApprovalRate,
-                inventoryStats: snapshot.InventoryStats,
-                requestStats: snapshot.RequestStats,
-                categoryStats: snapshot.CategoryStats,
-                topIngredients: snapshot.TopUsedIngredients,
-                lowStock: snapshot.LowStockIngredients
+                approvalRate: GetCalculatedApprovalRate(snapshot),
+                inventoryStats: PrepareDisplayStats(snapshot.InventoryStats),
+                requestStats: NormalizeRequestStatsForDisplay(snapshot.RequestStats),
+                categoryStats: PrepareDisplayStats(snapshot.CategoryStats),
+                topIngredients: PrepareDisplayItems(snapshot.TopUsedIngredients),
+                lowStock: PrepareDisplayItems(snapshot.LowStockIngredients)
             );
         }
 
@@ -346,12 +349,12 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 totalIngredients: snapshot.TotalIngredients,
                 totalRequests: snapshot.TotalRequests,
                 totalTransactions: snapshot.TotalTransactions,
-                approvalRate: snapshot.ApprovalRate,
-                inventoryStats: snapshot.InventoryStats,
-                requestStats: snapshot.RequestStats,
-                categoryStats: snapshot.CategoryStats,
-                topIngredients: snapshot.TopUsedIngredients,
-                lowStock: snapshot.LowStockIngredients,
+                approvalRate: GetCalculatedApprovalRate(snapshot),
+                inventoryStats: PrepareDisplayStats(snapshot.InventoryStats),
+                requestStats: NormalizeRequestStatsForDisplay(snapshot.RequestStats),
+                categoryStats: PrepareDisplayStats(snapshot.CategoryStats),
+                topIngredients: PrepareDisplayItems(snapshot.TopUsedIngredients),
+                lowStock: PrepareDisplayItems(snapshot.LowStockIngredients),
                 irisLogoPng: logoPng
             );
         }
@@ -388,6 +391,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
         {
             if (snapshot == null) return;
 
+            double approvalRate = GetCalculatedApprovalRate(snapshot);
+            int totalTransactions = GetCalculatedReleasedCount(snapshot);
+
             if (TotalIngredientsCard != null)
                 ConfigureCard(TotalIngredientsCard, CardType.TotalIngredients, IconChar.Box, snapshot.TotalIngredients.ToString());
 
@@ -395,10 +401,10 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 ConfigureCard(TotalRequestCard, CardType.TotalRequests, IconChar.FileAlt, snapshot.TotalRequests.ToString());
 
             if (ApprovalRateCard != null)
-                ConfigureCard(ApprovalRateCard, CardType.ApprovalRate, IconChar.CheckCircle, $"{snapshot.ApprovalRate}%");
+                ConfigureCard(ApprovalRateCard, CardType.ApprovalRate, IconChar.CheckCircle, FormatWholePercent(approvalRate));
 
             if (TotalTransactionsCard != null)
-                ConfigureCard(TotalTransactionsCard, CardType.TotalTransactions, IconChar.ChartLine, snapshot.TotalTransactions.ToString());
+                ConfigureCard(TotalTransactionsCard, CardType.TotalTransactions, IconChar.ChartLine, FormatWholeNumber(totalTransactions));
         }
 
         private void LoadCharts(ReportsDashboardSummary snapshot)
@@ -407,8 +413,10 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
             try
             {
-                var invStats = snapshot.InventoryStats;
-                if (invStats != null && invStats.Any() && chartInventoryCanvas != null)
+                ClearCharts();
+
+                var invStats = PrepareDisplayStats(snapshot.InventoryStats);
+                if (invStats.Any() && chartInventoryCanvas != null)
                 {
                     chartInventoryCanvas.Labels = invStats.Keys.ToArray();
                     if (pieInventory != null)
@@ -418,49 +426,46 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     }
                     chartInventoryCanvas.Update();
                 }
-
-                var reqStats = snapshot.RequestStats;
-                if (reqStats != null && reqStats.Any() && chartRequestsCanvas != null)
+                var reqStats = NormalizeRequestStatsForDisplay(snapshot.RequestStats);
+                if (chartRequestsCanvas != null)
                 {
-                    List<string> reqLabels = new List<string>();
-                    List<double> reqData = new List<double>();
-                    List<Color> reqColors = new List<Color>();
+                    var orderedLabels = new List<string> { "Approved", "Pending", "Rejected", "Released" };
+                    var orderedData = new List<double>
+                        {
+                            ToWholeChartValue(reqStats.ContainsKey("Approved") ? reqStats["Approved"] : 0),
+                            ToWholeChartValue(reqStats.ContainsKey("Pending") ? reqStats["Pending"] : 0),
+                            ToWholeChartValue(reqStats.ContainsKey("Rejected") ? reqStats["Rejected"] : 0),
+                            ToWholeChartValue(reqStats.ContainsKey("Released") ? reqStats["Released"] : 0)
+                        };
 
-                    foreach (var item in reqStats)
-                    {
-                        reqLabels.Add(item.Key);
-                        reqData.Add(item.Value);
+                                        chartRequestsCanvas.Labels = orderedLabels.ToArray();
 
-                        string statusKey = item.Key;
-                        if (string.Equals(statusKey, nameof(RequestStatus.Pending), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.Gold);
-                        else if (string.Equals(statusKey, nameof(RequestStatus.Approved), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.SeaGreen);
-                        else if (string.Equals(statusKey, nameof(RequestStatus.Released), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.DarkBlue);
-                        else if (string.Equals(statusKey, nameof(RequestStatus.Rejected), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.Crimson);
-                        else
-                            reqColors.Add(Color.Indigo);
-                    }
+                                        if (pieRequests != null)
+                                        {
+                                            pieRequests.Data = new List<double>(orderedData);
+                                            pieRequests.BackgroundColor = new List<Color>
+                            {
+                                Color.SeaGreen,   // Approved
+                                Color.Gold,       // Pending
+                                Color.Crimson,    // Rejected
+                                Color.DarkBlue    // Released
+                            };
+                                        }
 
-                    chartRequestsCanvas.Labels = reqLabels.ToArray();
-                    if (pieRequests != null)
-                    {
-                        pieRequests.Data = reqData;
-                        pieRequests.BackgroundColor = reqColors;
-                    }
                     chartRequestsCanvas.Update();
                 }
 
-                var catStats = snapshot.CategoryStats;
-                if (catStats != null && catStats.Any() && chartBarCanvas != null)
+                var catStats = PrepareDisplayStats(snapshot.CategoryStats);
+                if (catStats.Any() && chartBarCanvas != null)
                 {
                     chartBarCanvas.Labels = catStats.Keys.ToArray();
 
                     if (barCategory != null)
                     {
-                        barCategory.Data = catStats.Values.ToList();
+                        barCategory.Data = catStats.Values
+                            .Select(v => ToWholeChartValue(Convert.ToDouble(v)))
+                            .ToList();
+
                         var barColors = new List<Color>();
                         for (int i = 0; i < catStats.Count; i++)
                             barColors.Add(Color.Indigo);
@@ -474,8 +479,155 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 MessageBox.Show("Error loading charts: " + ex.Message);
             }
         }
+        
+        private void ClearCharts()
+        {
+            try
+            {
+                if (chartRequestsCanvas != null)
+                {
+                    chartRequestsCanvas.Labels = Array.Empty<string>();
+                }
 
-        // ONLY ONE definition of ConfigureCard now!
+                if (pieRequests != null)
+                {
+                    pieRequests.Data = new List<double>();
+                    pieRequests.BackgroundColor = new List<Color>();
+                }
+
+                if (chartRequestsCanvas != null)
+                {
+                    chartRequestsCanvas.Update();
+                    chartRequestsCanvas.Refresh();
+                }
+
+                if (pieRequests != null)
+                {
+                    pieRequests.Data = new List<double>();
+                    pieRequests.BackgroundColor = new List<Color>();
+                }
+
+                if (chartBarCanvas != null)
+                {
+                    chartBarCanvas.Labels = Array.Empty<string>();
+                    chartBarCanvas.Update();
+                    chartBarCanvas.Refresh();
+                }
+
+                if (barCategory != null)
+                {
+                    barCategory.Data = new List<double>();
+                    barCategory.BackgroundColor = new List<Color>();
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private static Dictionary<string, double> NormalizeRequestStatsForDisplay(IDictionary<string, double>? rawStats)
+        {
+            var result = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "Approved", 0 },
+        { "Pending", 0 },
+        { "Rejected", 0 },
+        { "Released", 0 }
+    };
+
+            if (rawStats == null)
+                return result;
+
+            foreach (var item in rawStats)
+            {
+                string normalizedKey = NormalizeRequestStatusKey(item.Key);
+
+                if (!result.ContainsKey(normalizedKey))
+                    result[normalizedKey] = 0;
+
+                result[normalizedKey] += item.Value;
+            }
+
+            return result;
+        }
+
+        private static string NormalizeRequestStatusKey(string? raw)
+        {
+            string clean = (raw ?? string.Empty).Trim();
+
+            if (string.IsNullOrWhiteSpace(clean))
+                return "Unknown";
+
+            clean = clean.Replace("_", " ").Replace("-", " ");
+            clean = Regex.Replace(clean, @"([a-z0-9])([A-Z])", "$1 $2");
+            clean = Regex.Replace(clean, @"\s+", " ").Trim().ToLowerInvariant();
+
+            if (clean == "pending")
+                return "Pending";
+
+            if (clean == "approved" || clean == "approve")
+                return "Approved";
+
+            if (clean == "released" || clean == "release")
+                return "Released";
+
+            if (clean == "rejected" || clean == "reject" || clean == "declined" || clean == "denied")
+                return "Rejected";
+
+            return "Unknown";
+        }
+        private static double GetCalculatedApprovalRate(ReportsDashboardSummary snapshot)
+        {
+            var reqStats = NormalizeRequestStatsForDisplay(snapshot.RequestStats);
+
+            double totalRequests = reqStats.Values.Sum();
+            if (totalRequests <= 0)
+                totalRequests = snapshot.TotalRequests;
+
+            if (totalRequests <= 0)
+                return 0;
+
+            double approvedCount = 0;
+
+            if (reqStats.TryGetValue("Approved", out double approved))
+                approvedCount += approved;
+
+            if (reqStats.TryGetValue("Released", out double released))
+                approvedCount += released;
+
+            return (approvedCount / totalRequests) * 100.0;
+        }
+
+        private static int GetCalculatedReleasedCount(ReportsDashboardSummary snapshot)
+        {
+            var reqStats = NormalizeRequestStatsForDisplay(snapshot.RequestStats);
+
+            if (reqStats.TryGetValue("Released", out double released))
+                return Convert.ToInt32(Math.Round(released, 0, MidpointRounding.AwayFromZero));
+
+            return snapshot.TotalTransactions;
+        }
+
+        private static double ToWholeChartValue(double value)
+        {
+            return Math.Round(value, 0, MidpointRounding.AwayFromZero);
+        }
+
+        private static string FormatWholeNumber(double value)
+        {
+            return Math.Round(value, 0, MidpointRounding.AwayFromZero).ToString("N0");
+        }
+
+        private static string FormatWholeNumber(int value)
+        {
+            return value.ToString("N0");
+        }
+
+        private static string FormatWholePercent(double value)
+        {
+            return $"{Math.Round(value, 0, MidpointRounding.AwayFromZero):N0}%";
+        }
+
         private void ConfigureCard(ReportCards card, CardType type, IconChar icon, string value)
         {
             if (card == null) return;
@@ -552,13 +704,17 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 {
                     chartInventoryCanvas.Labels = invStats.Keys.ToArray();
 
-                    if (pieInventory != null)
-                    {
-                        pieInventory.Data = invStats.Values.ToList();
-                        pieInventory.BackgroundColor = new List<Color> { Color.Crimson, Color.Gold, Color.SeaGreen };
-                    }
-                    chartInventoryCanvas.Update();
+                if (prop.Name.Equals("Status", StringComparison.OrdinalIgnoreCase) ||
+                    prop.Name.Equals("RequestStatus", StringComparison.OrdinalIgnoreCase))
+                {
+                    prop.SetValue(item, NormalizeRequestStatusKey(currentValue));
                 }
+                else
+                {
+                    prop.SetValue(item, FormatDisplayText(currentValue));
+                }
+            }
+        }
 
                 var reqStats = await reportsService.GetRequestStatsAsync();
                 if (reqStats != null && reqStats.Any() && chartRequestsCanvas != null)

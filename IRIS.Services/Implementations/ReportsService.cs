@@ -20,6 +20,7 @@ namespace IRIS.Services.Implementations
         {
             _context = context;
         }
+
         public int GetTotalIngredients() => _context.Ingredients.Count();
 
         public int GetTotalRequests() => _context.Requests.Count();
@@ -93,7 +94,40 @@ namespace IRIS.Services.Implementations
 
         public List<TopIngredientItem> GetTopUsedIngredients(int count = 5)
         {
-            return new List<TopIngredientItem>();
+            var grouped = _context.Set<RequestDetails>()
+                .AsNoTracking()
+                .Where(rd =>
+                    rd.Request != null &&
+                    rd.Ingredient != null &&
+                    (rd.Request.Status == RequestStatus.Approved ||
+                     rd.Request.Status == RequestStatus.Released))
+                .GroupBy(rd => new
+                {
+                    rd.IngredientId,
+                    rd.Ingredient!.Name,
+                    rd.Ingredient.Category,
+                    rd.Ingredient.Unit
+                })
+                .Select(g => new
+                {
+                    Name = g.Key.Name,
+                    Category = g.Key.Category,
+                    Unit = g.Key.Unit,
+                    TotalUsed = g.Sum(x => x.AllowedQty > 0 ? x.AllowedQty : x.RequestedQty)
+                })
+                .OrderByDescending(x => x.TotalUsed)
+                .Take(count)
+                .ToList();
+
+            return grouped
+                .Select(x => new TopIngredientItem
+                {
+                    Name = x.Name,
+                    Category = x.Category.ToString(),
+                    TotalUsed = x.TotalUsed,
+                    Unit = x.Unit.ToString()
+                })
+                .ToList();
         }
 
         public async Task<ReportsDashboardSummary> GetDashboardDataAsync(int count = 5)
@@ -189,7 +223,40 @@ namespace IRIS.Services.Implementations
 
         public async Task<List<TopIngredientItem>> GetTopUsedIngredientsAsync(int count = 5)
         {
-            return await Task.Run(() => GetTopUsedIngredients(count));
+            var grouped = await _context.Set<RequestDetails>()
+                .AsNoTracking()
+                .Where(rd =>
+                    rd.Request != null &&
+                    rd.Ingredient != null &&
+                    (rd.Request.Status == RequestStatus.Approved ||
+                     rd.Request.Status == RequestStatus.Released))
+                .GroupBy(rd => new
+                {
+                    rd.IngredientId,
+                    rd.Ingredient!.Name,
+                    rd.Ingredient.Category,
+                    rd.Ingredient.Unit
+                })
+                .Select(g => new
+                {
+                    Name = g.Key.Name,
+                    Category = g.Key.Category,
+                    Unit = g.Key.Unit,
+                    TotalUsed = g.Sum(x => x.AllowedQty > 0 ? x.AllowedQty : x.RequestedQty)
+                })
+                .OrderByDescending(x => x.TotalUsed)
+                .Take(count)
+                .ToListAsync();
+
+            return grouped
+                .Select(x => new TopIngredientItem
+                {
+                    Name = x.Name,
+                    Category = x.Category.ToString(),
+                    TotalUsed = x.TotalUsed,
+                    Unit = x.Unit.ToString()
+                })
+                .ToList();
         }
     }
 }
