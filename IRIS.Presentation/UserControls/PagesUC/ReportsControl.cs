@@ -7,12 +7,8 @@ using IRIS.Presentation.UserControls.Components;
 using IRIS.Services.Interfaces;
 using static Bunifu.UI.WinForms.BunifuButton.BunifuButton;
 using IRIS.Domain.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace IRIS.Presentation.UserControls.PagesUC
 {
@@ -35,6 +31,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 return;
             }
             SetupExportButtonsUI();
+            SetupBottomPanel();
         }
 
         private IReportsService? GetReportsService()
@@ -763,6 +760,26 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
         }
 
+        private void SetupBottomPanel()
+        {
+            // Create the new panel
+            Panel bottomPanel = new Panel
+            {
+                Name = "HardcodedBottomPanel",
+                Height = 50,
+                Dock = DockStyle.Bottom,
+
+                // Optional: Give it a background color so you can clearly see it while testing
+                BackColor = Color.FromArgb(245, 243, 255)
+            };
+
+            // Add it to the main UserControl
+            this.Controls.Add(bottomPanel);
+
+            // Ensure it stays at the very bottom, in front of other dynamically docked controls
+            bottomPanel.BringToFront();
+        }
+
         // ==========================================
         // EXPORT FORMATTING HELPERS
         // ==========================================
@@ -792,8 +809,18 @@ namespace IRIS.Presentation.UserControls.PagesUC
             if (string.IsNullOrWhiteSpace(rawText))
                 return string.Empty;
 
-            string clean = rawText.Trim().Replace("_", " ").Replace("-", " ");
+            if (!int.TryParse(rawText, out _) && Enum.TryParse(typeof(Categories), rawText, true, out var categoryEnum))
+            {
+                var memberInfo = typeof(Categories).GetMember(categoryEnum.ToString()).FirstOrDefault();
+                var displayAttr = memberInfo?.GetCustomAttribute<DisplayAttribute>();
 
+                if (displayAttr != null && !string.IsNullOrEmpty(displayAttr.Name))
+                {
+                    return displayAttr.Name; 
+                }
+            }
+
+            string clean = rawText.Trim().Replace("_", " ").Replace("-", " ");
             clean = System.Text.RegularExpressions.Regex.Replace(clean, @"([a-z0-9])([A-Z])", "$1 $2");
             return System.Text.RegularExpressions.Regex.Replace(clean, @"\s+", " ").Trim();
         }
@@ -803,7 +830,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             var result = new List<T>();
             if (items == null) return result;
 
-            // If the collection is just strings, handle it specifically
             if (typeof(T) == typeof(string))
             {
                 foreach (var item in items)
@@ -816,7 +842,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 return result;
             }
 
-            // Otherwise, it's a DTO. Process string properties dynamically
             var properties = typeof(T).GetProperties()
                 .Where(p => p.CanRead && p.CanWrite && p.PropertyType == typeof(string))
                 .ToList();

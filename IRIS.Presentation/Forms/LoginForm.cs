@@ -203,6 +203,20 @@ namespace IRIS.Presentation
                     ShowError("Incorrect password.");
                     return;
                 }
+                if (user.isFirstLogin)
+                {
+                    using (var changePwdForm = new ChangePasswordForm(user, _context))
+                    {
+                        this.Hide();
+                        var result = changePwdForm.ShowDialog();
+
+                        if (result != DialogResult.OK)
+                        {
+                            this.Show();
+                            return;
+                        }
+                    }
+                }
 
                 if (!string.IsNullOrEmpty(user.SessionToken))
                 {

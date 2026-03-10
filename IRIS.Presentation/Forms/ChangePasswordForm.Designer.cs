@@ -388,7 +388,7 @@
             MaximizeBox = false;
             Name = "ChangePasswordForm";
             ShowInTaskbar = false;
-            StartPosition = FormStartPosition.CenterParent;
+            StartPosition = FormStartPosition.CenterScreen;
             TopMost = true;
             guna2Panel1.ResumeLayout(false);
             guna2Panel1.PerformLayout();
