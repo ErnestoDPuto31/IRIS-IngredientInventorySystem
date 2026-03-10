@@ -16,6 +16,10 @@ namespace IRIS.Presentation
         {
              ApplicationConfiguration.Initialize();
 
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             // Setup DI
             var services = new ServiceCollection();
             services.AddDbContext<IrisDbContext>(options =>
@@ -48,11 +52,9 @@ namespace IRIS.Presentation
             }
             catch (Exception ex)
             {
-                // Useful for debugging in your Software Design course
                 System.Diagnostics.Debug.WriteLine($"IRIS Database seeding skipped: {ex.Message}");
             }
 
-            // Run the UI
             Application.Run(new LoginForm());
         }
     }

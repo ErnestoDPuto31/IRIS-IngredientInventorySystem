@@ -71,7 +71,7 @@ namespace IRIS.Presentation.UserControls.Components
             Color c3 = _widgetType == OverviewWidgetType.Stock ? Color.FromArgb(239, 68, 68) : Color.FromArgb(109, 40, 217);
 
             // Title (Leave room on the left for you to drop a PictureBox with your icon if you want)
-            using (Font titleFont = new Font("Segoe UI Semibold", 11F))
+            using (Font titleFont = new Font("Poppins", 11F, FontStyle.Bold))
             using (Brush titleBrush = new SolidBrush(Color.FromArgb(17, 24, 39)))
             {
                 g.DrawString(title, titleFont, titleBrush, new PointF(38, 18));
@@ -93,12 +93,12 @@ namespace IRIS.Presentation.UserControls.Components
         private void DrawRow(Graphics g, string label, int val, int max, Color barColor, int y)
         {
             // Draw Label
-            using (Font font = new Font("Segoe UI", 9.5F))
+            using (Font font = new Font("Poppins", 9.5F))
             using (Brush brush = new SolidBrush(Color.FromArgb(55, 65, 81)))
                 g.DrawString(label, font, brush, new PointF(20, y));
 
             // Draw Number
-            using (Font fontNum = new Font("Segoe UI Semibold", 9.5F))
+            using (Font fontNum = new Font("Poppins", 9.5F))
             using (Brush brushNum = new SolidBrush(Color.Black))
             {
                 string vStr = val.ToString();

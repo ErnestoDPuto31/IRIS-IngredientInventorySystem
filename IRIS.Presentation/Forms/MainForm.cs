@@ -25,7 +25,7 @@ namespace IRIS.Presentation.Forms
         private MacTrafficLightButton _btnMacClose;
         private MacTrafficLightButton _btnMacMinimize;
 
-        private readonly Color _topBarColor = Color.LightGray;
+        private readonly Color _topBarColor = Color.FromArgb(246, 246, 247);
         #endregion
 
         public MainForm()
@@ -235,6 +235,7 @@ namespace IRIS.Presentation.Forms
                     AutoSize = false,
                     Dock = DockStyle.Fill,
                     TextAlign = ContentAlignment.MiddleCenter,
+                    Text = "IRIS",
                     Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
                     ForeColor = Color.FromArgb(82, 82, 88),
                     BackColor = _topBarColor
