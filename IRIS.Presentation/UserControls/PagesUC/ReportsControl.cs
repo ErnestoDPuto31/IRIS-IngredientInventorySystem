@@ -7,6 +7,12 @@ using IRIS.Presentation.UserControls.Components;
 using IRIS.Services.Interfaces;
 using static Bunifu.UI.WinForms.BunifuButton.BunifuButton;
 using IRIS.Domain.Contracts;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace IRIS.Presentation.UserControls.PagesUC
 {
@@ -31,7 +37,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             SetupExportButtonsUI();
         }
 
-        private IReportsService GetReportsService()
+        private IReportsService? GetReportsService()
         {
             var svc = ServiceFactory.GetReportsService();
             if (svc == null)
@@ -58,6 +64,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             _dataBound = false;
             _isLoadingData = false;
         }
+
         protected override async void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
@@ -67,6 +74,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 await EnsureDataLoadedAsync(true);
             }
         }
+
         public async Task EnsureDataLoadedAsync(bool forceReload = false)
         {
             if (_isLoadingData) return;
@@ -85,14 +93,13 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     _preloadTask = reportsService.GetDashboardDataAsync(5);
                 }
 
-                    if (_preloadTask == null || _preloadTask.IsCanceled || _preloadTask.IsFaulted)
-                    {
-                        // Force a brand new query to the database
-                        _preloadTask = reportsService.GetDashboardDataAsync(5);
-                    }
-
-                    _snapshot = await _preloadTask;
+                if (_preloadTask == null || _preloadTask.IsCanceled || _preloadTask.IsFaulted)
+                {
+                    // Force a brand new query to the database
+                    _preloadTask = reportsService.GetDashboardDataAsync(5);
                 }
+
+                _snapshot = await _preloadTask;
 
                 if (_snapshot != null && !IsDisposed)
                 {
@@ -169,7 +176,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             if (btnExportPDF != null) btnExportPDF.IconLeft = IconChar.Download.ToBitmap(purple, 16);
 
             ApplyOutlinedExportStyle(btnExportCSV);
-            ApplyOutlinedExportStyle(btnExportPDF);
+            if (btnExportPDF != null) ApplyOutlinedExportStyle(btnExportPDF);
 
             int top = (btnExportPDF != null) ? btnExportPDF.Top : 89;
 
@@ -201,7 +208,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
         }
 
-        // reports done.
         private void ReportsControl_SizeChanged(object sender, EventArgs e)
         {
             if (pnlMain == null || btnExportCSV == null || btnExportPDF == null) return;
@@ -304,7 +310,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 filePath: sfd.FileName,
                 exportedBy: (UserSession.CurrentUser?.Role.ToString()
                             ?? UserSession.CurrentUser?.Username
-                            ?? UserSession.CurrentUser?.Role.ToString()
                             ?? "Unknown User"),
                 totalIngredients: snapshot.TotalIngredients,
                 totalRequests: snapshot.TotalRequests,
@@ -338,13 +343,13 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
             catch
             {
+                // Ignore gracefully if logo doesn't exist or crashes
             }
 
             ExportPdf.ExportAndRevealInExplorer(
                 filePath: sfd.FileName,
                 exportedBy: (UserSession.CurrentUser?.Role.ToString()
                             ?? UserSession.CurrentUser?.Username
-                            ?? UserSession.CurrentUser?.Role.ToString()
                             ?? "Unknown User"),
                 totalIngredients: snapshot.TotalIngredients,
                 totalRequests: snapshot.TotalRequests,
@@ -426,31 +431,32 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     }
                     chartInventoryCanvas.Update();
                 }
+
                 var reqStats = NormalizeRequestStatsForDisplay(snapshot.RequestStats);
                 if (chartRequestsCanvas != null)
                 {
                     var orderedLabels = new List<string> { "Approved", "Pending", "Rejected", "Released" };
                     var orderedData = new List<double>
+                    {
+                        ToWholeChartValue(reqStats.ContainsKey("Approved") ? reqStats["Approved"] : 0),
+                        ToWholeChartValue(reqStats.ContainsKey("Pending") ? reqStats["Pending"] : 0),
+                        ToWholeChartValue(reqStats.ContainsKey("Rejected") ? reqStats["Rejected"] : 0),
+                        ToWholeChartValue(reqStats.ContainsKey("Released") ? reqStats["Released"] : 0)
+                    };
+
+                    chartRequestsCanvas.Labels = orderedLabels.ToArray();
+
+                    if (pieRequests != null)
+                    {
+                        pieRequests.Data = new List<double>(orderedData);
+                        pieRequests.BackgroundColor = new List<Color>
                         {
-                            ToWholeChartValue(reqStats.ContainsKey("Approved") ? reqStats["Approved"] : 0),
-                            ToWholeChartValue(reqStats.ContainsKey("Pending") ? reqStats["Pending"] : 0),
-                            ToWholeChartValue(reqStats.ContainsKey("Rejected") ? reqStats["Rejected"] : 0),
-                            ToWholeChartValue(reqStats.ContainsKey("Released") ? reqStats["Released"] : 0)
+                            Color.SeaGreen,   // Approved
+                            Color.Gold,       // Pending
+                            Color.Crimson,    // Rejected
+                            Color.DarkBlue    // Released
                         };
-
-                                        chartRequestsCanvas.Labels = orderedLabels.ToArray();
-
-                                        if (pieRequests != null)
-                                        {
-                                            pieRequests.Data = new List<double>(orderedData);
-                                            pieRequests.BackgroundColor = new List<Color>
-                            {
-                                Color.SeaGreen,   // Approved
-                                Color.Gold,       // Pending
-                                Color.Crimson,    // Rejected
-                                Color.DarkBlue    // Released
-                            };
-                                        }
+                    }
 
                     chartRequestsCanvas.Update();
                 }
@@ -479,15 +485,13 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 MessageBox.Show("Error loading charts: " + ex.Message);
             }
         }
-        
+
         private void ClearCharts()
         {
             try
             {
                 if (chartRequestsCanvas != null)
-                {
                     chartRequestsCanvas.Labels = Array.Empty<string>();
-                }
 
                 if (pieRequests != null)
                 {
@@ -499,12 +503,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 {
                     chartRequestsCanvas.Update();
                     chartRequestsCanvas.Refresh();
-                }
-
-                if (pieRequests != null)
-                {
-                    pieRequests.Data = new List<double>();
-                    pieRequests.BackgroundColor = new List<Color>();
                 }
 
                 if (chartBarCanvas != null)
@@ -522,18 +520,19 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
             catch
             {
+                // Silently bypass drawing errors on clearing
             }
         }
 
         private static Dictionary<string, double> NormalizeRequestStatsForDisplay(IDictionary<string, double>? rawStats)
         {
             var result = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase)
-    {
-        { "Approved", 0 },
-        { "Pending", 0 },
-        { "Rejected", 0 },
-        { "Released", 0 }
-    };
+            {
+                { "Approved", 0 },
+                { "Pending", 0 },
+                { "Rejected", 0 },
+                { "Released", 0 }
+            };
 
             if (rawStats == null)
                 return result;
@@ -559,23 +558,17 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 return "Unknown";
 
             clean = clean.Replace("_", " ").Replace("-", " ");
-            clean = Regex.Replace(clean, @"([a-z0-9])([A-Z])", "$1 $2");
-            clean = Regex.Replace(clean, @"\s+", " ").Trim().ToLowerInvariant();
+            clean = System.Text.RegularExpressions.Regex.Replace(clean, @"([a-z0-9])([A-Z])", "$1 $2");
+            clean = System.Text.RegularExpressions.Regex.Replace(clean, @"\s+", " ").Trim().ToLowerInvariant();
 
-            if (clean == "pending")
-                return "Pending";
-
-            if (clean == "approved" || clean == "approve")
-                return "Approved";
-
-            if (clean == "released" || clean == "release")
-                return "Released";
-
-            if (clean == "rejected" || clean == "reject" || clean == "declined" || clean == "denied")
-                return "Rejected";
+            if (clean == "pending") return "Pending";
+            if (clean == "approved" || clean == "approve") return "Approved";
+            if (clean == "released" || clean == "release") return "Released";
+            if (clean == "rejected" || clean == "reject" || clean == "declined" || clean == "denied") return "Rejected";
 
             return "Unknown";
         }
+
         private static double GetCalculatedApprovalRate(ReportsDashboardSummary snapshot)
         {
             var reqStats = NormalizeRequestStatsForDisplay(snapshot.RequestStats);
@@ -645,7 +638,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
         // ==========================================
         // ASYNC FETCHING METHODS
-        // (If you need to fetch/update individual components dynamically later)
         // ==========================================
 
         private async Task LoadTableAsync(IReportsService reportsService)
@@ -703,18 +695,13 @@ namespace IRIS.Presentation.UserControls.PagesUC
                 if (invStats != null && invStats.Any() && chartInventoryCanvas != null)
                 {
                     chartInventoryCanvas.Labels = invStats.Keys.ToArray();
-
-                if (prop.Name.Equals("Status", StringComparison.OrdinalIgnoreCase) ||
-                    prop.Name.Equals("RequestStatus", StringComparison.OrdinalIgnoreCase))
-                {
-                    prop.SetValue(item, NormalizeRequestStatusKey(currentValue));
+                    if (pieInventory != null)
+                    {
+                        pieInventory.Data = invStats.Values.Select(v => Convert.ToDouble(v)).ToList();
+                        pieInventory.BackgroundColor = new List<Color> { Color.Crimson, Color.Gold, Color.SeaGreen };
+                    }
+                    chartInventoryCanvas.Update();
                 }
-                else
-                {
-                    prop.SetValue(item, FormatDisplayText(currentValue));
-                }
-            }
-        }
 
                 var reqStats = await reportsService.GetRequestStatsAsync();
                 if (reqStats != null && reqStats.Any() && chartRequestsCanvas != null)
@@ -726,7 +713,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
                     foreach (var item in reqStats)
                     {
                         reqLabels.Add(item.Key);
-                        reqData.Add(item.Value);
+                        reqData.Add(Convert.ToDouble(item.Value));
 
                         string statusKey = item.Key;
                         if (string.Equals(statusKey, nameof(RequestStatus.Pending), StringComparison.OrdinalIgnoreCase))
@@ -757,7 +744,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
                     if (barCategory != null)
                     {
-                        barCategory.Data = catStats.Values.ToList();
+                        // Safely convert values to double for the chart data
+                        barCategory.Data = catStats.Values.Select(v => Convert.ToDouble(v)).ToList();
+
                         var barColors = new List<Color>();
                         for (int i = 0; i < catStats.Count; i++)
                             barColors.Add(Color.Indigo);
@@ -772,6 +761,93 @@ namespace IRIS.Presentation.UserControls.PagesUC
             {
                 MessageBox.Show("Error loading charts: " + ex.Message);
             }
+        }
+
+        // ==========================================
+        // EXPORT FORMATTING HELPERS
+        // ==========================================
+
+        private Dictionary<string, double> PrepareDisplayStats<TValue>(IDictionary<string, TValue>? rawStats)
+        {
+            var result = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+            if (rawStats == null) return result;
+
+            foreach (var kvp in rawStats)
+            {
+                string displayKey = FormatDisplayText(kvp.Key);
+
+                double value = Convert.ToDouble(kvp.Value);
+
+                if (result.ContainsKey(displayKey))
+                    result[displayKey] += value;
+                else
+                    result[displayKey] = value;
+            }
+
+            return result;
+        }
+
+        private static string FormatDisplayText(string? rawText)
+        {
+            if (string.IsNullOrWhiteSpace(rawText))
+                return string.Empty;
+
+            string clean = rawText.Trim().Replace("_", " ").Replace("-", " ");
+
+            clean = System.Text.RegularExpressions.Regex.Replace(clean, @"([a-z0-9])([A-Z])", "$1 $2");
+            return System.Text.RegularExpressions.Regex.Replace(clean, @"\s+", " ").Trim();
+        }
+
+        private List<T> PrepareDisplayItems<T>(IEnumerable<T>? items) where T : class
+        {
+            var result = new List<T>();
+            if (items == null) return result;
+
+            // If the collection is just strings, handle it specifically
+            if (typeof(T) == typeof(string))
+            {
+                foreach (var item in items)
+                {
+                    if (item is string strItem)
+                    {
+                        result.Add((T)(object)FormatDisplayText(strItem));
+                    }
+                }
+                return result;
+            }
+
+            // Otherwise, it's a DTO. Process string properties dynamically
+            var properties = typeof(T).GetProperties()
+                .Where(p => p.CanRead && p.CanWrite && p.PropertyType == typeof(string))
+                .ToList();
+
+            foreach (var item in items)
+            {
+                if (item == null) continue;
+
+                T clonedItem = (T)item.GetType().GetMethod("MemberwiseClone", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.Invoke(item, null) ?? item;
+
+                foreach (var prop in properties)
+                {
+                    string? currentValue = prop.GetValue(clonedItem) as string;
+                    if (!string.IsNullOrWhiteSpace(currentValue))
+                    {
+                        if (prop.Name.Equals("Status", StringComparison.OrdinalIgnoreCase) ||
+                            prop.Name.Equals("RequestStatus", StringComparison.OrdinalIgnoreCase))
+                        {
+                            prop.SetValue(clonedItem, NormalizeRequestStatusKey(currentValue));
+                        }
+                        else
+                        {
+                            prop.SetValue(clonedItem, FormatDisplayText(currentValue));
+                        }
+                    }
+                }
+
+                result.Add(clonedItem);
+            }
+
+            return result;
         }
     }
 }
