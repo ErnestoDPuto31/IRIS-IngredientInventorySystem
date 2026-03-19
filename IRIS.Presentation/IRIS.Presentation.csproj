@@ -2,13 +2,19 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net10.0-windows</TargetFramework>
+		<TargetFramework>net10.0-windows7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWindowsForms>true</UseWindowsForms>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<!-- Suppress warning for Tulpep.NotificationWindow -->
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<NoWarn>NU1701</NoWarn>
 		<UserSecretsId>819d253c-bdff-46b1-8c18-e9fb7640757f</UserSecretsId>
+		<UseWPF>False</UseWPF>
+		<AssemblyName>IRIS</AssemblyName>
+		<AssemblyTitle>IRIS</AssemblyTitle>
+		<ApplicationIcon>favicon.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -16,6 +22,10 @@
 	  <None Remove="Resources\docs.png" />
 	  <None Remove="Resources\graph.png" />
 	  <None Remove="Resources\total.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="favicon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
