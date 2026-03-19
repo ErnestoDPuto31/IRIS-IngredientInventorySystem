@@ -48,6 +48,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\IRIS.Domain\IRIS.Domain.csproj" />
+		<ProjectReference Include="..\IRIS.Infrastructure\IRIS.Infrastructure.csproj" />
 		<ProjectReference Include="..\IRIS.Services\IRIS.Services.csproj" />
 	</ItemGroup>
 
