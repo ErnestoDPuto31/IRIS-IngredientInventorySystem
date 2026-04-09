@@ -262,5 +262,10 @@ namespace IRIS.Presentation
                 this.Show();
             }
         }
+
+        private void LoginForm_Load_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
