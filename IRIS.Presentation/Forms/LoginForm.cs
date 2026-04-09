@@ -6,6 +6,7 @@ using IRIS.Presentation.UserControls.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
+using System.Configuration; 
 
 namespace IRIS.Presentation
 {
@@ -37,10 +38,10 @@ namespace IRIS.Presentation
 
             AcceptButton = btnLogin;
 
+            string connectionString = ConfigurationManager.ConnectionStrings["IrisConnection"].ConnectionString;
+
             var options = new DbContextOptionsBuilder<IrisDbContext>()
-                .UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;
-                                Database=IRIS_DB;
-                                Trusted_Connection=True;")
+                .UseSqlServer(connectionString)
                 .Options;
 
             _context = new IrisDbContext(options);
