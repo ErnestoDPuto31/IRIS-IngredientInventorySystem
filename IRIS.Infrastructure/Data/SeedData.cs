@@ -25,7 +25,7 @@ namespace IRIS.Infrastructure.Data
             qa.PasswordHash = hasher.HashPassword(qa, "qa");
             usersToSeed.Add(qa);
 
-            for (int i = 0; i <= 10; i++)
+            for (int i = 1; i <= 10; i++)
             {
                 string uname = $"officestaff{i}";
                 var officer = new User { Username = uname, Role = UserRole.OfficeStaff, isFirstLogin = true, IsActive = true };
