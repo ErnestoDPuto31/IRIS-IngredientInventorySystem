@@ -38,7 +38,7 @@ namespace IRIS.Presentation
 
             AcceptButton = btnLogin;
 
-            string connectionString = "Data Source=172.17.9.204,1433;Initial Catalog = IRIS_DB;User ID = sa;Password = cheadmin;Connect Timeout = 30;Encrypt = True; Trust Server Certificate = True;Application Intent = ReadWrite;Multi Subnet Failover = False;Command Timeout = 30";
+            string connectionString = ConfigurationManager.ConnectionStrings["IrisConnection"].ConnectionString;
 
             var options = new DbContextOptionsBuilder<IrisDbContext>()
                 .UseSqlServer(connectionString)
