@@ -13,8 +13,6 @@ namespace IRIS.Infrastructure.Data
             var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
 
            string connectionString = ConfigurationManager.ConnectionStrings["IrisConnection"].ConnectionString;
-          //change test
-          //changeste2
 
             optionsBuilder.UseSqlServer(connectionString);
 
