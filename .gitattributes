@@ -61,3 +61,11 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+###############################################################################
+# ClickOnce Deployment files - DO NOT modify line endings
+# Modifying these breaks the cryptographic hash and fails the installation.
+###############################################################################
+*.application binary
+*.manifest binary
+*.deploy binary
