@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore; 
-using IRIS.Infrastructure.Data;
-using IRIS.Services.Interfaces;
-using IRIS.Services.Implementations;
+﻿using IRIS.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection; 
+using System;
+using System.Windows.Forms;
 
 namespace IRIS.Presentation.UserControls.PagesUC
 {
     public partial class HistoryControl : UserControl
     {
-        private IInventoryLogService _logService;
-        private IrisDbContext _context;
+        private readonly IServiceScope _scope;
+        private readonly IInventoryLogService _logService;
 
         private int _currentPage = 1;
         private const int _pageSize = 10;
@@ -18,12 +18,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
         public HistoryControl()
         {
             InitializeComponent();
+            _scope = Program.Services.CreateScope();
+            _logService = _scope.ServiceProvider.GetRequiredService<IInventoryLogService>();
 
-            var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=IRIS_DB;Trusted_Connection=True;");
-            _context = new IrisDbContext(optionsBuilder.Options);
-
-            _logService = new InventoryLogService(_context);
             historyTableuc1.OnSearchChanged += HistoryTable_OnSearchChanged;
         }
 

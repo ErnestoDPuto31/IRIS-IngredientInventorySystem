@@ -1,12 +1,17 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Services.Implementations;
+using IRIS.Services.Interfaces;
 using System.ComponentModel;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace IRIS.Presentation.Window_Forms
 {
     public partial class frmIngredientSelector : Form
     {
-        private readonly IngredientService _ingredientService;
+        private readonly IIngredientService _ingredientService;
+
         private readonly int _studentCount;
         private readonly decimal _totalBudget;
         private readonly BindingList<RequestDetails> _existingItems;
@@ -18,7 +23,7 @@ namespace IRIS.Presentation.Window_Forms
         private decimal _currentPortionPerStudent = 0m;
         private bool _isCalculating = false;
 
-        public frmIngredientSelector(IngredientService ingredientService, int studentCount, decimal totalBudget, BindingList<RequestDetails> currentItems = null)
+        public frmIngredientSelector(IIngredientService ingredientService, int studentCount, decimal totalBudget, BindingList<RequestDetails> currentItems = null)
         {
             InitializeComponent();
             _ingredientService = ingredientService;

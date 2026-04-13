@@ -12,14 +12,15 @@ namespace IRIS.Presentation.Window_Forms
 {
     public partial class frmRequestEntry : Form
     {
-        private readonly RequestService _requestService;
-        private readonly IngredientService _ingredientService;
+        private readonly IRequestService _requestService;
+        private readonly IIngredientService _ingredientService;
+
         private BindingList<RequestDetails> _tempItems;
         private readonly INotificationService _notificationService;
 
         private decimal _totalFinancialBudget = 0m;
 
-        public frmRequestEntry(RequestService reqService, IngredientService ingService)
+        public frmRequestEntry(IRequestService reqService, IIngredientService ingService)
         {
             InitializeComponent();
 
@@ -36,8 +37,6 @@ namespace IRIS.Presentation.Window_Forms
             numRecipeCosting.ValueChanged += (s, e) => CalculateBudget();
 
             CalculateBudget();
-
-            // Load the faculty names into the Guna2TextBox's Autocomplete when the form opens
             LoadFacultyNames();
         }
 
@@ -47,18 +46,14 @@ namespace IRIS.Presentation.Window_Forms
             {
                 var names = _requestService.GetUniqueFacultyNames();
 
-                // 1. Create a special collection for the autocomplete
                 AutoCompleteStringCollection autoCompleteCollection = new AutoCompleteStringCollection();
                 autoCompleteCollection.AddRange(names.ToArray());
-
-                // 2. Attach it to your Guna2TextBox
                 txtFaculty.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                 txtFaculty.AutoCompleteSource = AutoCompleteSource.CustomSource;
                 txtFaculty.AutoCompleteCustomSource = autoCompleteCollection;
             }
             catch (Exception ex)
             {
-                // Fail silently if it can't load, it will just act like a normal empty textbox
                 Console.WriteLine("Could not load faculty names: " + ex.Message);
             }
         }

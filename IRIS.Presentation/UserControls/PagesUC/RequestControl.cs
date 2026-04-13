@@ -1,31 +1,29 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
-using IRIS.Infrastructure.Data;
 using IRIS.Presentation.Window_Forms;
-using IRIS.Services.Implementations;
-using Microsoft.EntityFrameworkCore;
+using IRIS.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection; 
+using System;
+using System.Windows.Forms;
 
 namespace IRIS.Presentation.UserControls.PagesUC
 {
     public partial class RequestControl : UserControl
     {
-        private readonly RequestService _requestService;
-        private readonly IngredientService _ingredientService;
-        private readonly IrisDbContext _context;
+        private readonly IServiceScope _scope;
+        private readonly IRequestService _requestService;
+        private readonly IIngredientService _ingredientService;
 
         public RequestControl()
         {
             InitializeComponent();
 
-            var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=IRIS_DB;Trusted_Connection=True;");
+            // 1. Create a scope and pull services from Program.cs
+            _scope = Program.Services.CreateScope();
+            _requestService = _scope.ServiceProvider.GetRequiredService<IRequestService>();
+            _ingredientService = _scope.ServiceProvider.GetRequiredService<IIngredientService>();
 
-            _context = new IrisDbContext(optionsBuilder.Options);
-            _requestService = new RequestService(_context);
-            var logService = new InventoryLogService(_context);
-            _ingredientService = new IngredientService(_context, logService);
 
-            // Hide "New Request" button if not Office Staff
             if (UserSession.CurrentUser.Role != UserRole.OfficeStaff)
             {
                 btnNewRequest.Visible = false;
@@ -33,7 +31,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
             requestTable.RowActionClicked += (s, requestId) =>
             {
-                // Get the Current User's ID from Session
+
                 int currentUserId = UserSession.CurrentUser.UserId;
 
                 using (var form = new frmViewRequests(requestId, _requestService, currentUserId))

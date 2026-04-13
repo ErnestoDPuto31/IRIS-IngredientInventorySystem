@@ -5,6 +5,8 @@ using IRIS.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing.Drawing2D;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using IRIS.Services.Interfaces;
 
 namespace IRIS.Presentation.UserControls.Components.Tables
 {
@@ -22,8 +24,8 @@ namespace IRIS.Presentation.UserControls.Components.Tables
         private readonly int _borderRadius = 15;
         private int _hoveredHeaderIndex = -1;
 
-        private IrisDbContext _context;
-        private RequestService _requestService;
+        private IServiceScope _currentScope;
+        private IRequestService _requestService;
         private List<Request> _allData = new List<Request>();
 
         private Panel _headerPanel;
@@ -45,24 +47,22 @@ namespace IRIS.Presentation.UserControls.Components.Tables
             base.OnLoad(e);
             if (!DesignMode)
             {
-                LoadData(); // LoadData handles the connection creation now
+                LoadData(); 
             }
         }
 
-        // --- 1. NEW METHOD TO RESET DB CONNECTION ---
-        // We need this because if we don't recreate the context, EF Core will give us 
-        // "cached" old data even after you approve/reject items in a different window.
         private void InitializeContext()
         {
-            _context?.Dispose(); // Close old connection if exists
+            // Close old scope to clear EF Core's cache and release the connection
+            _currentScope?.Dispose();
 
             try
             {
-                var optionsBuilder = new DbContextOptionsBuilder<IrisDbContext>();
-                optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=IRIS_DB;Trusted_Connection=True;");
+                // Ask Program.cs to create a fresh environment (Scope)
+                _currentScope = Program.Services.CreateScope();
 
-                _context = new IrisDbContext(optionsBuilder.Options);
-                _requestService = new RequestService(_context);
+                // Pull a fresh RequestService out of the new scope
+                _requestService = _currentScope.ServiceProvider.GetRequiredService<IRequestService>();
             }
             catch (Exception ex)
             {
@@ -70,7 +70,6 @@ namespace IRIS.Presentation.UserControls.Components.Tables
             }
         }
 
-        // --- 2. UPDATED LOADDATA ---
         public void LoadData()
         {
             // Always get a fresh connection before loading

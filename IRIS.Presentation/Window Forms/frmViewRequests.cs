@@ -11,16 +11,18 @@ namespace IRIS.Presentation.Window_Forms
     public partial class frmViewRequests : Form
     {
         private readonly int _requestId;
-        private readonly RequestService _requestService;
+
+        private readonly IRequestService _requestService;
+
         private readonly int _currentUserId;
         private Request _currentRequest;
 
-        private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243); 
-        private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60); 
+        private readonly Color _cReleaseBlue = Color.FromArgb(33, 150, 243);
+        private readonly Color _cApproveGreen = Color.FromArgb(56, 142, 60);
         private readonly Color _cIndigo = Color.Indigo;
         private readonly INotificationService _notificationService;
 
-        public frmViewRequests(int requestId, RequestService requestService, int currentUserId)
+        public frmViewRequests(int requestId, IRequestService requestService, int currentUserId)
         {
             InitializeComponent();
             _requestId = requestId;

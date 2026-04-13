@@ -21,7 +21,6 @@ namespace IRIS.Presentation.UserControls.Components
         private readonly int _borderRadius = 15;
         private int _hoveredHeaderIndex = -1;
 
-        // ---> NEW: Let the parent know when the user types in the search bar
         public event EventHandler<string> OnSearchChanged;
 
         private Panel _headerPanel;
@@ -40,9 +39,7 @@ namespace IRIS.Presentation.UserControls.Components
             InitializeLayout();
         }
 
-        // ---> FIX: Removed OnLoad and Database Context Initialization 
-
-        // ---> FIX: Now simply receives data and draws it
+ 
         public void SetData(IEnumerable<InventoryLog> items)
         {
             _itemsPanel.SuspendLayout();
@@ -90,7 +87,6 @@ namespace IRIS.Presentation.UserControls.Components
             this.Controls.Add(_searchBar);
         }
 
-        // ... (Keep SetupHeaderPanel exactly the same) ...
         private void SetupHeaderPanel()
         {
             _headerPanel = new Panel
@@ -109,7 +105,6 @@ namespace IRIS.Presentation.UserControls.Components
             this.Controls.Add(_headerPanel);
         }
 
-        // ... (Keep SetupItemsGrid exactly the same) ...
         private void SetupItemsGrid()
         {
             _itemsPanel = new FlowLayoutPanel
@@ -129,7 +124,6 @@ namespace IRIS.Presentation.UserControls.Components
             this.Controls.Add(_itemsPanel);
         }
 
-        // ... (Keep OnPaint, HeaderPanel_Paint, HeaderPanel_MouseMove, ResizeRows, GetRoundedPath, EnableDoubleBuffering exactly the same) ...
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
