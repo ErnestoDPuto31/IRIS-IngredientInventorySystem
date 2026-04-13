@@ -6,7 +6,8 @@ using IRIS.Presentation.UserControls.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
-using System.Configuration; 
+using System.Configuration;
+using IRIS.Presentation.Helpers;
 
 namespace IRIS.Presentation
 {
@@ -36,6 +37,7 @@ namespace IRIS.Presentation
         {
             InitializeComponent();
 
+            FontManager.ApplyFont(this);
             AcceptButton = btnLogin;
 
             string connectionString = ConfigurationManager.ConnectionStrings["IrisConnection"].ConnectionString;

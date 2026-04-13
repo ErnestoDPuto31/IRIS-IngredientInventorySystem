@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using IRIS.Services.Interfaces;
 using System.Data;
+using IRIS.Presentation.Helpers;
 
 namespace IRIS.Presentation.Window_Forms
 {
@@ -25,6 +26,8 @@ namespace IRIS.Presentation.Window_Forms
         public frmViewRequests(int requestId, IRequestService requestService, int currentUserId)
         {
             InitializeComponent();
+            FontManager.ApplyFont(this);
+
             _requestId = requestId;
             _requestService = requestService;
             _currentUserId = currentUserId;

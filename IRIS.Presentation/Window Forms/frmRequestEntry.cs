@@ -1,5 +1,6 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
+using IRIS.Presentation.Helpers;
 using IRIS.Services.Implementations;
 using IRIS.Services.Interfaces;
 using System;
@@ -23,6 +24,7 @@ namespace IRIS.Presentation.Window_Forms
         public frmRequestEntry(IRequestService reqService, IIngredientService ingService)
         {
             InitializeComponent();
+            FontManager.ApplyFont(this);
 
             _requestService = reqService;
             _ingredientService = ingService;

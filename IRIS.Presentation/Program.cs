@@ -20,6 +20,8 @@ namespace IRIS.Presentation
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+           Helpers.FontManager.LoadFonts();
+
             // Setup DI
             var services = new ServiceCollection();
             services.AddDbContext<IrisDbContext>(options =>

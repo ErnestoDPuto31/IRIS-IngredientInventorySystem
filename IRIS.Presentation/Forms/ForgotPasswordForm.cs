@@ -1,6 +1,7 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Infrastructure.Data;
 using IRIS.Infrastructure.Services;
+using IRIS.Presentation.Helpers;
 
 namespace IRIS.Presentation.Forms
 {
@@ -15,6 +16,7 @@ namespace IRIS.Presentation.Forms
         public ForgotPasswordForm(IrisDbContext context)
         {
             InitializeComponent();
+            FontManager.ApplyFont(this);
             _context = context;
 
 

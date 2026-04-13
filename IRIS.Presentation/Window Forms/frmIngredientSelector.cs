@@ -1,4 +1,5 @@
 ﻿using IRIS.Domain.Entities;
+using IRIS.Presentation.Helpers;
 using IRIS.Services.Implementations;
 using IRIS.Services.Interfaces;
 using System.ComponentModel;
@@ -26,6 +27,7 @@ namespace IRIS.Presentation.Window_Forms
         public frmIngredientSelector(IIngredientService ingredientService, int studentCount, decimal totalBudget, BindingList<RequestDetails> currentItems = null)
         {
             InitializeComponent();
+            FontManager.ApplyFont(this);
             _ingredientService = ingredientService;
             _studentCount = studentCount;
             _totalBudget = totalBudget;

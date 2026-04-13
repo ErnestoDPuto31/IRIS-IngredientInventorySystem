@@ -1,4 +1,5 @@
 ﻿using IRIS.Domain.Entities;
+using IRIS.Presentation.Helpers;
 using IRIS.Presentation.UserControls;
 using IRIS.Presentation.UserControls.Components;
 using IRIS.Presentation.UserControls.PagesUC;
@@ -36,6 +37,7 @@ namespace IRIS.Presentation.Forms
         {
             InitializeComponent();
             DoubleBuffered = true;
+            FontManager.ApplyFont(this);
 
             // 1. Core Setups
             SetupClock();

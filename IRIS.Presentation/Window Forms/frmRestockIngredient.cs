@@ -4,6 +4,7 @@ using IRIS.Domain.Entities;
 using IRIS.Domain.Enums; 
 using System.ComponentModel.DataAnnotations; 
 using System.Reflection;
+using IRIS.Presentation.Helpers;
 
 namespace IRIS.Presentation.Window_Forms
 {
@@ -14,18 +15,15 @@ namespace IRIS.Presentation.Window_Forms
 
         private readonly Ingredient _ingredient;
         private readonly string _unit;
-
-        // ---> 1. Create a variable to hold the number we passed in <---
         private readonly decimal _suggestedQty;
 
         public frmRestockIngredient(Ingredient ingredient, decimal suggestedQty)
         {
             InitializeComponent();
+            FontManager.ApplyFont(this);
 
             _ingredient = ingredient;
             _unit = GetEnumDisplayName(ingredient.Unit);
-
-            // ---> 2. Save it here! <---
             _suggestedQty = suggestedQty;
 
             SetupFormLogic();

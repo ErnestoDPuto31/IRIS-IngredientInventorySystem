@@ -1,5 +1,6 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Domain.Enums;
+using IRIS.Presentation.Helpers;
 using IRIS.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -15,6 +16,7 @@ namespace IRIS.Presentation.Window_Forms
         public frmAddIngredient(IIngredientService service)
         {
             InitializeComponent();
+            FontManager.ApplyFont(this);
             _service = service;
 
             lblIngredientTitle.Text = "Add Ingredient";

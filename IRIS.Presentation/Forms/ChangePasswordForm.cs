@@ -1,6 +1,7 @@
 ﻿using IRIS.Domain.Entities;
 using IRIS.Infrastructure.Data;
 using IRIS.Infrastructure.Services; // ADDED: Your new Infrastructure service
+using IRIS.Presentation.Helpers;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -17,6 +18,7 @@ namespace IRIS.Presentation.Forms
         public ChangePasswordForm()
         {
             InitializeComponent();
+            FontManager.ApplyFont(this);
         }
 
         public ChangePasswordForm(User user, IrisDbContext context)
