@@ -17,6 +17,7 @@ namespace IRIS.Services.Implementations
         {
             _context = context;
         }
+
         public List<string> GetUniqueFacultyNames()
         {
             return _context.Requests
@@ -26,6 +27,7 @@ namespace IRIS.Services.Implementations
                 .OrderBy(name => name)
                 .ToList();
         }
+
         public int GetPendingRequestCount()
         {
             return _context.Requests.Count(r => r.Status == RequestStatus.Pending);
@@ -52,110 +54,113 @@ namespace IRIS.Services.Implementations
 
         public void UpdateRequestStatus(int requestId, RequestStatus newStatus, string remarks, int currentUserId)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            var strategy = _context.Database.CreateExecutionStrategy();
+            strategy.Execute(() =>
             {
-                try
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    var request = _context.Requests
-                        .Include(r => r.RequestItems)
-                        .ThenInclude(ri => ri.Ingredient)
-                        .FirstOrDefault(r => r.RequestId == requestId);
-
-                    if (request == null) throw new Exception("Request not found");
-
-                    // 1. Initialize NotificationService here to use it for stock alerts
-                    var localNotificationService = new NotificationService(_context);
-
-                    if (newStatus == RequestStatus.Released && request.Status != RequestStatus.Released)
+                    try
                     {
-                        foreach (var item in request.RequestItems)
+                        var request = _context.Requests
+                            .Include(r => r.RequestItems)
+                            .ThenInclude(ri => ri.Ingredient)
+                            .FirstOrDefault(r => r.RequestId == requestId);
+
+                        if (request == null) throw new Exception("Request not found");
+
+                        var localNotificationService = new NotificationService(_context);
+
+                        if (newStatus == RequestStatus.Released && request.Status != RequestStatus.Released)
                         {
-                            var ingredient = item.Ingredient;
-
-                            if (ingredient != null)
+                            foreach (var item in request.RequestItems)
                             {
-                                if (ingredient.CurrentStock < item.RequestedQty)
-                                {
-                                    throw new InvalidOperationException($"Insufficient stock for: {ingredient.Name}. Available: {ingredient.CurrentStock}, Requested: {item.RequestedQty}");
-                                }
+                                var ingredient = item.Ingredient;
 
-                                // Deduct the stock
-                                ingredient.CurrentStock -= item.RequestedQty;
-                                ingredient.UpdatedAt = DateTime.Now;
+                                if (ingredient != null)
+                                {
+                                    if (ingredient.CurrentStock < item.RequestedQty)
+                                    {
+                                        throw new InvalidOperationException($"Insufficient stock for: {ingredient.Name}. Available: {ingredient.CurrentStock}, Requested: {item.RequestedQty}");
+                                    }
 
-                                // 2. --- NEW STOCK THRESHOLD CHECKS ---
-                                if (ingredient.CurrentStock == 0)
-                                {
-                                    // Hit exactly 0 (Critical) - passing 'true'
-                                    localNotificationService.CreateLowStockNotification(ingredient.IngredientId, ingredient.Name, true);
-                                }
-                                else if (ingredient.CurrentStock <= ingredient.MinimumStock)
-                                {
-                                    // Hit minimum threshold but not zero (Low) - passing 'false'
-                                    localNotificationService.CreateLowStockNotification(ingredient.IngredientId, ingredient.Name, false);
+                                    ingredient.CurrentStock -= item.RequestedQty;
+                                    ingredient.UpdatedAt = DateTime.Now;
+
+                                    if (ingredient.CurrentStock == 0)
+                                    {
+                                        localNotificationService.CreateLowStockNotification(ingredient.IngredientId, ingredient.Name, true);
+                                    }
+                                    else if (ingredient.CurrentStock <= ingredient.MinimumStock)
+                                    {
+                                        localNotificationService.CreateLowStockNotification(ingredient.IngredientId, ingredient.Name, false);
+                                    }
                                 }
                             }
                         }
+
+                        request.Status = newStatus;
+                        request.UpdatedAt = DateTime.Now;
+
+                        var approval = new Approval
+                        {
+                            RequestId = requestId,
+                            ApproverId = currentUserId,
+                            ActionType = newStatus,
+                            Remarks = remarks,
+                            ActionDate = DateTime.Now
+                        };
+
+                        _context.Approvals.Add(approval);
+                        _context.SaveChanges();
+
+                        var user = _context.Users.FirstOrDefault(u => u.UserId == currentUserId);
+                        string actionByName = user != null ? user.Username : "System";
+
+                        localNotificationService.ResolveRequestNotification(requestId, newStatus.ToString(), actionByName);
+                        transaction.Commit();
                     }
-
-                    request.Status = newStatus;
-                    request.UpdatedAt = DateTime.Now;
-
-                    var approval = new Approval
+                    catch (Exception)
                     {
-                        RequestId = requestId,
-                        ApproverId = currentUserId,
-                        ActionType = newStatus,
-                        Remarks = remarks,
-                        ActionDate = DateTime.Now
-                    };
-
-                    _context.Approvals.Add(approval);
-                    _context.SaveChanges();
-
-                    var user = _context.Users.FirstOrDefault(u => u.UserId == currentUserId);
-                    string actionByName = user != null ? user.Username : "System";
-
-                    // 3. Resolve the "New Request" notification
-                    localNotificationService.ResolveRequestNotification(requestId, newStatus.ToString(), actionByName);
-
-                    transaction.Commit();
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            });
         }
 
         public void CreateRequest(Request newRequest, List<RequestDetails> items)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            var strategy = _context.Database.CreateExecutionStrategy();
+            strategy.Execute(() =>
             {
-                try
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    newRequest.CreatedAt = DateTime.Now;
-                    newRequest.Status = RequestStatus.Pending;
-
-                    _context.Requests.Add(newRequest);
-                    _context.SaveChanges();
-
-                    foreach (var item in items)
+                    try
                     {
-                        item.RequestId = newRequest.RequestId;
-                        _context.RequestItems.Add(item);
-                    }
+                        newRequest.CreatedAt = DateTime.Now;
+                        newRequest.Status = RequestStatus.Pending;
 
-                    _context.SaveChanges();
-                    transaction.Commit();
+                        _context.Requests.Add(newRequest);
+                        _context.SaveChanges();
+
+                        foreach (var item in items)
+                        {
+                            item.RequestId = newRequest.RequestId;
+                            _context.RequestItems.Add(item);
+                        }
+
+                        _context.SaveChanges();
+
+                        // Commit the transaction
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            });
         }
 
         public int GetApprovedRequestCount()
