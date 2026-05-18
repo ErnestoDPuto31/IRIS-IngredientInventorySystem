@@ -73,7 +73,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             label2.AutoSize = true;
             label2.Font = new Font("Poppins", 13.8F);
             label2.ForeColor = SystemColors.ControlDarkDark;
-            label2.Location = new Point(110, 75);
+            label2.Location = new Point(114, 81);
             label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
             label2.Size = new Size(504, 40);
@@ -140,7 +140,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             btnExportPDF.IdleIconLeftImage = null;
             btnExportPDF.IdleIconRightImage = null;
             btnExportPDF.IndicateFocus = false;
-            btnExportPDF.Location = new Point(1384, 68);
+            btnExportPDF.Location = new Point(1373, 68);
             btnExportPDF.Margin = new Padding(2);
             btnExportPDF.Name = "btnExportPDF";
             btnExportPDF.OnDisabledState.BorderColor = Color.FromArgb(191, 191, 191);
@@ -191,37 +191,37 @@ namespace IRIS.Presentation.UserControls.PagesUC
             TotalIngredientsCard.Margin = new Padding(2);
             TotalIngredientsCard.Name = "TotalIngredientsCard";
             TotalIngredientsCard.Padding = new Padding(10);
-            TotalIngredientsCard.Size = new Size(300, 130);
+            TotalIngredientsCard.Size = new Size(340, 130);
             TotalIngredientsCard.TabIndex = 2;
             // 
             // TotalRequestCard
             // 
             TotalRequestCard.BackColor = Color.Transparent;
-            TotalRequestCard.Location = new Point(1026, 123);
+            TotalRequestCard.Location = new Point(1184, 123);
             TotalRequestCard.Margin = new Padding(2);
             TotalRequestCard.Name = "TotalRequestCard";
             TotalRequestCard.Padding = new Padding(10);
-            TotalRequestCard.Size = new Size(300, 130);
+            TotalRequestCard.Size = new Size(320, 130);
             TotalRequestCard.TabIndex = 3;
             // 
             // ApprovalRateCard
             // 
             ApprovalRateCard.BackColor = Color.Transparent;
-            ApprovalRateCard.Location = new Point(418, 123);
+            ApprovalRateCard.Location = new Point(475, 123);
             ApprovalRateCard.Margin = new Padding(2);
             ApprovalRateCard.Name = "ApprovalRateCard";
             ApprovalRateCard.Padding = new Padding(10);
-            ApprovalRateCard.Size = new Size(300, 130);
+            ApprovalRateCard.Size = new Size(325, 130);
             ApprovalRateCard.TabIndex = 4;
             // 
             // TotalTransactionsCard
             // 
             TotalTransactionsCard.BackColor = Color.Transparent;
-            TotalTransactionsCard.Location = new Point(722, 123);
+            TotalTransactionsCard.Location = new Point(825, 123);
             TotalTransactionsCard.Margin = new Padding(2);
             TotalTransactionsCard.Name = "TotalTransactionsCard";
             TotalTransactionsCard.Padding = new Padding(10);
-            TotalTransactionsCard.Size = new Size(300, 130);
+            TotalTransactionsCard.Size = new Size(340, 130);
             TotalTransactionsCard.TabIndex = 5;
             // 
             // chartInventoryCanvas
@@ -241,7 +241,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartInventoryCanvas.LegendPosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
             chartInventoryCanvas.LegendRevese = false;
             chartInventoryCanvas.LegendRTL = false;
-            chartInventoryCanvas.Location = new Point(102, 299);
+            chartInventoryCanvas.Location = new Point(102, 275);
             chartInventoryCanvas.Margin = new Padding(4);
             chartInventoryCanvas.Name = "chartInventoryCanvas";
             chartInventoryCanvas.ShowXAxis = false;
@@ -301,7 +301,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             chartRequestsCanvas.LegendPosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
             chartRequestsCanvas.LegendRevese = false;
             chartRequestsCanvas.LegendRTL = false;
-            chartRequestsCanvas.Location = new Point(825, 300);
+            chartRequestsCanvas.Location = new Point(825, 275);
             chartRequestsCanvas.Margin = new Padding(4);
             chartRequestsCanvas.Name = "chartRequestsCanvas";
             chartRequestsCanvas.ShowXAxis = false;
