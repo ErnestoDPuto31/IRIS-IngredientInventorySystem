@@ -134,12 +134,9 @@ namespace IRIS.Presentation.UserControls.PagesUC
 
             _dataBound = true;
 
-            // Setup and load data for cards, charts, and tables using the pre-loaded DTO
             SetupCards(snapshot);
             LoadCharts(snapshot);
             LoadTable(snapshot);
-
-            // Load top ingredients into the control
             if (topIngredientsControl != null)
                 topIngredientsControl.LoadData(snapshot.TopUsedIngredients);
         }
@@ -340,7 +337,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
             catch
             {
-                // Ignore gracefully if logo doesn't exist or crashes
+
             }
 
             ExportPdf.ExportAndRevealInExplorer(
@@ -370,9 +367,6 @@ namespace IRIS.Presentation.UserControls.PagesUC
             return _snapshot;
         }
 
-        // ==========================================
-        // DTO SNAPSHOT METHODS (SYNC UI UPDATES)
-        // ==========================================
 
         private void LoadTable(ReportsDashboardSummary snapshot)
         {
@@ -517,7 +511,7 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
             catch
             {
-                // Silently bypass drawing errors on clearing
+
             }
         }
 
@@ -633,156 +627,24 @@ namespace IRIS.Presentation.UserControls.PagesUC
             }
         }
 
-        // ==========================================
-        // ASYNC FETCHING METHODS
-        // ==========================================
 
-        private async Task LoadTableAsync(IReportsService reportsService)
-        {
-            if (reportsService == null) return;
-
-            try
-            {
-                var lowStockData = await reportsService.GetLowStockIngredientsAsync();
-                if (lowStockControl != null)
-                    lowStockControl.LoadData(lowStockData);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading low stock: " + ex.Message);
-            }
-        }
-
-        private async Task SetupCardsAsync(IReportsService reportsService)
-        {
-            if (reportsService == null) return;
-
-            if (TotalIngredientsCard != null)
-            {
-                var total = await reportsService.GetTotalIngredientsAsync();
-                ConfigureCard(TotalIngredientsCard, CardType.TotalIngredients, IconChar.Box, total.ToString());
-            }
-
-            if (TotalRequestCard != null)
-            {
-                var totalRequests = await reportsService.GetTotalRequestsAsync();
-                ConfigureCard(TotalRequestCard, CardType.TotalRequests, IconChar.FileAlt, totalRequests.ToString());
-            }
-
-            if (ApprovalRateCard != null)
-            {
-                var approvalRate = await reportsService.GetApprovalRateAsync();
-                ConfigureCard(ApprovalRateCard, CardType.ApprovalRate, IconChar.CheckCircle, $"{approvalRate}%");
-            }
-
-            if (TotalTransactionsCard != null)
-            {
-                var totalTransactions = await reportsService.GetTotalTransactionsAsync();
-                ConfigureCard(TotalTransactionsCard, CardType.TotalTransactions, IconChar.ChartLine, totalTransactions.ToString());
-            }
-        }
-
-        private async Task LoadChartsAsync(IReportsService reportsService)
-        {
-            if (reportsService == null) return;
-
-            try
-            {
-                var invStats = await reportsService.GetInventoryStatsAsync();
-                if (invStats != null && invStats.Any() && chartInventoryCanvas != null)
-                {
-                    chartInventoryCanvas.Labels = invStats.Keys.ToArray();
-                    if (pieInventory != null)
-                    {
-                        pieInventory.Data = invStats.Values.Select(v => Convert.ToDouble(v)).ToList();
-                        pieInventory.BackgroundColor = new List<Color> { Color.Crimson, Color.Gold, Color.SeaGreen };
-                    }
-                    chartInventoryCanvas.Update();
-                }
-
-                var reqStats = await reportsService.GetRequestStatsAsync();
-                if (reqStats != null && reqStats.Any() && chartRequestsCanvas != null)
-                {
-                    List<string> reqLabels = new List<string>();
-                    List<double> reqData = new List<double>();
-                    List<Color> reqColors = new List<Color>();
-
-                    foreach (var item in reqStats)
-                    {
-                        reqLabels.Add(item.Key);
-                        reqData.Add(Convert.ToDouble(item.Value));
-
-                        string statusKey = item.Key;
-                        if (string.Equals(statusKey, nameof(RequestStatus.Pending), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.Gold);
-                        else if (string.Equals(statusKey, nameof(RequestStatus.Approved), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.SeaGreen);
-                        else if (string.Equals(statusKey, nameof(RequestStatus.Released), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.DarkBlue);
-                        else if (string.Equals(statusKey, nameof(RequestStatus.Rejected), StringComparison.OrdinalIgnoreCase))
-                            reqColors.Add(Color.Crimson);
-                        else
-                            reqColors.Add(Color.Indigo);
-                    }
-
-                    chartRequestsCanvas.Labels = reqLabels.ToArray();
-                    if (pieRequests != null)
-                    {
-                        pieRequests.Data = reqData;
-                        pieRequests.BackgroundColor = reqColors;
-                    }
-                    chartRequestsCanvas.Update();
-                }
-
-                var catStats = await reportsService.GetCategoryStatsAsync();
-                if (catStats != null && catStats.Any() && chartBarCanvas != null)
-                {
-                    chartBarCanvas.Labels = catStats.Keys.ToArray();
-
-                    if (barCategory != null)
-                    {
-                        // Safely convert values to double for the chart data
-                        barCategory.Data = catStats.Values.Select(v => Convert.ToDouble(v)).ToList();
-
-                        var barColors = new List<Color>();
-                        for (int i = 0; i < catStats.Count; i++)
-                            barColors.Add(Color.Indigo);
-
-                        barCategory.BackgroundColor = barColors;
-                    }
-
-                    chartBarCanvas.Update();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading charts: " + ex.Message);
-            }
-        }
 
         private void SetupBottomPanel()
         {
-            // Create the new panel
+
             Panel bottomPanel = new Panel
             {
                 Name = "HardcodedBottomPanel",
                 Height = 50,
                 Dock = DockStyle.Bottom,
 
-                // Optional: Give it a background color so you can clearly see it while testing
-                BackColor = Color.FromArgb(245, 243, 255)
+                BackColor = Color.FromArgb(255,255,255)
             };
 
-            // Add it to the main UserControl
             this.Controls.Add(bottomPanel);
-
-            // Ensure it stays at the very bottom, in front of other dynamically docked controls
             bottomPanel.BringToFront();
         }
 
-        // ==========================================
-        // EXPORT FORMATTING HELPERS
-        // ==========================================
 
         private Dictionary<string, double> PrepareDisplayStats<TValue>(IDictionary<string, TValue>? rawStats)
         {

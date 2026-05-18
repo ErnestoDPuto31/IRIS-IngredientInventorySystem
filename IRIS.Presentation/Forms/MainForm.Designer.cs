@@ -73,7 +73,7 @@
             pnlTop.Controls.Add(txtRole);
             pnlTop.CustomBorderThickness = new Padding(0, 0, 0, 2);
             pnlTop.CustomizableEdges = customizableEdges6;
-            pnlTop.Location = new Point(52, 43);
+            pnlTop.Location = new Point(46, 35);
             pnlTop.Margin = new Padding(2);
             pnlTop.Name = "pnlTop";
             pnlTop.ShadowDecoration.CustomizableEdges = customizableEdges7;
@@ -83,7 +83,7 @@
             // notificationBadge
             // 
             notificationBadge.BackColor = Color.Transparent;
-            notificationBadge.Location = new Point(1462, 2);
+            notificationBadge.Location = new Point(1462, 8);
             notificationBadge.Margin = new Padding(2);
             notificationBadge.Name = "notificationBadge";
             notificationBadge.Size = new Size(50, 50);
@@ -137,11 +137,11 @@
             btnExit.ImageOffset = new Point(0, 0);
             btnExit.ImageRotate = 0F;
             btnExit.ImageSize = new Size(24, 24);
-            btnExit.Location = new Point(1559, 2);
+            btnExit.Location = new Point(1556, 8);
             btnExit.Margin = new Padding(2);
             btnExit.Name = "btnExit";
             btnExit.ShadowDecoration.CustomizableEdges = customizableEdges1;
-            btnExit.Size = new Size(16, 22);
+            btnExit.Size = new Size(23, 22);
             btnExit.TabIndex = 2;
             btnExit.Click += btnExit_Click;
             // 
